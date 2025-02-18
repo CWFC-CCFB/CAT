@@ -28,13 +28,14 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import lerfob.carbonbalancetool.CATCompartmentManager;
+import lerfob.carbonbalancetool.productionlines.DecayFunction.LifetimeMode;
 import lerfob.carbonbalancetool.productionlines.combustion.CombustionEmissions;
 import lerfob.carbonbalancetool.productionlines.combustion.CombustionEmissions.CombustionProcess;
 import lerfob.carbonbalancetool.sensitivityanalysis.CATSensitivityAnalysisSettings;
 import lerfob.carbonbalancetool.sensitivityanalysis.CATSensitivityAnalysisSettings.VariabilitySource;
 import repicea.gui.components.NumberFormatFieldFactory.NumberFieldDocument.NumberFieldEvent;
-import repicea.simulation.processsystem.ProcessorListTable.MemberInformation;
 import repicea.gui.components.NumberFormatFieldFactory.NumberFieldListener;
+import repicea.simulation.processsystem.ProcessorListTable.MemberInformation;
 import repicea.util.REpiceaTranslator;
 import repicea.util.REpiceaTranslator.TextableEnum;
 
@@ -49,6 +50,7 @@ public class EndUseWoodProductCarbonUnitFeature extends CarbonUnitFeature implem
 
 	private static final long serialVersionUID = 20101020L;
 	
+
 	protected static enum MemberLabel implements TextableEnum {
 		UseClass("Use class", "Usage"),
 		Substitution("Substitution (Mg CO2 eq./FU)","Substitution (Mg CO2 eq./UF)");
@@ -329,4 +331,15 @@ public class EndUseWoodProductCarbonUnitFeature extends CarbonUnitFeature implem
 		}
 	}
 
+	void updateFeature(EndUseProductDefaultFeature feature) {
+		setUseClass(feature.useClass);
+		getDecayFunction().functionType = feature.decayFunctionType;
+		getDecayFunction().lifetimeMode = feature.lifetimeMode;
+		if (feature.lifetimeMode == LifetimeMode.AVERAGE) {
+			getDecayFunction().setAverageLifetimeYr(feature.lifetimeYr);
+		} else if (feature.lifetimeMode == LifetimeMode.HALFLIFE) {
+			getDecayFunction().setHalfLifeYr(feature.lifetimeYr);
+		}
+	}
+	
 }

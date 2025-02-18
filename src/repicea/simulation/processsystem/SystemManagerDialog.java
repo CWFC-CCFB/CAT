@@ -284,12 +284,16 @@ public class SystemManagerDialog extends REpiceaFrame implements ActionListener,
 		getContentPane().removeAll();
 		fluxViewPanel.removeAll();
 		synchronizeUIWithOwner();
-		fluxViewPanel.add(systemPanel, BorderLayout.CENTER);
-		fluxViewPanel.add(toolPanel, BorderLayout.WEST);
-		fluxViewPanel.add(bottomPanel, BorderLayout.SOUTH);
+		addComponentsToFluxViewPanel();
 		getContentPane().add(fluxViewPanel, BorderLayout.CENTER);
 		revalidate(); 
 		repaint();
+	}
+	
+	protected void addComponentsToFluxViewPanel() {
+		fluxViewPanel.add(systemPanel, BorderLayout.CENTER);
+		fluxViewPanel.add(toolPanel, BorderLayout.WEST);
+		fluxViewPanel.add(bottomPanel, BorderLayout.SOUTH);
 	}
 	
 	private void setTableViewPanel() {
