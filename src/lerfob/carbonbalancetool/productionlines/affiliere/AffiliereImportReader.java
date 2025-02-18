@@ -36,6 +36,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lerfob.carbonbalancetool.productionlines.AbstractProcessor;
+import lerfob.carbonbalancetool.productionlines.EndUseProductDefaultFeature;
+import lerfob.carbonbalancetool.productionlines.EndUseWoodProductCarbonUnitFeature.UseClass;
 import lerfob.carbonbalancetool.productionlines.ProductionLineProcessor;
 import py4j.GatewayServer;
 import repicea.gui.REpiceaShowableUIWithParent;
@@ -84,6 +86,17 @@ public class AffiliereImportReader implements REpiceaShowableUIWithParent {
 		NodeTypesToBeDiscarded.add("echange");		// we do not want import / export processors MF2024-03-01
 	}
 
+	
+	private static final Map<String, EndUseProductDefaultFeature> DefaultFeatures = new HashMap<String, EndUseProductDefaultFeature>();
+	static {
+		Map<UseClass, EndUseProductDefaultFeature> refMap = EndUseProductDefaultFeature.getDefaultFeatureMap();
+		DefaultFeatures.put("Construction", refMap.get(UseClass.BUILDING));
+		DefaultFeatures.put("Energie", refMap.get(UseClass.ENERGY));
+		DefaultFeatures.put("Ameublement", refMap.get(UseClass.FURNITURE));
+		DefaultFeatures.put("Papiers", refMap.get(UseClass.PAPER));
+		DefaultFeatures.put("Emballages", refMap.get(UseClass.WRAPPING));
+	}
+	
 	public enum AFFiliereUnit {
 		VolumeM3("1000m3"), 
 		DryBiomassMg("1000t");
@@ -114,7 +127,7 @@ public class AffiliereImportReader implements REpiceaShowableUIWithParent {
 	private static class FutureLink {
 		final Processor fatherProcessor;
 		final Processor childProcessor;
-		final double value;
+		double value;
 		final boolean isPercent;
 		final boolean mightBeEndOfLifeLink;
 
@@ -124,6 +137,22 @@ public class AffiliereImportReader implements REpiceaShowableUIWithParent {
 			this.value = value;
 			this.isPercent = isPercent;
 			this.mightBeEndOfLifeLink = mightBeEndOfLifeLink;
+		}
+		
+		boolean isOpposed(FutureLink fl) {
+			return fl.fatherProcessor == childProcessor && fl.childProcessor == fatherProcessor;
+		}
+		
+		FutureLink getDifferenceLink(FutureLink fl) {
+			if (this.value > fl.value) {
+				this.value -= fl.value;
+				return this;
+			} else if (fl.value > value) {
+				fl.value -= value;
+				return fl;
+			} else {
+				return null;
+			}
 		}
 	}
 	
@@ -144,7 +173,7 @@ public class AffiliereImportReader implements REpiceaShowableUIWithParent {
 	protected final AFFiliereStudy study;
 	protected final AFFiliereUnit unit;
 	protected final Map<String, TagLevels> nodeTags;
-
+	protected final Map<Processor, List<String>> woodTypesByProcessorMap;
 	private static GatewayServer Server;
 	
 
@@ -170,6 +199,7 @@ public class AffiliereImportReader implements REpiceaShowableUIWithParent {
 		nodeTags = formatNodeTagsMap((LinkedHashMap<String,?>) mappedJSON.get(AffiliereJSONFormat.L1_NODETAGS_PROPERTY));
 		processors = new HashMap<String, Processor>();
 		potentialEOLProcessors = new LinkedHashMap<String, Processor>();
+		woodTypesByProcessorMap = new HashMap<Processor, List<String>>();
 		screenNodeMap();
 		if (ENABLE_GUI) {
 			showUI(parent);
@@ -187,7 +217,25 @@ public class AffiliereImportReader implements REpiceaShowableUIWithParent {
 		List<Processor> processorsWithNoChildren = getProcessorsWithNoChildren();
 		Map<String, List<Processor>> entryProcessors = getEntryProcessors();
 		
-		AffiliereLocationPointer lp = new AffiliereLocationPointer(4,1, 100, 150);
+//		List<String> woodTypesEndUseProduct = new ArrayList<String>();
+		for (Processor p : processors.values()) {
+			if (!p.hasSubProcessors()) { // end product then
+				if (woodTypesByProcessorMap.containsKey(p)) {
+					List<String> woodTypes = woodTypesByProcessorMap.get(p);
+					for (String wt : woodTypes) {
+						if (DefaultFeatures.containsKey(wt) && p instanceof ProductionLineProcessor) {
+							((ProductionLineProcessor) p).updateFeature(DefaultFeatures.get(wt));
+						}
+//						if (!woodTypesEndUseProduct.contains(wt)) {
+//							woodTypesEndUseProduct.add(wt);
+//						}
+					}
+				}
+			}
+		}
+	
+//		System.out.println(woodTypesEndUseProduct);
+		AffiliereLocationPointer lp = new AffiliereLocationPointer(4, 1, 100, 150);
 		lp.setLayout(entryProcessors, processorsWithNoChildren);
 	}
 	
@@ -289,6 +337,9 @@ public class AffiliereImportReader implements REpiceaShowableUIWithParent {
 							lastIsPercent ? 
 									fLink.value : 
 										fLink.value / sumValues * 100);
+					if (Double.isNaN(sumValues) || Double.isNaN(fLink.value)) {
+						int u = 0;
+					}
 				}
 			}
 		}
@@ -350,10 +401,42 @@ public class AffiliereImportReader implements REpiceaShowableUIWithParent {
 				linkMap.put(fatherProcessor, new ArrayList<FutureLink>());
 			}
 			linkMap.get(fatherProcessor).add(new FutureLink(fatherProcessor, childProcessor, value, isPercent, false)); // not an EOL link
-			if (!childProcessors.contains(childProcessor)) {
-				childProcessors.add(childProcessor);
+		}
+		
+		// We screen the link to remove the short loops A -> B and B -> A. We keep the most important link but subtract the value of the less important one.
+		List<FutureLink> linksToBeRemoved = new ArrayList<FutureLink>();
+		List<FutureLink> linksToBeKept = new ArrayList<FutureLink>();
+ 		for (Processor p : linkMap.keySet()) {
+			for (FutureLink fl : linkMap.get(p)) {
+				if (linkMap.containsKey(fl.childProcessor)) {
+					for (FutureLink flOpp : linkMap.get(fl.childProcessor)) {
+						if (!linksToBeRemoved.contains(flOpp) && !linksToBeKept.contains(flOpp) && flOpp.isOpposed(fl)) {
+							FutureLink linkToBeKept = fl.getDifferenceLink(flOpp);
+							if (linkToBeKept == null) {
+								linksToBeRemoved.add(fl);
+								linksToBeRemoved.add(flOpp);
+							} else {
+								linksToBeRemoved.add(linkToBeKept.equals(fl) ? flOpp : fl);
+								linksToBeKept.add(linkToBeKept);
+							}
+						}
+					}
+				}
 			}
 		}
+		for (List<FutureLink> futureLinks : linkMap.values()) {
+			futureLinks.removeAll(linksToBeRemoved);
+		}
+
+		// We record the child processors here
+		for (List<FutureLink> futureLinks : linkMap.values()) {
+			for (FutureLink fl : futureLinks) {
+				if (!childProcessors.contains(fl.childProcessor)) {
+					childProcessors.add(fl.childProcessor);
+				}
+			}
+		}
+		
 		return linkMap;
 	}
 
@@ -405,16 +488,16 @@ public class AffiliereImportReader implements REpiceaShowableUIWithParent {
 				return true;
 			}
 		}
-		return false;  // activated but no selection
+		return false;  
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected void screenNodeMap() {
 		potentialEOLProcessors.clear();
 		processors.clear();
+		woodTypesByProcessorMap.clear();
 		
 		LinkedHashMap<?,?> nodeMap = (LinkedHashMap<?,?>) mappedJSON.get(AffiliereJSONFormat.L1_NODES_PROPERTY);
-		
 		for (Object o : nodeMap.values()) {
 			LinkedHashMap<String, Object> oMap = (LinkedHashMap<String, Object>) o;
 			LinkedHashMap<String, Object> tagMap = (LinkedHashMap<String, Object>) oMap.get(AffiliereJSONFormat.NODE_TAGS_PROPERTY);
@@ -426,6 +509,10 @@ public class AffiliereImportReader implements REpiceaShowableUIWithParent {
 					potentialEOLProcessors.put(oMap.get("name").toString(), p);
 				}
 				processors.put(id, p);
+				List<String> woodType = (List<String>) ((Map) oMap.get("tags")).get("Type de bois");
+				if (woodType != null) {
+					woodTypesByProcessorMap.put(p, woodType);
+				}
 			}
 		}
 	}

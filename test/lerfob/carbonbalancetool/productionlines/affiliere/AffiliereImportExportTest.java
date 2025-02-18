@@ -35,18 +35,6 @@ import repicea.util.ObjectUtility;
 
 public class AffiliereImportExportTest {
 
-	@SuppressWarnings("rawtypes")
-	@Ignore
-	@Test
-	public void testAffiliereReaderFromFile() throws IOException {
-		String filename = ObjectUtility.getPackagePath(AffiliereImportExportTest.class) + "BACCFIRE V7.2_desagrege_layout.json";
-		ProductionProcessorManager manager = new ProductionProcessorManager();
-		manager.importFrom(filename, ImportFormat.AFFILIERE);
-//		manager.showUI(null);
-		MemorizerPackage mp = manager.getMemorizerPackage();
-		Assert.assertEquals("Testing nb of processors", 108, ((List) mp.get(1)).size());
-	}
-
 	@Ignore
 	@Test
 	public void testAffiliereExportToFile() throws IOException {

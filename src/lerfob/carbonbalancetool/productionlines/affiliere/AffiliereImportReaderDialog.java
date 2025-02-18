@@ -21,6 +21,7 @@ package lerfob.carbonbalancetool.productionlines.affiliere;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.Window;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -28,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -59,6 +59,12 @@ class AffiliereImportReaderDialog extends REpiceaDialog implements ItemListener 
 
 		@Override
 		public String toString() {return REpiceaTranslator.getString(this);}
+	}
+
+	static {
+		UIControlManager.setTitle(AffiliereImportReaderDialog.class, 
+				"Aggregation levels in function of species and sectors",
+				"Niveaux d'agr\u00E9gation en fonction des esp\u00E8ces et des secteurs");
 	}
 	
 	final AffiliereImportReader caller;
@@ -135,26 +141,24 @@ class AffiliereImportReaderDialog extends REpiceaDialog implements ItemListener 
 	
 	@Override
 	protected void initUI() {
+		setTitle(UIControlManager.getTitle(getClass()));
 		getContentPane().setLayout(new BorderLayout());
-		JPanel panel = new JPanel();
+		JPanel panel = new JPanel(new GridLayout(0,2));
 		getContentPane().add(panel, BorderLayout.CENTER);
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		
 		for (JComboBox<String> cb : comboBoxes) {
-			JPanel cbPanel = new JPanel(new BorderLayout());
 			JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-			leftPanel.add(Box.createHorizontalStrut(2));
+			leftPanel.add(Box.createHorizontalStrut(4));
 			leftPanel.add(UIControlManager.getLabel(cb.getName()));
-			cbPanel.add(leftPanel, BorderLayout.WEST);
-			JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-			rightPanel.add(Box.createGlue());
-			rightPanel.add(cb);
-			rightPanel.add(Box.createHorizontalStrut(2));
-			cbPanel.add(rightPanel, BorderLayout.CENTER);
-			if (!cb.equals(comboBoxes.get(0))) {
-				panel.add(Box.createVerticalStrut(5));
-			}
-			panel.add(cbPanel);
+			leftPanel.add(Box.createHorizontalStrut(4));
+			panel.add(leftPanel);
+			JPanel rightPanel = new JPanel(new BorderLayout());
+			rightPanel.add(Box.createVerticalStrut(2), BorderLayout.NORTH);
+			rightPanel.add(Box.createHorizontalStrut(4), BorderLayout.WEST);
+			rightPanel.add(cb, BorderLayout.CENTER);
+			rightPanel.add(Box.createHorizontalStrut(4), BorderLayout.EAST);
+			rightPanel.add(Box.createVerticalStrut(2), BorderLayout.SOUTH);
+			panel.add(rightPanel);
 		}
 		
 		JPanel nbProcessorsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));

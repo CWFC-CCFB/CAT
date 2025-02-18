@@ -199,11 +199,16 @@ public class ProductionProcessorManagerDialog extends SystemManagerDialog implem
 
 	@Override
 	protected void initUI() {
-		super.initUI();
-		getContentPane().add(comboBoxPanel, BorderLayout.NORTH);
 		initTreeLoggerComboBox();
+		super.initUI();
 	}
 
+	@Override
+	protected void addComponentsToFluxViewPanel() {
+		fluxViewPanel.add(comboBoxPanel, BorderLayout.NORTH);
+		super.addComponentsToFluxViewPanel();
+	}
+	
 	@Override
 	public void setVisible(boolean bool) {
 		super.setVisible(bool);
@@ -285,6 +290,8 @@ public class ProductionProcessorManagerDialog extends SystemManagerDialog implem
 			getCaller().setSelectedTreeLogger((TreeLoggerParameters<?>) treeLoggerComboBox.getSelectedItem());
 			firePropertyChange(REpiceaAWTProperty.SynchronizeWithOwner, null, this);
 			firePropertyChange(REpiceaAWTProperty.ActionPerformed, null, this);
+		} else {
+			super.itemStateChanged(arg0);
 		}
 	}
 	

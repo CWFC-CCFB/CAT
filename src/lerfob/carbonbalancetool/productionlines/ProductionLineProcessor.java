@@ -488,5 +488,24 @@ public final class ProductionLineProcessor extends AbstractProductionLineProcess
 		}
 	}
 	
+	/**
+	 * Update several characteristics of the EndUseCarbonUnitFeature instance.<p>
+	 *
+	 * The method updates the following variables:<ul>
+	 * <li> the use class;
+	 * <li> the type of decay function;
+	 * <li> the mode (half-life versus average lifetime);
+	 * <li> the average lifetime
+	 * </ul>
+	 * 
+	 * The method has no effect if the CarbonUnitFeature instance is not an
+	 * instance of the EndUseCarbonUnitFeature class.
+	 * @param feature an IPCCEndUseProductDefaultFeature instance
+	 */
+	public void updateFeature(EndUseProductDefaultFeature feature) {
+		if (getEndProductFeature() instanceof EndUseWoodProductCarbonUnitFeature) {
+			((EndUseWoodProductCarbonUnitFeature) getEndProductFeature()).updateFeature(feature);
+		}
+	}
 
 }
