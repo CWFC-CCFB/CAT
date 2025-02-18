@@ -290,6 +290,8 @@ public class ProductionProcessorManagerDialog extends SystemManagerDialog implem
 			getCaller().setSelectedTreeLogger((TreeLoggerParameters<?>) treeLoggerComboBox.getSelectedItem());
 			firePropertyChange(REpiceaAWTProperty.SynchronizeWithOwner, null, this);
 			firePropertyChange(REpiceaAWTProperty.ActionPerformed, null, this);
+		} else {
+			super.itemStateChanged(arg0);
 		}
 	}
 	
