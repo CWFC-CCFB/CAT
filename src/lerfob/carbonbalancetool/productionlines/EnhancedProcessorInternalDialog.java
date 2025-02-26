@@ -18,10 +18,15 @@
  */
 package lerfob.carbonbalancetool.productionlines;
 
+import java.awt.Color;
 import java.awt.Window;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import repicea.gui.CommonGuiUtility;
 import repicea.gui.REpiceaPanel;
@@ -46,11 +51,12 @@ import repicea.util.REpiceaTranslator.TextableEnum;
  * @author Mathieu Fortin - 2012
  */
 @SuppressWarnings("serial")
-public class EnhancedProcessorInternalDialog extends ProcessorInternalDialog implements NumberFieldListener {
+public class EnhancedProcessorInternalDialog extends ProcessorInternalDialog implements NumberFieldListener, DocumentListener {
 
 	protected static enum MessageID implements TextableEnum {
 		FunctionalUnitBiomassLabel("Dry biomass per functional unit (Mg)", "Biomasse s\u00E8che de l'unit\u00E9 fonctionnelle (Mg)"),
-		EmissionsLabel("Emissions (Mg CO2 eq. / Funct. Unit)", "Emissions (Mg CO2 eq. / Unit\u00E9 fonct.)")
+		EmissionsLabel("Emissions (Mg CO2 eq. / Funct. Unit)", "Emissions (Mg CO2 eq. / Unit\u00E9 fonct.)"),
+		SourceLabel("Reference", "R\u00E9f\u00E9rence")
 		;	
 
 		MessageID(String englishText, String frenchText) {
@@ -68,6 +74,7 @@ public class EnhancedProcessorInternalDialog extends ProcessorInternalDialog imp
 	
 	protected JFormattedNumericField functionUnitBiomass;
 	protected JFormattedNumericField emissionsByFunctionUnit;
+	protected JTextArea sourceTextArea;
 	
 	protected EnhancedProcessorInternalDialog(Window parent, ProcessorButton callerButton) {
 		super(parent, callerButton);
@@ -86,6 +93,13 @@ public class EnhancedProcessorInternalDialog extends ProcessorInternalDialog imp
 				false);
 		emissionsByFunctionUnit.setColumns(5);
 		emissionsByFunctionUnit.setText(((Double) getCaller().emissionsByFunctionalUnit).toString());
+		sourceTextArea = new JTextArea();
+		sourceTextArea.setRows(5);
+		sourceTextArea.setColumns(25);
+		sourceTextArea.setLineWrap(true);
+		sourceTextArea.setWrapStyleWord(true);
+		sourceTextArea.setText(getCaller().getSourceInfo());
+		sourceTextArea.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 	}
 	
 	@Override
@@ -130,6 +144,11 @@ public class EnhancedProcessorInternalDialog extends ProcessorInternalDialog imp
 			topComponent.add(Box.createVerticalStrut(5));
 			panel = UIControlManager.createSimpleHorizontalPanel(MessageID.EmissionsLabel, emissionsByFunctionUnit, 5, true);
 			topComponent.add(panel);
+			if (!(getCaller() instanceof LandfillProcessor)) {
+				topComponent.add(Box.createVerticalStrut(10));
+				panel = UIControlManager.createSimpleHorizontalPanel(MessageID.SourceLabel, sourceTextArea, 5, true);
+				topComponent.add(panel);
+			}
 			topComponent.add(Box.createVerticalStrut(5));
 		} else {
 			topComponent.add(new JPanel());
@@ -143,6 +162,7 @@ public class EnhancedProcessorInternalDialog extends ProcessorInternalDialog imp
 		super.listenTo();
 		functionUnitBiomass.addNumberFieldListener(this);
 		emissionsByFunctionUnit.addNumberFieldListener(this);
+		sourceTextArea.getDocument().addDocumentListener(this);
 	}
 
 	@Override
@@ -150,6 +170,7 @@ public class EnhancedProcessorInternalDialog extends ProcessorInternalDialog imp
 		super.doNotListenToAnymore();
 		functionUnitBiomass.removeNumberFieldListener(this);
 		emissionsByFunctionUnit.removeNumberFieldListener(this);
+		sourceTextArea.getDocument().removeDocumentListener(this);
 	}
 
 
@@ -169,5 +190,29 @@ public class EnhancedProcessorInternalDialog extends ProcessorInternalDialog imp
 			}
 		}
 	}
+
+
+	@Override
+	public void insertUpdate(DocumentEvent e) {
+		processDocumentEvent(e);
+	}
 	
+	@Override
+	public void removeUpdate(DocumentEvent e) {
+		processDocumentEvent(e);
+	}
+
+	@Override
+	public void changedUpdate(DocumentEvent e) {
+		processDocumentEvent(e);
+	}
+
+	private void processDocumentEvent(DocumentEvent e) {
+		if (e.getDocument().equals(sourceTextArea.getDocument())) {
+			((AbstractProcessorButton) getCaller().getUI()).setChanged(true);
+			getCaller().sourceInfo = sourceTextArea.getText();
+		}
+	}
+
+
 }

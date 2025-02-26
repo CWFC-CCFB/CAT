@@ -18,11 +18,17 @@
  */
 package lerfob.carbonbalancetool.productionlines;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+
+import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.JTextArea;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -85,7 +91,27 @@ public class LandfillCarbonUnitFeaturePanel extends CarbonUnitFeaturePanel imple
 	
 	@Override
 	protected void createUI() {
-		super.createUI();
+		setLayout(new BorderLayout());
+		setBorder(UIControlManager.getTitledBorder(CarbonUnitFeaturePanel.MessageID.WoodProductFeatureLabel.toString()));
+		JPanel setupPanel = new JPanel(new BorderLayout());
+		add(setupPanel, BorderLayout.CENTER);
+		mainPanel = new JPanel();
+		setupPanel.add(mainPanel, BorderLayout.NORTH);
+		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
+
+		decayFunctionPanel = getCaller().getDecayFunction().getUI();
+		//.createSimpleHorizontalPanel(lifetimeModeList, averageLifetimeTextField, 5, true);
+		sourceTextArea = new JTextArea();
+		sourceTextArea.setRows(5);
+		sourceTextArea.setColumns(25);
+		sourceTextArea.setLineWrap(true);
+		sourceTextArea.setWrapStyleWord(true);
+		sourceTextArea.setText(getCaller().getSourceInfo());
+		sourceTextArea.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+		mainPanel.add(Box.createVerticalStrut(5));
+		mainPanel.add(decayFunctionPanel);
+		mainPanel.add(Box.createVerticalStrut(5));
 		JPanel degradableOrganicCarbonFractionSliderLabel = UIControlManager.createSimpleHorizontalPanel(degradableOrganicCarbonFractionLabel, degradableOrganicCarbonFractionSlider, 5, true);
 		JPanel landfillTypePanel = UIControlManager.createSimpleHorizontalPanel(landfillTypeLabel, landFillTypeComboBox, 5, true);
 
@@ -93,6 +119,8 @@ public class LandfillCarbonUnitFeaturePanel extends CarbonUnitFeaturePanel imple
 		mainPanel.add(Box.createVerticalStrut(5));
 		mainPanel.add(landfillTypePanel);
 		mainPanel.add(Box.createVerticalStrut(5));
+		mainPanel.add(Box.createVerticalStrut(10));
+		mainPanel.add(getSourceInfoPanel());
 	}
 
 	@Override

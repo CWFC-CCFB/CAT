@@ -21,6 +21,9 @@ package lerfob.carbonbalancetool.productionlines;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
 import lerfob.carbonbalancetool.productionlines.DecayFunction.DecayFunctionType;
 import lerfob.carbonbalancetool.productionlines.DecayFunction.LifetimeMode;
 import repicea.gui.REpiceaUIObject;
@@ -35,7 +38,7 @@ import repicea.simulation.processsystem.ResourceReleasable;
  * @author Mathieu Fortin - 2012
  */
 @SuppressWarnings("serial")
-public class CarbonUnitFeature implements Serializable, REpiceaUIObject, MemberHandler, ResourceReleasable {
+public class CarbonUnitFeature implements Serializable, REpiceaUIObject, MemberHandler, ResourceReleasable, DocumentListener {
 
 	static {
 		SerializerChangeMonitor.registerClassNameChange("lerfob.carbonbalancetool.productionlines.CarbonUnitFeature$LifetimeMode",
@@ -65,6 +68,7 @@ public class CarbonUnitFeature implements Serializable, REpiceaUIObject, MemberH
 	
 	private transient CarbonUnitFeaturePanel userInterfacePanel;
 
+	private String sourceInfo;
 
 	/**
 	 * Constructor for GUI mode.
@@ -122,12 +126,25 @@ public class CarbonUnitFeature implements Serializable, REpiceaUIObject, MemberH
 
 	@Override
 	public List<MemberInformation> getInformationsOnMembers() {
-		return getDecayFunction().getInformationsOnMembers();
+		List<MemberInformation> memberInfo = getDecayFunction().getInformationsOnMembers();
+		memberInfo.add(new MemberInformation(EnhancedProcessorInternalDialog.MessageID.SourceLabel, String.class, getSourceInfo()));
+		return memberInfo;
+	}
+
+	String getSourceInfo() {
+		if (sourceInfo == null) {
+			sourceInfo = "";
+		}
+		return sourceInfo;
 	}
 
 	@Override
 	public void processChangeToMember(Enum<?> label, Object value) {
-		getDecayFunction().processChangeToMember(label, value);
+		if (label == EnhancedProcessorInternalDialog.MessageID.SourceLabel) {
+			this.sourceInfo = value.toString();
+		} else {
+			getDecayFunction().processChangeToMember(label, value);
+		}
 	}
 
 	@Override
@@ -139,5 +156,26 @@ public class CarbonUnitFeature implements Serializable, REpiceaUIObject, MemberH
 		getDecayFunction().releaseResources();
 	}
 
+	@Override
+	public void insertUpdate(DocumentEvent e) {
+		processDocumentEvent(e);
+	}
+	
+	@Override
+	public void removeUpdate(DocumentEvent e) {
+		processDocumentEvent(e);
+	}
+
+	@Override
+	public void changedUpdate(DocumentEvent e) {
+		processDocumentEvent(e);
+	}
+
+	private void processDocumentEvent(DocumentEvent e) {
+		if (e.getDocument().equals(getUserInterfacePanel().sourceTextArea.getDocument())) {
+			((AbstractProcessorButton) getProcessor().getUI()).setChanged(true);
+			sourceInfo = getUserInterfacePanel().sourceTextArea.getText();
+		}
+	}
 
 }

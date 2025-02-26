@@ -19,10 +19,13 @@
 package lerfob.carbonbalancetool.productionlines;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 
 import repicea.gui.REpiceaPanel;
 import repicea.gui.UIControlManager;
@@ -63,7 +66,8 @@ public class CarbonUnitFeaturePanel extends REpiceaPanel {
 	
 	protected JPanel mainPanel;
 	protected DecayFunctionPanel decayFunctionPanel;
-	
+	protected JTextArea sourceTextArea;
+
 	protected CarbonUnitFeaturePanel(CarbonUnitFeature caller) {
 		super();
 		setCaller(caller);
@@ -87,9 +91,18 @@ public class CarbonUnitFeaturePanel extends REpiceaPanel {
 
 		decayFunctionPanel = getCaller().getDecayFunction().getUI();
 		//.createSimpleHorizontalPanel(lifetimeModeList, averageLifetimeTextField, 5, true);
-		
+		sourceTextArea = new JTextArea();
+		sourceTextArea.setRows(5);
+		sourceTextArea.setColumns(25);
+		sourceTextArea.setLineWrap(true);
+		sourceTextArea.setWrapStyleWord(true);
+		sourceTextArea.setText(getCaller().getSourceInfo());
+		sourceTextArea.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
 		mainPanel.add(Box.createVerticalStrut(5));
 		mainPanel.add(decayFunctionPanel);
+		mainPanel.add(Box.createVerticalStrut(10));
+		mainPanel.add(getSourceInfoPanel());
 		mainPanel.add(Box.createVerticalStrut(5));
 	}
 
@@ -100,11 +113,20 @@ public class CarbonUnitFeaturePanel extends REpiceaPanel {
 	}
 
 	@Override
-	public void listenTo() {}
+	public void listenTo() {
+		sourceTextArea.getDocument().addDocumentListener(getCaller());
+	}
 
 	@Override
-	public void doNotListenToAnymore() {}
+	public void doNotListenToAnymore() {
+		sourceTextArea.getDocument().removeDocumentListener(getCaller());
+	}
 
+	protected final JPanel getSourceInfoPanel() {
+		JPanel panel = UIControlManager.createSimpleHorizontalPanel(EnhancedProcessorInternalDialog.MessageID.SourceLabel, sourceTextArea, 5, true);
+		return panel;
+	}
+	
 	/*
 	 * Useless for this class (non-Javadoc)
 	 * @see repicea.gui.Refreshable#refreshInterface()
