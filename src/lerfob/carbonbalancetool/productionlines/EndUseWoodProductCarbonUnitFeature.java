@@ -124,7 +124,6 @@ public class EndUseWoodProductCarbonUnitFeature extends CarbonUnitFeature implem
 	
 	private double biomassOfFunctionalUnit;		// in Mg
 	private double emissionsByFunctionalUnit;	// in Mg
-	
 
 	@Deprecated
 	private LifeCycleAnalysis lca;
@@ -262,6 +261,7 @@ public class EndUseWoodProductCarbonUnitFeature extends CarbonUnitFeature implem
 			disposableProportion = getUserInterfacePanel().disposableProportionSlider.getValue() * factor;
 		}
 	}
+
 
 	@SuppressWarnings("rawtypes")
 	@Override

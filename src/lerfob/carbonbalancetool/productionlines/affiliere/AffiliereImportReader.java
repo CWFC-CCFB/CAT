@@ -31,15 +31,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lerfob.carbonbalancetool.productionlines.AbstractProcessor;
 import lerfob.carbonbalancetool.productionlines.EndUseProductDefaultFeature;
 import lerfob.carbonbalancetool.productionlines.EndUseWoodProductCarbonUnitFeature.UseClass;
 import lerfob.carbonbalancetool.productionlines.ProductionLineProcessor;
-import py4j.GatewayServer;
 import repicea.gui.REpiceaShowableUIWithParent;
 import repicea.io.REpiceaFileFilter;
 import repicea.simulation.processsystem.Processor;
@@ -51,40 +48,40 @@ import repicea.simulation.processsystem.Processor;
  */
 public class AffiliereImportReader implements REpiceaShowableUIWithParent {
 
-	/**
-	 * An interface to provide access to methods on Python's end.
-	 */
-	public interface SankeyProxy {
+//	/**
+//	 * An interface to provide access to methods on Python's end.
+//	 */
+//	public interface SankeyProxy {
+//
+//		/**
+//		 * Read the content of an excel file and convert it
+//		 * into Sankey objects on Python's end.<p>
+//		 * This method returns tuples in Python. The tuple is converted into string.
+//		 * @param filename the path to the Excel file.
+//		 * @return a String 
+//		 */
+//		public String readFromExcel(String filename);
+//
+//		/**
+//		 * Write Sankey objects to an Excel file.
+//		 * @param filename the output filename
+//		 * @param mode either "a" (append) or "w" (write)
+//		 * @return null
+//		 */
+//		public String writeToExcel(String filename, String mode);
+//
+//		public boolean clear();
+//
+//		public String requestShutdown();
+//
+//	}
 
-		/**
-		 * Read the content of an excel file and convert it
-		 * into Sankey objects on Python's end.<p>
-		 * This method returns tuples in Python. The tuple is converted into string.
-		 * @param filename the path to the Excel file.
-		 * @return a String 
-		 */
-		public String readFromExcel(String filename);
-
-		/**
-		 * Write Sankey objects to an Excel file.
-		 * @param filename the output filename
-		 * @param mode either "a" (append) or "w" (write)
-		 * @return null
-		 */
-		public String writeToExcel(String filename, String mode);
-
-		public boolean clear();
-
-		public String requestShutdown();
-
-	}
 
 
-
-	private static final List<String> NodeTypesToBeDiscarded = new ArrayList<String>();
-	static {
-		NodeTypesToBeDiscarded.add("echange");		// we do not want import / export processors MF2024-03-01
-	}
+//	private static final List<String> NodeTypesToBeDiscarded = new ArrayList<String>();
+//	static {
+//		NodeTypesToBeDiscarded.add("echange");		// we do not want import / export processors MF2024-03-01
+//	}
 
 	
 	private static final Map<String, EndUseProductDefaultFeature> DefaultFeatures = new HashMap<String, EndUseProductDefaultFeature>();
@@ -97,29 +94,29 @@ public class AffiliereImportReader implements REpiceaShowableUIWithParent {
 		DefaultFeatures.put("Emballages", refMap.get(UseClass.WRAPPING));
 	}
 	
-	public enum AFFiliereUnit {
-		VolumeM3("1000m3"), 
-		DryBiomassMg("1000t");
-
-		final String suffix;
-
-		AFFiliereUnit(String suffix) {
-			this.suffix = suffix;
-		}
-	}
-
-	public enum AFFiliereStudy {
-		AFFiliere("AF Fili\u00E8res"),
-		Carbone4("Carbone 4"),
-		BACCFIRE("BACCFIRE"),
-		MFAB("MFAB");
-
-		final String prefix;
-
-		AFFiliereStudy(String prefix) {
-			this.prefix = prefix;
-		}
-	}
+//	public enum AFFiliereUnit {
+//		VolumeM3("1000m3"), 
+//		DryBiomassMg("1000t");
+//
+//		final String suffix;
+//
+//		AFFiliereUnit(String suffix) {
+//			this.suffix = suffix;
+//		}
+//	}
+//
+//	public enum AFFiliereStudy {
+//		AFFiliere("AF Fili\u00E8res"),
+//		Carbone4("Carbone 4"),
+//		BACCFIRE("BACCFIRE"),
+//		MFAB("MFAB");
+//
+//		final String prefix;
+//
+//		AFFiliereStudy(String prefix) {
+//			this.prefix = prefix;
+//		}
+//	}
 
 	/**
 	 * A transition class to AbstractProcessorLinkLine in the processor manager.
@@ -170,43 +167,41 @@ public class AffiliereImportReader implements REpiceaShowableUIWithParent {
 	protected final LinkedHashMap<?,?> mappedJSON;
 	protected final Map<String, Processor> processors;
 	protected final LinkedHashMap<String, Processor> potentialEOLProcessors;
-	protected final AFFiliereStudy study;
-	protected final AFFiliereUnit unit;
+//	protected final AFFiliereStudy study;
+//	protected final AFFiliereUnit unit;
 	protected final Map<String, TagLevels> nodeTags;
 	protected final Map<Processor, List<String>> woodTypesByProcessorMap;
-	private static GatewayServer Server;
+//	private static GatewayServer Server;
 	
 
 	/**
 	 * General constructor.
 	 * @param file the File instance to be read.
-	 * @param study an AFFiliereStudy enum
-	 * @param unit an AFFiliereUnit enum
 	 * @param parent the parent window which can be null
 	 * @throws AffiliereException if the file cannot be found or read.
 	 */
 	@SuppressWarnings("unchecked")
-	public AffiliereImportReader(File file, AFFiliereStudy study, AFFiliereUnit unit, Window parent) throws AffiliereException {
-		this.study = study == null ? AFFiliereStudy.AFFiliere : study;
-		this.unit = unit == null ? AFFiliereUnit.DryBiomassMg : unit;
+	public AffiliereImportReader(File file, Window parent) throws AffiliereException {
+//		this.study = study == null ? AFFiliereStudy.AFFiliere : study;
+//		this.unit = unit == null ? AFFiliereUnit.DryBiomassMg : unit;
 		if (REpiceaFileFilter.JSON.accept(file)) {
 			mappedJSON = AffiliereImportReader.getJSONRepresentation(file);
-		} else if (REpiceaFileFilter.XLSX.accept(file)) {
-			mappedJSON = AffiliereImportReader.getJSONRepresentationThroughoutOpenSankey(file);
+//		} else if (REpiceaFileFilter.XLSX.accept(file)) {
+//			mappedJSON = AffiliereImportReader.getJSONRepresentationThroughoutOpenSankey(file);
 		} else {
-			throw new InvalidParameterException("The extension of the input file should be either json or xlsx!");
+			throw new InvalidParameterException("The input file should be a JSON file!");
 		}
 		nodeTags = formatNodeTagsMap((LinkedHashMap<String,?>) mappedJSON.get(AffiliereJSONFormat.L1_NODETAGS_PROPERTY));
 		processors = new HashMap<String, Processor>();
 		potentialEOLProcessors = new LinkedHashMap<String, Processor>();
 		woodTypesByProcessorMap = new HashMap<Processor, List<String>>();
 		screenNodeMap();
-		if (ENABLE_GUI) {
-			showUI(parent);
-			if (isCancelled()) {
-				return;
-			}
-		}
+//		if (ENABLE_GUI) {
+//			showUI(parent);
+//			if (isCancelled()) {
+//				return;
+//			}
+//		}
 		LinkedHashMap<String, LinkedHashMap<String, Object>> screenedLinkJSONMap = screenLinkMap((LinkedHashMap<?,?>) mappedJSON.get(AffiliereJSONFormat.L1_LINKS_PROPERTY));
 
 		List<Processor> childProcessors = new ArrayList<Processor>();
@@ -217,7 +212,7 @@ public class AffiliereImportReader implements REpiceaShowableUIWithParent {
 		List<Processor> processorsWithNoChildren = getProcessorsWithNoChildren();
 		Map<String, List<Processor>> entryProcessors = getEntryProcessors();
 		
-//		List<String> woodTypesEndUseProduct = new ArrayList<String>();
+		List<String> woodTypesEndUseProduct = new ArrayList<String>();
 		for (Processor p : processors.values()) {
 			if (!p.hasSubProcessors()) { // end product then
 				if (woodTypesByProcessorMap.containsKey(p)) {
@@ -226,16 +221,16 @@ public class AffiliereImportReader implements REpiceaShowableUIWithParent {
 						if (DefaultFeatures.containsKey(wt) && p instanceof ProductionLineProcessor) {
 							((ProductionLineProcessor) p).updateFeature(DefaultFeatures.get(wt));
 						}
-//						if (!woodTypesEndUseProduct.contains(wt)) {
-//							woodTypesEndUseProduct.add(wt);
-//						}
+						if (!woodTypesEndUseProduct.contains(wt)) {
+							woodTypesEndUseProduct.add(wt);
+						}
 					}
 				}
 			}
 		}
 	
-//		System.out.println(woodTypesEndUseProduct);
-		AffiliereLocationPointer lp = new AffiliereLocationPointer(4, 1, 100, 150);
+		System.out.println(woodTypesEndUseProduct);
+		AffiliereLocationPointer lp = new AffiliereLocationPointer(5, 2, 50, 100);
 		lp.setLayout(entryProcessors, processorsWithNoChildren);
 	}
 	
@@ -336,10 +331,7 @@ public class AffiliereImportReader implements REpiceaShowableUIWithParent {
 					fLink.fatherProcessor.getSubProcessorIntakes().put(fLink.childProcessor, 
 							lastIsPercent ? 
 									fLink.value : 
-										fLink.value / sumValues * 100);
-					if (Double.isNaN(sumValues) || Double.isNaN(fLink.value)) {
-						int u = 0;
-					}
+										(sumValues > 0d ? fLink.value / sumValues * 100 : 0d));
 				}
 			}
 		}
@@ -381,8 +373,14 @@ public class AffiliereImportReader implements REpiceaShowableUIWithParent {
 			Processor childProcessor = processors.get(idTarget);
 
 			LinkedHashMap<?, ?> valueMap = (LinkedHashMap<?,?>) innerLinkMap.get(AffiliereJSONFormat.LINK_VALUE_PROPERTY); 
-			String key = study.prefix.trim() + " " + unit.suffix.trim();
+//			String key = study.prefix.trim() + " " + unit.suffix.trim();
+			String key = "ktMS";
 			LinkedHashMap<?, ?> studySpecificValueMap = (LinkedHashMap<?,?>) valueMap.get(key);
+
+//			if (studySpecificValueMap.size() != 1) {
+//				int u = 0;
+//			}
+			studySpecificValueMap = (LinkedHashMap<?,?>) studySpecificValueMap.get("2020");
 
 			boolean isPercent = false;
 			double value;
@@ -464,7 +462,10 @@ public class AffiliereImportReader implements REpiceaShowableUIWithParent {
 
 
 	@SuppressWarnings("rawtypes")
-	private boolean isEndOfLifeNode(LinkedHashMap<String, Object> oMap) {
+	private boolean isEndOfLifeNode(LinkedHashMap<String, Object> oMap, String nodeName) {
+		if (nodeName.toLowerCase().startsWith("collecte")) {
+			return true;
+		}
 		if (oMap.containsKey(AffiliereJSONFormat.NODE_TAGS_WOODTYPE_PROPERTY)) {
 			List woodTypes = (List) oMap.get(AffiliereJSONFormat.NODE_TAGS_WOODTYPE_PROPERTY);
 			return woodTypes.contains("Fin de vie");
@@ -491,12 +492,15 @@ public class AffiliereImportReader implements REpiceaShowableUIWithParent {
 		return false;  
 	}
 
+	/**
+	 * Return true if the locations are provided.
+	 * @return
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected void screenNodeMap() {
 		potentialEOLProcessors.clear();
 		processors.clear();
 		woodTypesByProcessorMap.clear();
-		
 		LinkedHashMap<?,?> nodeMap = (LinkedHashMap<?,?>) mappedJSON.get(AffiliereJSONFormat.L1_NODES_PROPERTY);
 		for (Object o : nodeMap.values()) {
 			LinkedHashMap<String, Object> oMap = (LinkedHashMap<String, Object>) o;
@@ -505,7 +509,7 @@ public class AffiliereImportReader implements REpiceaShowableUIWithParent {
 			if (isSelected) {
 				String id = oMap.get(AffiliereJSONFormat.NODE_IDNODE_PROPERTY).toString();
 				Processor p = AbstractProcessor.createProcessor(oMap);
-				if (isEndOfLifeNode(tagMap)) {
+				if (isEndOfLifeNode(tagMap, id)) {
 					potentialEOLProcessors.put(oMap.get("name").toString(), p);
 				}
 				processors.put(id, p);
@@ -539,32 +543,32 @@ public class AffiliereImportReader implements REpiceaShowableUIWithParent {
 	}
 
 
-	private synchronized static LinkedHashMap<?,?> getJSONRepresentationThroughoutOpenSankey(File f) throws AffiliereException {
-		if (Server == null) {
-			GatewayServer.turnLoggingOff();
-			Server = new GatewayServer();
-			Server.start();
-		}
-		ObjectMapper mapper = new ObjectMapper();
-		SankeyProxy sankeyProxy = (SankeyProxy) Server.getPythonServerEntryPoint(new Class[] { SankeyProxy.class });
-		String path = getProperFilenameForPython(f.getAbsolutePath());
-		long initialTime = System.currentTimeMillis();
-		String message = sankeyProxy.readFromExcel(path);
-		if (message.toLowerCase().contains("error")) {
-			throw new AffiliereException(message);
-		} else {
-			System.out.println("Reading file took " + (System.currentTimeMillis() - initialTime));
-			try {
-				LinkedHashMap<?,?> oMap = mapper.readValue(message, LinkedHashMap.class);
-				sankeyProxy.clear();
-				return oMap;
-			} catch (JsonMappingException e1) {
-				throw new AffiliereException(e1.getMessage());
-			} catch (JsonProcessingException e2) {
-				throw new AffiliereException(e2.getMessage());
-			}
-		}
-	}
+//	private synchronized static LinkedHashMap<?,?> getJSONRepresentationThroughoutOpenSankey(File f) throws AffiliereException {
+//		if (Server == null) {
+//			GatewayServer.turnLoggingOff();
+//			Server = new GatewayServer();
+//			Server.start();
+//		}
+//		ObjectMapper mapper = new ObjectMapper();
+//		SankeyProxy sankeyProxy = (SankeyProxy) Server.getPythonServerEntryPoint(new Class[] { SankeyProxy.class });
+//		String path = getProperFilenameForPython(f.getAbsolutePath());
+//		long initialTime = System.currentTimeMillis();
+//		String message = sankeyProxy.readFromExcel(path);
+//		if (message.toLowerCase().contains("error")) {
+//			throw new AffiliereException(message);
+//		} else {
+//			System.out.println("Reading file took " + (System.currentTimeMillis() - initialTime));
+//			try {
+//				LinkedHashMap<?,?> oMap = mapper.readValue(message, LinkedHashMap.class);
+//				sankeyProxy.clear();
+//				return oMap;
+//			} catch (JsonMappingException e1) {
+//				throw new AffiliereException(e1.getMessage());
+//			} catch (JsonProcessingException e2) {
+//				throw new AffiliereException(e2.getMessage());
+//			}
+//		}
+//	}
 
 	private synchronized static LinkedHashMap<?,?> getJSONRepresentation(File f) throws AffiliereException {
 		try {

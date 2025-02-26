@@ -45,7 +45,8 @@ import repicea.util.REpiceaTranslator.TextableEnum;
  * The EndProductFeaturePanel class is the GUI interface of the EndProductFeature class.
  * @author Mathieu Fortin - October 2010
  */
-public class EndUseWoodProductCarbonUnitFeaturePanel extends CarbonUnitFeaturePanel implements ChangeListener, ItemListener {
+public class EndUseWoodProductCarbonUnitFeaturePanel extends CarbonUnitFeaturePanel implements ChangeListener, 
+																								ItemListener {
 	
 	private static final long serialVersionUID = 20101020L;
 	
@@ -184,8 +185,9 @@ public class EndUseWoodProductCarbonUnitFeaturePanel extends CarbonUnitFeaturePa
 		mainPanel.add(useClassPanel);
 		mainPanel.add(Box.createVerticalStrut(5));
 		mainPanel.add(combustionProcessPanel);
+		mainPanel.add(Box.createVerticalStrut(10));
+		mainPanel.add(getSourceInfoPanel());
 		mainPanel.add(Box.createVerticalStrut(5));
-
 	}
 
 	@Override
@@ -267,5 +269,6 @@ public class EndUseWoodProductCarbonUnitFeaturePanel extends CarbonUnitFeaturePa
 	public void refreshInterface() {
 		checkIfIsMeantForEnergy();
 	}
+
 
 }

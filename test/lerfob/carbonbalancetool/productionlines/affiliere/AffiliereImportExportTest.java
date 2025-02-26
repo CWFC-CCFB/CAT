@@ -19,54 +19,51 @@
  */
 package lerfob.carbonbalancetool.productionlines.affiliere;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import lerfob.carbonbalancetool.productionlines.ProductionProcessorManager;
-import lerfob.carbonbalancetool.productionlines.ProductionProcessorManager.ExportFormat;
 import lerfob.carbonbalancetool.productionlines.ProductionProcessorManager.ImportFormat;
 import repicea.serial.MemorizerPackage;
 import repicea.util.ObjectUtility;
 
 public class AffiliereImportExportTest {
 
-	@Ignore
-	@Test
-	public void testAffiliereExportToFile() throws IOException {
-		String filename = ObjectUtility.getPackagePath(AffiliereImportExportTest.class) + "hardwood_recycling_en.prl";
-		ProductionProcessorManager manager = new ProductionProcessorManager();
-		manager.load(filename);
-//		manager.showUI(null);
-		String exportFilename = ObjectUtility.getPackagePath(AffiliereImportExportTest.class) + "CATTestExportToAffiliere.json"; 
-		File f = new File(exportFilename);
-		if (f.exists()) {
-			f.delete();
-		}
-		manager.exportTo(exportFilename, ExportFormat.AFFILIERE);
-		Assert.assertTrue("Testing if file exists", f.exists());
-	}
+//	@Ignore
+//	@Test
+//	public void testAffiliereExportToFile() throws IOException {
+//		String filename = ObjectUtility.getPackagePath(AffiliereImportExportTest.class) + "hardwood_recycling_en.prl";
+//		ProductionProcessorManager manager = new ProductionProcessorManager();
+//		manager.load(filename);
+////		manager.showUI(null);
+//		String exportFilename = ObjectUtility.getPackagePath(AffiliereImportExportTest.class) + "CATTestExportToAffiliere.json"; 
+//		File f = new File(exportFilename);
+//		if (f.exists()) {
+//			f.delete();
+//		}
+//		manager.exportTo(exportFilename, ExportFormat.AFFILIERE);
+//		Assert.assertTrue("Testing if file exists", f.exists());
+//	}
 	
 	@SuppressWarnings("rawtypes")
 	@Test
 	public void test01AffiliereReaderFromJSONFile() throws IOException  {
 		AffiliereImportReader.ENABLE_GUI = false;
-		String filename = ObjectUtility.getPackagePath(AffiliereImportExportTest.class) + "BACCFIRE V6.7_reconciled.json";
+		String filename = ObjectUtility.getPackagePath(AffiliereImportExportTest.class) + "Baccfire_DonneesCAT.json";
 		ProductionProcessorManager manager = new ProductionProcessorManager();
 		manager.importFrom(filename, ImportFormat.AFFILIERE);
 		AffiliereImportReader.ENABLE_GUI = true;
 		MemorizerPackage mp = manager.getMemorizerPackage();
-		Assert.assertEquals("Testing nb of processors", 30, ((List) mp.get(1)).size());
+		Assert.assertEquals("Testing nb of processors", 157, ((List) mp.get(1)).size());
 	}
 
 	
 	public static void main(String[] args) throws Exception {
 //		String filename = ObjectUtility.getPackagePath(AffiliereJSONImportExportTest.class) + "resultat_reconciled_mod.xlsx";
-		String filename = ObjectUtility.getPackagePath(AffiliereImportExportTest.class) + "BACCFIRE V6.7_reconciled.json";
+		String filename = ObjectUtility.getPackagePath(AffiliereImportExportTest.class) + "Baccfire_DonneesCAT.json";
 		ProductionProcessorManager manager = new ProductionProcessorManager();
 		manager.importFrom(filename, ImportFormat.AFFILIERE);
 		manager.showUI(null);

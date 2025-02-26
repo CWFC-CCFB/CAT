@@ -124,6 +124,7 @@ public class SystemManagerDialog extends REpiceaFrame implements ActionListener,
 		caller = systemManager;
 		systemPanel = createSystemPanel();
 		processorTable = createProcessorListPanel();
+		processorTable.setCellSelectionEnabled(true);
 		init();
 		initUI();
 		setMinimumSize(new Dimension(400,500));

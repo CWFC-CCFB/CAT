@@ -41,6 +41,7 @@ public abstract class AbstractProcessor extends Processor {
 
 	protected double functionUnitBiomass; // in Mg
 	protected double emissionsByFunctionalUnit; // in Mg
+	protected String sourceInfo;
 	
 	protected AbstractProcessor() {}
 	
@@ -109,31 +110,15 @@ public abstract class AbstractProcessor extends Processor {
 	 * @return a ProductionLineProcessor instance
 	 */
 	public static Processor createProcessor(LinkedHashMap<String, Object> oMap) {
-//		if (oMap.containsKey("class")) { // previously exported from CAT
-//			String clazz = oMap.get("class").toString();
-//			
-//			if (clazz.equals("WoodyDebrisProcessor")) {
-//				return new WoodyDebrisProcessor(oMap);
-//			} else if (clazz.equals("LogCategoryProcessor")) {
-//				return new LogCategoryProcessor(oMap);
-//			} else if (clazz.equals("LeftInForestProcessor")) {
-//				return new LeftInForestProcessor(oMap);
-//			} else if (clazz.equals("LandfillProcessor")) {
-//				return new LandfillProcessor(oMap);
-//			} else {
-//				return new ProductionLineProcessor(oMap);
-//			}
-//		} else { // likely imported from AFFiliere
-			ProductionLineProcessor p = new ProductionLineProcessor();
-			String name = (String) oMap.get(AffiliereJSONFormat.NODE_NAME_PROPERTY);
-			p.setName(name);
-			if (oMap.containsKey(AffiliereJSONFormat.NODE_X_COORD_PROPERTY) & oMap.containsKey(AffiliereJSONFormat.NODE_Y_COORD_PROPERTY)) {
-				int x = ((Number) oMap.get(AffiliereJSONFormat.NODE_X_COORD_PROPERTY)).intValue(); // + OFFSET;
-				int y = ((Number) oMap.get(AffiliereJSONFormat.NODE_Y_COORD_PROPERTY)).intValue();
-				p.setOriginalLocation(new Point(x,y));
-			}
-			return p;
-//		}
+		ProductionLineProcessor p = new ProductionLineProcessor();
+		String name = (String) oMap.get(AffiliereJSONFormat.NODE_NAME_PROPERTY);
+		p.setName(name);
+		if (oMap.containsKey(AffiliereJSONFormat.NODE_X_COORD_PROPERTY) && oMap.containsKey(AffiliereJSONFormat.NODE_Y_COORD_PROPERTY)) {
+			int x = ((Number) oMap.get(AffiliereJSONFormat.NODE_X_COORD_PROPERTY)).intValue(); // + OFFSET;
+			int y = ((Number) oMap.get(AffiliereJSONFormat.NODE_Y_COORD_PROPERTY)).intValue() * 3;
+			p.setOriginalLocation(new Point(x,y));
+		}
+		return p;
 	}
 	
 	protected LinkedHashMap<String, Object> getAffiliereJSONFormatNodeRepresentation(String idNode) {
@@ -157,7 +142,13 @@ public abstract class AbstractProcessor extends Processor {
 		return super.getProcessFeaturesPanel();
 	}
 
-	
+	protected String getSourceInfo() {
+		if (sourceInfo == null) {
+			sourceInfo = "";
+		}
+		return sourceInfo;
+	}
+
 
 	
 }
