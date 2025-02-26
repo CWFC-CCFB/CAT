@@ -45,15 +45,22 @@ class AffiliereLocationPointer {
 
 	private final Map<Integer, List<Integer>> locationMap;
 	
-	AffiliereLocationPointer(int row, int col, int spaceBetweenRows, int spaceBetweenColumns) {
+	/**
+	 * 
+	 * @param startingRow
+	 * @param startingCol
+	 * @param spaceBetweenRows
+	 * @param spaceBetweenColumns
+	 */
+	AffiliereLocationPointer(int startingRow, int startingCol, int spaceBetweenRows, int spaceBetweenColumns) {
 		if (spaceBetweenRows <= 0 || spaceBetweenColumns <= 0) {
 			throw new InvalidParameterException("The spaceBetweenRows and spaceBetweenColumns must be greater than 0!");
 		}
 		this.spaceBetweenColumns = spaceBetweenColumns;
 		this.spaceBetweenRows = spaceBetweenRows;
-		m_row = row;
-		initialRow = row;
-		m_col = col;
+		m_row = startingRow;
+		initialRow = startingRow;
+		m_col = startingCol;
 		locationMap = new HashMap<Integer, List<Integer>>();
 	}
 

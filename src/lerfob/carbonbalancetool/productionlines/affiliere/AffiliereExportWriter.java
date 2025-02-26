@@ -31,7 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * The AffiliereJSONReader class produces a JSON file from a ProductionProcessorManager instance.
  * @author Mathieu Fortin - November 2023
  */
-public class AffiliereExportWriter {
+abstract class AffiliereExportWriter {
 
 	/**
 	 * Write a JSON representation of a ProductionProcessorManager instance to file.
