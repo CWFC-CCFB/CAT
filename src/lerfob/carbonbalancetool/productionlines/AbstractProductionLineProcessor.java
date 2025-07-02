@@ -82,6 +82,7 @@ public abstract class AbstractProductionLineProcessor extends AbstractProcessor 
 		if (usesEmissionsAndFunctionalUnitFromAbstractProcessorClass()) {
 			cellValues.add(new MemberInformation(MemberLabel.FunctionUnitBiomass, double.class, functionUnitBiomass));
 			cellValues.add(new MemberInformation(MemberLabel.EmissionFunctionUnit, double.class, emissionsByFunctionalUnit));
+			cellValues.add(new MemberInformation(EnhancedProcessorInternalDialog.MessageID.SourceLabel, String.class, getSourceInfo()));
 		} 
 		if (mustDisplaySpecificAdditionalFeatures()) {
 			cellValues.addAll(woodProductFeature.getInformationsOnMembers());
@@ -103,7 +104,14 @@ public abstract class AbstractProductionLineProcessor extends AbstractProcessor 
 			} else {
 				getEndProductFeature().processChangeToMember(label, value);
 			}
-		} else {
+		} else if (label == EnhancedProcessorInternalDialog.MessageID.SourceLabel) {
+			if (usesEmissionsAndFunctionalUnitFromAbstractProcessorClass() && !(this instanceof LandfillProcessor)) {
+				sourceInfo = value.toString();
+			} else {
+				getEndProductFeature().processChangeToMember(label, value);
+			}
+		} 
+		else {
 			woodProductFeature.processChangeToMember(label, value);
 			super.processChangeToMember(label, value);
 		}

@@ -24,8 +24,12 @@ import java.awt.FlowLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.CellEditor;
 import javax.swing.JLabel;
@@ -37,6 +41,7 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSlider;
+import javax.swing.border.BevelBorder;
 
 import repicea.gui.CommonGuiUtility;
 import repicea.gui.OwnedWindow;
@@ -59,7 +64,8 @@ import repicea.util.REpiceaTranslator.TextableEnum;
 public class SystemManagerDialog extends REpiceaFrame implements ActionListener, 
 									IOUserInterface,
 									Resettable,
-									OwnedWindow {
+									OwnedWindow,
+									ItemListener {
 	
 	public static enum MessageID implements TextableEnum {
 		SliderTitle("Output flux", "Flux sortant"),
@@ -118,6 +124,7 @@ public class SystemManagerDialog extends REpiceaFrame implements ActionListener,
 		caller = systemManager;
 		systemPanel = createSystemPanel();
 		processorTable = createProcessorListPanel();
+		processorTable.setCellSelectionEnabled(true);
 		init();
 		initUI();
 		setMinimumSize(new Dimension(400,500));
@@ -284,18 +291,27 @@ public class SystemManagerDialog extends REpiceaFrame implements ActionListener,
 		getContentPane().removeAll();
 		fluxViewPanel.removeAll();
 		synchronizeUIWithOwner();
-		fluxViewPanel.add(systemPanel, BorderLayout.CENTER);
-		fluxViewPanel.add(toolPanel, BorderLayout.WEST);
-		fluxViewPanel.add(bottomPanel, BorderLayout.SOUTH);
+		addComponentsToFluxViewPanel();
 		getContentPane().add(fluxViewPanel, BorderLayout.CENTER);
 		revalidate(); 
 		repaint();
+	}
+	
+	protected void addComponentsToFluxViewPanel() {
+		fluxViewPanel.add(systemPanel, BorderLayout.CENTER);
+		fluxViewPanel.add(toolPanel, BorderLayout.WEST);
+		fluxViewPanel.add(bottomPanel, BorderLayout.SOUTH);
 	}
 	
 	private void setTableViewPanel() {
 		getContentPane().removeAll();
 		processorTable.refreshInterface();
 		JScrollPane scrollPane = new JScrollPane(processorTable);
+		scrollPane.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+		getContentPane().add(Box.createHorizontalStrut(10), BorderLayout.EAST);
+		getContentPane().add(Box.createHorizontalStrut(10), BorderLayout.WEST);
+		getContentPane().add(Box.createVerticalStrut(10), BorderLayout.NORTH);
+		getContentPane().add(Box.createVerticalStrut(10), BorderLayout.SOUTH);
 		getContentPane().add(scrollPane, BorderLayout.CENTER);
 		revalidate();
 		repaint();
@@ -306,8 +322,8 @@ public class SystemManagerDialog extends REpiceaFrame implements ActionListener,
 		reset.addActionListener(this);
 		close.addActionListener(this);
 		help.addActionListener(this);
-		fluxView.addActionListener(this);
-		tableView.addActionListener(this);
+		fluxView.addItemListener(this);
+		tableView.addItemListener(this);
 	}
 
 	@Override
@@ -315,8 +331,8 @@ public class SystemManagerDialog extends REpiceaFrame implements ActionListener,
 		reset.removeActionListener(this);
 		close.removeActionListener(this);
 		help.removeActionListener(this);
-		fluxView.removeActionListener(this);
-		tableView.removeActionListener(this);
+		fluxView.removeItemListener(this);
+		tableView.removeItemListener(this);
 	}
 
 	@Override
@@ -379,6 +395,9 @@ public class SystemManagerDialog extends REpiceaFrame implements ActionListener,
 		}
 	}
 
+	
+	
+	
 	@Override
 	public void reset() {
 		getCaller().reset();
@@ -388,12 +407,16 @@ public class SystemManagerDialog extends REpiceaFrame implements ActionListener,
 
 	@Override
 	public void synchronizeUIWithOwner() {
-		doNotListenToAnymore();
+		if (isVisible()) {
+			doNotListenToAnymore();
+		}
 		systemPanel.initUI();
 		systemPanel.refreshInterface();
 		systemPanel.setMode(toolPanel.getSelectedButton().getMode());
 		refreshTitle();
-		listenTo();
+		if (isVisible()) {
+			listenTo();
+		}
 	}
 
 	@Override
@@ -401,6 +424,21 @@ public class SystemManagerDialog extends REpiceaFrame implements ActionListener,
 
 	@Override
 	public WindowSettings getWindowSettings() {return windowSettings;}
+
+	@Override
+	public void itemStateChanged(ItemEvent evt) {
+		if (evt.getSource().equals(tableView) && evt.getStateChange() == ItemEvent.SELECTED) {
+			setTableViewPanel();
+		} else if (evt.getSource().equals(fluxView) && evt.getStateChange() == ItemEvent.SELECTED) {
+			if (processorTable != null) {
+				CellEditor cellEditor = processorTable.getCellEditor();
+				if (cellEditor != null) {
+					cellEditor.stopCellEditing();
+				}
+			}
+			setFluxViewPanel();
+		}
+	}
 
 	
 }

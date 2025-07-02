@@ -18,13 +18,13 @@
  */
 package lerfob.carbonbalancetool;
 
-import repicea.simulation.ApplicationScaleProvider;
 import repicea.simulation.covariateproviders.plotlevel.AgeYrProvider;
 import repicea.simulation.covariateproviders.plotlevel.AreaHaProvider;
 import repicea.simulation.covariateproviders.plotlevel.DateYrProvider;
 import repicea.simulation.covariateproviders.plotlevel.InterventionResultProvider;
-import repicea.simulation.covariateproviders.plotlevel.ManagementTypeProvider;
 import repicea.simulation.covariateproviders.plotlevel.TreeStatusCollectionsProvider;
+import repicea.simulation.covariateproviders.samplelevel.ApplicationScaleProvider;
+import repicea.simulation.covariateproviders.samplelevel.ManagementTypeProvider;
 
 /**
  * An interface to ensure the STAND instance is compatible with CAT. <br>

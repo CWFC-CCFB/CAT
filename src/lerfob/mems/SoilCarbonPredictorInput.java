@@ -19,14 +19,14 @@
  */
 package lerfob.mems;
 
-import repicea.serial.xml.PostXmlUnmarshalling;
+import repicea.serial.PostUnmarshalling;
 
 /**
  * The SoilCarbonPredictorInput class contains the parameters needed for the calculation of the inputs in the 
  * different compartments.
  * @author Jean-Francois Lavoie and Mathieu Fortin - February 2023
  */
-public class SoilCarbonPredictorInput implements PostXmlUnmarshalling {
+public class SoilCarbonPredictorInput implements PostUnmarshalling {
 
     public enum LandType
     {

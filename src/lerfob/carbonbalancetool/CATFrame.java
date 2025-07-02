@@ -72,6 +72,7 @@ import lerfob.carbonbalancetool.io.CATSpeciesSelectionDialog;
 import lerfob.carbonbalancetool.io.CATYieldTableRecordReader;
 import lerfob.carbonbalancetool.productionlines.ProductionProcessorManagerException;
 import lerfob.carbonbalancetool.sensitivityanalysis.CATSensitivityAnalysisSettings;
+import repicea.app.SettingMemory;
 import repicea.app.UseModeProvider.UseMode;
 import repicea.gui.AutomatedHelper;
 import repicea.gui.CommonGuiUtility;
@@ -217,7 +218,6 @@ public class CATFrame extends REpiceaFrame implements PropertyChangeListener,
 
 	protected final REpiceaComboBoxOpenButton<ProductionProcessorManagerWrapper> hwpComboBox;
 	protected final REpiceaComboBoxOpenButton<BiomassParametersWrapper> biomassComboBox;
-//	protected final REpiceaComboBoxOpenButton<MEMSSiteParametersWrapper> memsSiteComboBox;
 	
 	private final JMenu file;
 	private final JMenu view;
@@ -385,11 +385,6 @@ public class CATFrame extends REpiceaFrame implements PropertyChangeListener,
 		BiomassParametersWrapper currentBiomassParametersWrapper = caller.getCarbonToolSettings().biomassParametersMap.get(caller.getCarbonToolSettings().getCurrentBiomassParametersSelection());
 		biomassComboBox.getComboBox().setSelectedItem(currentBiomassParametersWrapper);
 		
-//		memsSiteComboBox = new REpiceaComboBoxOpenButton<MEMSSiteParametersWrapper>(MessageID.MEMSParameters);
-//		memsSiteComboBox.getComboBox().setModel(new DefaultComboBoxModel<MEMSSiteParametersWrapper>(caller.getCarbonToolSettings().memsParametersMap.values().toArray(new MEMSSiteParametersWrapper[]{})));
-//		MEMSSiteParametersWrapper currentMEMSParametersWrapper = caller.getCarbonToolSettings().memsParametersMap.get(caller.getCarbonToolSettings().getCurrentMEMSParametersSelection());
-//		memsSiteComboBox.getComboBox().setSelectedItem(currentMEMSParametersWrapper);
-
 		refreshInterface();
 		setSimulationRunning(false);
 		createUI();
@@ -405,6 +400,7 @@ public class CATFrame extends REpiceaFrame implements PropertyChangeListener,
 	public void anchorLocation(Point location) {
 		super.anchorLocation(location);
 	}
+	
 	
 
 	@Override
@@ -492,7 +488,7 @@ public class CATFrame extends REpiceaFrame implements PropertyChangeListener,
 	}
 	
 	private void constructYieldTable() {
-		String yieldTableFilename = caller.getSettingMemory().getProperty("lerfobcat.yieldTableFilename", "");
+		String yieldTableFilename = getSettingMemory().getProperty("lerfobcat.yieldTableFilename", "");
 		try {
 			REpiceaFileFilterList fileFilters = new REpiceaFileFilterList(REpiceaFileFilter.CSV);
 			FileChooserOutput fileChooserOutput = CommonGuiUtility.browseAction(this, 
@@ -512,7 +508,7 @@ public class CATFrame extends REpiceaFrame implements PropertyChangeListener,
 			catRecordReader.initGUIMode(this, UseMode.GUI_MODE, yieldTableFilename);
 			catRecordReader.readAllRecords();
 			caller.setStandList(catRecordReader.getStandList());
-			caller.getSettingMemory().setProperty("lerfobcat.yieldTableFilename", yieldTableFilename);
+			getSettingMemory().setProperty("lerfobcat.yieldTableFilename", yieldTableFilename);
 		} catch (Exception e) {
 			if (e instanceof CancellationException) {
 				return;
@@ -520,8 +516,17 @@ public class CATFrame extends REpiceaFrame implements PropertyChangeListener,
 		}
 	}
 
+	/**
+	 * Provide the SettingMemory instance that
+	 * can be used to record filenames.
+	 * @return a SettingMemory instance
+	 */
+	public SettingMemory getSettingMemory() {
+		return caller.getSettingMemory();
+	}
+	
 	private void constructStandListFromGrowthSimulation() {
-		String growthSimulationFilename = caller.getSettingMemory().getProperty("lerfobcat.growthSimulationFilename", "");
+		String growthSimulationFilename = getSettingMemory().getProperty("lerfobcat.growthSimulationFilename", "");
 		try {
 			REpiceaFileFilterList fileFilters = new REpiceaFileFilterList(REpiceaFileFilter.CSV);
 			FileChooserOutput fileChooserOutput = CommonGuiUtility.browseAction(this, 
@@ -543,7 +548,7 @@ public class CATFrame extends REpiceaFrame implements PropertyChangeListener,
 			}
 			List<CATCompatibleStand> stands = catRecordReader.getStandList();
 			caller.setStandList(stands);
-			caller.getSettingMemory().setProperty("lerfobcat.growthSimulationFilename", growthSimulationFilename);
+			getSettingMemory().setProperty("lerfobcat.growthSimulationFilename", growthSimulationFilename);
 		} catch (Exception e) {
 			if (e instanceof CancellationException) {
 				return;
@@ -685,7 +690,6 @@ public class CATFrame extends REpiceaFrame implements PropertyChangeListener,
 		calculateCarbonButton.addActionListener(this);
 		biomassComboBox.getComboBox().addItemListener(this);
 		hwpComboBox.getComboBox().addItemListener(this);
-//		memsSiteComboBox.getComboBox().addItemListener(this);
 		calculateInCO2.addChangeListener(graphicPanel);
 		calculateInCarbon.addChangeListener(graphicPanel);
 		confidenceIntervalSlider.addPropertyChangeListener(graphicPanel);
@@ -708,7 +712,6 @@ public class CATFrame extends REpiceaFrame implements PropertyChangeListener,
 		calculateCarbonButton.removeActionListener(this);
 		biomassComboBox.getComboBox().removeItemListener(this);
 		hwpComboBox.getComboBox().removeItemListener(this);
-//		memsSiteComboBox.getComboBox().removeItemListener(this);
 		calculateInCO2.removeChangeListener(graphicPanel);
 		calculateInCarbon.removeChangeListener(graphicPanel);
 		confidenceIntervalSlider.removePropertyChangeListener(graphicPanel);
@@ -736,17 +739,6 @@ public class CATFrame extends REpiceaFrame implements PropertyChangeListener,
 	@Override
 	public void acceptThisObject(ArrayList<CATCompatibleStand> stands, LocatedEvent arg0) {
 		acceptTheseStands(stands);
-//		if (stands != null && !stands.isEmpty()) {
-//			CATCompatibleStand lastStand = stands.get(stands.size() - 1);
-//			String lastStandID = lastStand.getStandIdentification();
-//			if (JOptionPane.showConfirmDialog(this, 
-//					MessageID.ImportStandList.toString() + " " + lastStandID, 
-//					UIControlManager.InformationMessageTitle.Warning.toString(), 
-//					JOptionPane.YES_NO_CANCEL_OPTION, 
-//					JOptionPane.WARNING_MESSAGE) == 0) {
-//				caller.setStandList(stands);
-//			}
-//		}
 	}
 
 	/**
@@ -776,8 +768,6 @@ public class CATFrame extends REpiceaFrame implements PropertyChangeListener,
 			caller.getCarbonToolSettings().setCurrentBiomassParametersSelection(((BiomassParametersWrapper) biomassComboBox.getComboBox().getSelectedItem()).name);
 		} else if (arg0.getSource().equals(hwpComboBox.getComboBox())) {
 			caller.getCarbonToolSettings().setCurrentProductionProcessorManagerSelection(((ProductionProcessorManagerWrapper) hwpComboBox.getComboBox().getSelectedItem()).name);
-//		} else if (arg0.getSource().equals(memsSiteComboBox.getComboBox())) {
-//			caller.getCarbonToolSettings().setCurrentMEMSParametersSelection(((MEMSSiteParametersWrapper) memsSiteComboBox.getComboBox().getSelectedItem()).getName());
 		}
 	}
 

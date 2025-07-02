@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import repicea.simulation.covariateproviders.samplelevel.ApplicationScaleProvider.ApplicationScale;
+import repicea.simulation.covariateproviders.samplelevel.ManagementTypeProvider.ManagementType;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 
 class CarbonToolCompatibleStandImpl implements CATCompatibleStand {

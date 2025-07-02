@@ -31,7 +31,7 @@ public class EndOfLifeLinkLine extends ValidProcessorLinkLine {
 	protected EndOfLifeLinkLine(SystemPanel panel, Processor fatherProcessor, Processor sonProcessor) {
 		super(panel, fatherProcessor.getUI(panel), sonProcessor.getUI(panel));
 
-		((ProductionLineProcessor) fatherProcessor).disposedToProcessor = sonProcessor;
+		((ProductionLineProcessor) fatherProcessor).setDisposedToProcessor(sonProcessor);
 		
 		ProductionLineProcessorButton fatherButton = (ProductionLineProcessorButton) fatherProcessor.getUI(panel);
 		fatherButton.addComponentListener(this);
@@ -49,7 +49,7 @@ public class EndOfLifeLinkLine extends ValidProcessorLinkLine {
 	protected void finalize() {
 		super.finalize();
 		ProductionLineProcessor fatherProcessor =  (ProductionLineProcessor) getFatherAnchor().getOwner();
-		fatherProcessor.disposedToProcessor = null;
+		fatherProcessor.setDisposedToProcessor(null);
 	}
 
 	

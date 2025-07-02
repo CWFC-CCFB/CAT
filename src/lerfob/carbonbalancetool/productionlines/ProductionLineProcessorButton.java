@@ -155,7 +155,7 @@ public class ProductionLineProcessorButton extends AbstractProcessorButton imple
 		boolean isDisposed = false;
 		if (getOwner() instanceof ProductionLineProcessor) {
 			ProductionLineProcessor processor = (ProductionLineProcessor) getOwner();
-			isDisposed = processor.disposedToProcessor != null;
+			isDisposed = processor.getDisposedToProcess() != null;
 		}
 		if (isDisposed) {
 			createLinkRecognizer.setComponent(null);	// disable the drag & drop

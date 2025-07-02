@@ -122,7 +122,7 @@ public class EndUseWoodProductCarbonUnit extends CarbonUnit {
 			for (int i = getIndexInTimeScale(); i < getTimeTable().size(); i++) {
 				proportion = releasedCarbonArray[i] / getInitialCarbon();
 				AmountMap<Element> updatedMap = getAmountMap().multiplyByAScalar(proportion * getCarbonUnitFeature().getDisposableProportion());
-				AbstractProductionLineProcessor disposedToProcessor = (AbstractProductionLineProcessor) ((ProductionLineProcessor) getCarbonUnitFeature().getProcessor()).disposedToProcessor;
+				AbstractProductionLineProcessor disposedToProcessor = (AbstractProductionLineProcessor) ((ProductionLineProcessor) getCarbonUnitFeature().getProcessor()).getDisposedToProcess();
 				if (updatedMap.get(Element.Volume) > 0) {
 					if (disposedToProcessor != null) { // new implementation
 						CarbonUnit newUnit = new CarbonUnit(i, null, updatedMap, this);

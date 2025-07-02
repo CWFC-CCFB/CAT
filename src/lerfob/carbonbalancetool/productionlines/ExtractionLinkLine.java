@@ -1,7 +1,8 @@
 /*
  * This file is part of the lerfob-forestools library.
  *
- * Copyright (C) 2020 Mathieu Fortin for Canadian Forest Service, 
+ * Copyright (C) 2020 Her Majesty the Queen in right of Canada,
+ * Author: Mathieu Fortin, Canadian Forest Service, 
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

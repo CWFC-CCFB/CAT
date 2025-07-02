@@ -27,11 +27,12 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
@@ -45,11 +46,7 @@ import lerfob.carbonbalancetool.productionlines.CarbonUnit.CarbonUnitStatus;
 import lerfob.carbonbalancetool.productionlines.CarbonUnit.Element;
 import lerfob.carbonbalancetool.productionlines.ProductionProcessorManagerDialog.MessageID;
 import lerfob.carbonbalancetool.productionlines.WoodyDebrisProcessor.WoodyDebrisProcessorID;
-import lerfob.carbonbalancetool.productionlines.affiliere.AffiliereJSONExportWriter;
-import lerfob.carbonbalancetool.productionlines.affiliere.AffiliereJSONFormat;
-import lerfob.carbonbalancetool.productionlines.affiliere.AffiliereJSONImportReader;
-import lerfob.carbonbalancetool.productionlines.affiliere.AffiliereJSONImportReader.AFFiliereStudy;
-import lerfob.carbonbalancetool.productionlines.affiliere.AffiliereJSONImportReader.AFFiliereUnit;
+import lerfob.carbonbalancetool.productionlines.affiliere.AffiliereImportReader;
 import lerfob.treelogger.basictreelogger.BasicTreeLogger;
 import lerfob.treelogger.europeanbeech.EuropeanBeechBasicTreeLogger;
 import lerfob.treelogger.maritimepine.MaritimePineBasicTreeLogger;
@@ -91,7 +88,7 @@ public class ProductionProcessorManager extends SystemManager implements Memoriz
 		protected TreeLoggerInstanceCompatibilityException() {
 		}
 	}
-
+	
 	static {
 		SerializerChangeMonitor.registerClassNameChange(
 				"lerfob.carbonbalancetool.productionlines.DebarkingProcessor",
@@ -144,6 +141,10 @@ public class ProductionProcessorManager extends SystemManager implements Memoriz
 				"lerfob.treelogger.maritimepine.MaritimePineBasicTreeLoggerParameters$Grade");
 	}
 
+	protected static Logger getLogger() {
+		return REpiceaLogManager.getLogger(ProductionProcessorManager.class.getSimpleName());
+	}
+ 	
 	/**
 	 * This class is the file filter for loading and saving production lines.
 	 * 
@@ -237,9 +238,9 @@ public class ProductionProcessorManager extends SystemManager implements Memoriz
 		AFFILIERE;
 	}
 
-	public static enum ExportFormat {
-		AFFILIERE;
-	}
+//	public static enum ExportFormat {
+//		AFFILIERE;
+//	}
 
 	private transient final Vector<TreeLoggerParameters<?>> availableTreeLoggerParameters;
 
@@ -285,13 +286,19 @@ public class ProductionProcessorManager extends SystemManager implements Memoriz
 	 * @param iFormat an ImportFormat enum that defines the expected format
 	 * @throws FileNotFoundException if the file can be found
 	 */
-	public void importFrom(String filename, ImportFormat iFormat) throws FileNotFoundException {
+	public void importFrom(String filename, ImportFormat iFormat) throws IOException {
 		if (iFormat == null || filename == null) {
 			throw new InvalidParameterException("The filename and iFormat arguments must be non null!");
 		}
 		switch(iFormat) {
 		case AFFILIERE:
-			AffiliereJSONImportReader reader = new AffiliereJSONImportReader(new File(filename), AFFiliereStudy.BACCFIRE, AFFiliereUnit.DryBiomassMg);
+			AffiliereImportReader reader = new AffiliereImportReader(new File(filename), 
+//					AFFiliereStudy.BACCFIRE, 
+//					AFFiliereUnit.DryBiomassMg,
+					isVisible() ? getUI(null) : null);
+			if (reader.isCancelled()) {
+				return;
+			}
 			reset();
 			for (Processor p : reader.getProcessors().values()) {
 				registerObject(p);
@@ -302,80 +309,80 @@ public class ProductionProcessorManager extends SystemManager implements Memoriz
 		}
 	}
 	
-	/**
-	 * Export a flux configuration to a particular file under a given format.
-	 * @param filename the name of the file
-	 * @param eFormat an ExportFormat enum that defines the expected format
-	 * @throws IOException if an IO error occurs
-	 */
-	public void exportTo(String filename, ExportFormat eFormat) throws IOException {
-		if (eFormat == null || filename == null) {
-			throw new InvalidParameterException("The filename and eFormat arguments must be non null!");
-		}
-		switch(eFormat) {
-		case AFFILIERE:
-			new AffiliereJSONExportWriter(getAffiliereJSONFormatRepresentation(), filename);
-			break;
-		default:
-			throw new InvalidParameterException("The export format " + eFormat.name() + " is not implemented yet!");
-		}
-	}
+//	/**
+//	 * Export a flux configuration to a particular file under a given format.
+//	 * @param filename the name of the file
+//	 * @param eFormat an ExportFormat enum that defines the expected format
+//	 * @throws IOException if an IO error occurs
+//	 */
+//	public void exportTo(String filename, ExportFormat eFormat) throws IOException {
+//		if (eFormat == null || filename == null) {
+//			throw new InvalidParameterException("The filename and eFormat arguments must be non null!");
+//		}
+//		switch(eFormat) {
+//		case AFFILIERE:
+//			new AffiliereExportWriter(getAffiliereJSONFormatRepresentation(), filename);
+//			break;
+//		default:
+//			throw new InvalidParameterException("The export format " + eFormat.name() + " is not implemented yet!");
+//		}
+//	}
 
-	private LinkedHashMap<String, Object> getAffiliereJSONFormatRepresentation() {
-		int idDispenser = 1;
-		Map<String, LinkedHashMap<String, Object>> nodeMap = new LinkedHashMap<String, LinkedHashMap<String, Object>>();
-		Map<Processor, String> processorToIdMap = new HashMap<Processor, String>();
-		for (Processor p : getList()) {
-			String idNode = "node" + idDispenser++;
-			LinkedHashMap<String, Object> nodeRep = ((AbstractProcessor) p).getAffiliereJSONFormatNodeRepresentation(idNode);
-			nodeMap.put(idNode, nodeRep);
-			processorToIdMap.put(p, idNode);
-		}
-		Map<String, Object> linkMap = new LinkedHashMap<String, Object>();
-		for (Processor source : getList()) {
-			for (Processor target : source.getSubProcessors()) {
-				String idLink = "link" + idDispenser++;
-				linkMap.put(idLink, getAffiliereJSONFormatLinkRepresentation(idLink, false, source, target, processorToIdMap)); // false: a typical production processor (not end of life)
-			}
-			if (source instanceof ProductionLineProcessor) {
-				if (((ProductionLineProcessor) source).disposedToProcessor != null) {
-					String idLink = "link" + idDispenser++;
-					linkMap.put(idLink, getAffiliereJSONFormatLinkRepresentation(idLink, true, source,
-							((ProductionLineProcessor) source).disposedToProcessor, processorToIdMap)); // end of life
-																										// processor
-				}
-			}
-		}
-		LinkedHashMap<String, Object> outputMap = new LinkedHashMap<String, Object>();
-		outputMap.put(AffiliereJSONFormat.VERSION_PROPERTY, "0.8");
-		outputMap.put(AffiliereJSONFormat.NODES_PROPERTY, nodeMap);
-		outputMap.put(AffiliereJSONFormat.LINKS_PROPERTY, linkMap);
-		return outputMap;
-	}
+//	private LinkedHashMap<String, Object> getAffiliereJSONFormatRepresentation() {
+//		int idDispenser = 1;
+//		Map<String, LinkedHashMap<String, Object>> nodeMap = new LinkedHashMap<String, LinkedHashMap<String, Object>>();
+//		Map<Processor, String> processorToIdMap = new HashMap<Processor, String>();
+//		for (Processor p : getList()) {
+//			String idNode = "node" + idDispenser++;
+//			LinkedHashMap<String, Object> nodeRep = ((AbstractProcessor) p).getAffiliereJSONFormatNodeRepresentation(idNode);
+//			nodeMap.put(idNode, nodeRep);
+//			processorToIdMap.put(p, idNode);
+//		}
+//		Map<String, Object> linkMap = new LinkedHashMap<String, Object>();
+//		for (Processor source : getList()) {
+//			for (Processor target : source.getSubProcessors()) {
+//				String idLink = "link" + idDispenser++;
+//				linkMap.put(idLink, getAffiliereJSONFormatLinkRepresentation(idLink, false, source, target, processorToIdMap)); // false: a typical production processor (not end of life)
+//			}
+//			if (source instanceof ProductionLineProcessor) {
+//				if (((ProductionLineProcessor) source).getDisposedToProcess() != null) {
+//					String idLink = "link" + idDispenser++;
+//					linkMap.put(idLink, getAffiliereJSONFormatLinkRepresentation(idLink, true, source,
+//							((ProductionLineProcessor) source).getDisposedToProcess(), processorToIdMap)); // end of life
+//																										// processor
+//				}
+//			}
+//		}
+//		LinkedHashMap<String, Object> outputMap = new LinkedHashMap<String, Object>();
+//		outputMap.put(AffiliereJSONFormat.L1_VERSION_PROPERTY, "0.8");
+//		outputMap.put(AffiliereJSONFormat.L1_NODES_PROPERTY, nodeMap);
+//		outputMap.put(AffiliereJSONFormat.L1_LINKS_PROPERTY, linkMap);
+//		return outputMap;
+//	}
 
-	private static LinkedHashMap<String, Object> getAffiliereJSONFormatLinkRepresentation(String idLink, 
-			boolean endOfLife, 
-			Processor source, 
-			Processor target,
-			Map<Processor, String> processorToIdMap) {
-		LinkedHashMap<String, Object> oMap = new LinkedHashMap<String, Object>();
-		oMap.put(AffiliereJSONFormat.LINK_IDLINK_PROPERTY, idLink);
-		oMap.put(AffiliereJSONFormat.LINK_IDSOURCE_PROPERTY, processorToIdMap.get(source));
-		oMap.put(AffiliereJSONFormat.LINK_IDTARGET_PROPERTY, processorToIdMap.get(target));
-		oMap.put(AffiliereJSONFormat.LINK_LINKTYPE_PROPERTY, endOfLife ? "EndOfLife" : "Production");
-
-		LinkedHashMap<String, Object> value = new LinkedHashMap<String, Object>();
-		oMap.put(AffiliereJSONFormat.LINK_VALUE_PROPERTY, value);
-		value.put(AffiliereJSONFormat.LINK_VALUE_ISPERCENT_PROPERTY, true);
-		if (endOfLife) {
-			value.put(AffiliereJSONFormat.LINK_VALUE_PERCENT_PROPERTY, 100);
-		} else {
-			value.put(AffiliereJSONFormat.LINK_VALUE_PERCENT_PROPERTY, source.getSubProcessorIntakes().get(target).doubleValue());
-		}
-		
-		oMap.put(AffiliereJSONFormat.LINK_STYLE_PROPERTY, "default");
-		return oMap;
-	}
+//	private static LinkedHashMap<String, Object> getAffiliereJSONFormatLinkRepresentation(String idLink, 
+//			boolean endOfLife, 
+//			Processor source, 
+//			Processor target,
+//			Map<Processor, String> processorToIdMap) {
+//		LinkedHashMap<String, Object> oMap = new LinkedHashMap<String, Object>();
+//		oMap.put(AffiliereJSONFormat.LINK_IDLINK_PROPERTY, idLink);
+//		oMap.put(AffiliereJSONFormat.LINK_IDSOURCE_PROPERTY, processorToIdMap.get(source));
+//		oMap.put(AffiliereJSONFormat.LINK_IDTARGET_PROPERTY, processorToIdMap.get(target));
+//		oMap.put(AffiliereJSONFormat.LINK_LINKTYPE_PROPERTY, endOfLife ? "EndOfLife" : "Production");
+//
+//		LinkedHashMap<String, Object> value = new LinkedHashMap<String, Object>();
+//		oMap.put(AffiliereJSONFormat.LINK_VALUE_PROPERTY, value);
+//		value.put(AffiliereJSONFormat.LINK_VALUE_ISPERCENT_PROPERTY, true);
+//		if (endOfLife) {
+//			value.put(AffiliereJSONFormat.LINK_VALUE_PERCENT_PROPERTY, 100);
+//		} else {
+//			value.put(AffiliereJSONFormat.LINK_VALUE_PERCENT_PROPERTY, source.getSubProcessorIntakes().get(target).doubleValue());
+//		}
+//		
+//		oMap.put(AffiliereJSONFormat.LINK_STYLE_PROPERTY, "default");
+//		return oMap;
+//	}
 
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -764,6 +771,10 @@ public class ProductionProcessorManager extends SystemManager implements Memoriz
 
 	public static void main(String[] args) {
 		REpiceaTranslator.setCurrentLanguage(Language.English);
+		ConsoleHandler ch = new ConsoleHandler();
+		ch.setLevel(Level.FINE);
+		ProductionProcessorManager.getLogger().addHandler(ch);
+		ProductionProcessorManager.getLogger().setLevel(Level.FINE);
 //		REpiceaTranslator.setCurrentLanguage(Language.French);
 //		ProductionProcessorManager ppm = new ProductionProcessorManager(new DefaultREpiceaGUIPermission(false));
 		ProductionProcessorManager ppm = new ProductionProcessorManager();

@@ -18,7 +18,6 @@
  */
 package lerfob.carbonbalancetool.pythonaccess;
 
-import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,7 +46,7 @@ import py4j.GatewayServer;
 import repicea.lang.REpiceaSystem;
 import repicea.math.Matrix;
 import repicea.math.utility.GaussianUtility;
-import repicea.simulation.ApplicationScaleProvider.ApplicationScale;
+import repicea.simulation.covariateproviders.samplelevel.ApplicationScaleProvider.ApplicationScale;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 import repicea.simulation.treelogger.TreeLoggerCompatibilityCheck;
 import repicea.simulation.treelogger.TreeLoggerDescription;

@@ -39,8 +39,8 @@ public class ExtendedSystemPanel extends SystemPanel {
 		for (REpiceaUIObject obj : getListManager().getList()) {
 			if (obj instanceof ProductionLineProcessor) {
 				ProductionLineProcessor process = (ProductionLineProcessor) obj;
-				if (process.disposedToProcessor != null) {
-					addLinkLine(new EndOfLifeLinkLine(this, process, process.disposedToProcessor));
+				if (process.getDisposedToProcess() != null) {
+					addLinkLine(new EndOfLifeLinkLine(this, process, process.getDisposedToProcess()));
 				}
 				if (process.getExtractionProcessor() != null)
 					addLinkLine(new ExtractionLinkLine(this, process, process.getExtractionProcessor()));	

@@ -24,7 +24,7 @@ import java.util.List;
 import lerfob.carbonbalancetool.productionlines.CarbonUnit;
 import lerfob.carbonbalancetool.productionlines.EndUseWoodProductCarbonUnit;
 import lerfob.carbonbalancetool.productionlines.LandfillCarbonUnit;
-import repicea.simulation.covariateproviders.plotlevel.ManagementTypeProvider.ManagementType;
+import repicea.simulation.covariateproviders.samplelevel.ManagementTypeProvider.ManagementType;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 
 /**

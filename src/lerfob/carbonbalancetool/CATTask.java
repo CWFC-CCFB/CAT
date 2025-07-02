@@ -35,7 +35,7 @@ import lerfob.carbonbalancetool.productionlines.WoodyDebrisProcessor.WoodyDebris
 import repicea.app.AbstractGenericTask;
 import repicea.gui.REpiceaAWTEvent;
 import repicea.lang.MemoryWatchDog;
-import repicea.simulation.ApplicationScaleProvider.ApplicationScale;
+import repicea.simulation.covariateproviders.samplelevel.ApplicationScaleProvider.ApplicationScale;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 import repicea.simulation.processsystem.AmountMap;
 import repicea.simulation.treelogger.LoggableTree;

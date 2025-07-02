@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import lerfob.carbonbalancetool.CATCompatibleStand;
+import repicea.simulation.covariateproviders.samplelevel.ApplicationScaleProvider.ApplicationScale;
+import repicea.simulation.covariateproviders.samplelevel.ManagementTypeProvider.ManagementType;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 
 public class CATGrowthSimulationPlot implements CATCompatibleStand {

@@ -227,7 +227,7 @@ public class Processor implements REpiceaUIObjectWithParent, REpiceaUIObject, Ca
 	 * was 1.
 	 * @param relativePoint a Point instance
 	 */
-	protected final void setOriginalLocation(Point relativePoint) {
+	public final void setOriginalLocation(Point relativePoint) {
 		if (relativePoint == null) {
 			originalLocation = relativePoint;
 		} else {

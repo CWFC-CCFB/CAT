@@ -33,7 +33,7 @@ import repicea.io.tools.ImportFieldElement;
 import repicea.io.tools.ImportFieldElement.FieldType;
 import repicea.io.tools.LevelProviderEnum;
 import repicea.io.tools.REpiceaRecordReader;
-import repicea.simulation.ApplicationScaleProvider.ApplicationScale;
+import repicea.simulation.covariateproviders.samplelevel.ApplicationScaleProvider.ApplicationScale;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 import repicea.util.REpiceaTranslator;
 import repicea.util.REpiceaTranslator.TextableEnum;

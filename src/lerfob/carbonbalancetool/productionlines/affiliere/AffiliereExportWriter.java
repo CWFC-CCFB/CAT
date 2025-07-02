@@ -22,17 +22,16 @@ package lerfob.carbonbalancetool.productionlines.affiliere;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
-import com.cedarsoftware.util.io.JsonWriter;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 /**
  * The AffiliereJSONReader class produces a JSON file from a ProductionProcessorManager instance.
  * @author Mathieu Fortin - November 2023
  */
-public class AffiliereJSONExportWriter {
+abstract class AffiliereExportWriter {
 
 	/**
 	 * Write a JSON representation of a ProductionProcessorManager instance to file.
@@ -40,19 +39,10 @@ public class AffiliereJSONExportWriter {
 	 * @param filename the filename
 	 * @throws IOException if an I/O error occurs while writing the file
 	 */
-	public AffiliereJSONExportWriter(LinkedHashMap<String, Object> managerRep, String filename) throws IOException {
-		JsonWriter writer = null;
-		try {
-			FileOutputStream fos = new FileOutputStream(new File(filename));
-			Map<String, Object> jsonSettingsMap = new HashMap<String, Object>();
-			jsonSettingsMap.put(JsonWriter.TYPE, false);
-			writer = new JsonWriter(fos,jsonSettingsMap);
-			writer.write(managerRep);	
-		} finally {
-			if (writer != null) {
-				writer.close();
-			}
-		}
+	public AffiliereExportWriter(LinkedHashMap<String, Object> managerRep, String filename) throws IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		FileOutputStream fos = new FileOutputStream(new File(filename));
+		mapper.writeValue(fos, managerRep);	
 	}
 	
 }

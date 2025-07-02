@@ -32,7 +32,7 @@ import lerfob.carbonbalancetool.productionlines.CarbonUnit.CarbonUnitStatus;
 import lerfob.carbonbalancetool.productionlines.CarbonUnit.Element;
 import lerfob.carbonbalancetool.productionlines.EndUseWoodProductCarbonUnitFeature.UseClass;
 import repicea.gui.REpiceaUIObject;
-import repicea.serial.xml.PostXmlUnmarshalling;
+import repicea.serial.PostUnmarshalling;
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 import repicea.simulation.processsystem.AmountMap;
@@ -49,7 +49,7 @@ import repicea.util.REpiceaTranslator;
  * whether or not the residual from this processor can be used for energy.
  * @author M. Fortin - September 2010
  */
-public final class ProductionLineProcessor extends AbstractProductionLineProcessor implements Serializable, REpiceaUIObject, PostXmlUnmarshalling {
+public final class ProductionLineProcessor extends AbstractProductionLineProcessor implements Serializable, REpiceaUIObject, PostUnmarshalling {
 	
 	private static final long serialVersionUID = 20101018L;
 	
@@ -69,7 +69,7 @@ public final class ProductionLineProcessor extends AbstractProductionLineProcess
 	@Deprecated
 	private List<AbstractExtractionProcessor> extractionProcessors;
 
-	protected Processor disposedToProcessor;
+	private Processor disposedToProcessor;
 		
 	private AbstractExtractionProcessor extractionProcessor;
 	
@@ -123,6 +123,23 @@ public final class ProductionLineProcessor extends AbstractProductionLineProcess
 		this.fatherProcessor = fatherProcessor;
 	}
 
+	/**
+	 * Set the processor to which the carbon units are sent 
+	 * once they've reached the end of their useful lifetime.
+	 * @param p a Processor instance
+	 */
+	public void setDisposedToProcessor(Processor p) {
+		disposedToProcessor = p;
+	}
+
+	/**
+	 * Provide the processor to which the carbon units are sent 
+	 * once they've reached the end of their useful lifetime.
+	 * @return a Processor instance (null if the processor has not been set)
+	 */
+	public Processor getDisposedToProcess() {
+		return disposedToProcessor;
+	}
 	
 	AbstractExtractionProcessor getExtractionProcessor() {
 		return extractionProcessor;
@@ -471,5 +488,24 @@ public final class ProductionLineProcessor extends AbstractProductionLineProcess
 		}
 	}
 	
+	/**
+	 * Update several characteristics of the EndUseCarbonUnitFeature instance.<p>
+	 *
+	 * The method updates the following variables:<ul>
+	 * <li> the use class;
+	 * <li> the type of decay function;
+	 * <li> the mode (half-life versus average lifetime);
+	 * <li> the average lifetime
+	 * </ul>
+	 * 
+	 * The method has no effect if the CarbonUnitFeature instance is not an
+	 * instance of the EndUseCarbonUnitFeature class.
+	 * @param feature an IPCCEndUseProductDefaultFeature instance
+	 */
+	public void updateFeature(EndUseProductDefaultFeature feature) {
+		if (getEndProductFeature() instanceof EndUseWoodProductCarbonUnitFeature) {
+			((EndUseWoodProductCarbonUnitFeature) getEndProductFeature()).updateFeature(feature);
+		}
+	}
 
 }
