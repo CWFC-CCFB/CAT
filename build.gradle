@@ -73,7 +73,7 @@ dependencies {
     implementation 'jfree:jfreechart-swt:1.0.17'
     implementation 'net.sf.py4j:py4j:[0.10.9,)' 
     
-    implementation group: 'com.cedarsoftware', name:'json-io', version: '[4.30.0,)'
+    implementation group: 'com.cedarsoftware', name:'json-io', version: '4.30.0'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '[2.14.2,)'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '[2.14.2,)'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '[2.14.2,)'
