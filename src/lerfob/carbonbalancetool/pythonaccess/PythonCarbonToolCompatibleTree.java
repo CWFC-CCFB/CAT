@@ -18,11 +18,11 @@
  */
 package lerfob.carbonbalancetool.pythonaccess;
 
-import lerfob.carbonbalancetool.CATAboveGroundVolumeProvider;
-import lerfob.carbonbalancetool.CATBasicWoodDensityProvider;
-import lerfob.carbonbalancetool.CATBelowGroundVolumeProvider;
 import lerfob.carbonbalancetool.CATCompatibleTree;
 import lerfob.carbonbalancetool.CATSettings.CATSpecies;
+import lerfob.carbonbalancetool.interfaces.CATAboveGroundVolumeProvider;
+import lerfob.carbonbalancetool.interfaces.CATBasicWoodDensityProvider;
+import lerfob.carbonbalancetool.interfaces.CATBelowGroundVolumeProvider;
 
 /**
  * This internal class is actually a wrapper for the trees that are sent to the PythonAccessPoint class.

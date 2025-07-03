@@ -16,25 +16,24 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package lerfob.carbonbalancetool;
+package lerfob.carbonbalancetool.interfaces;
 
 /**
- * This interface ensures the instance can provide its belowground volume. 
+ * This interface ensures the instance can provide its dry below ground carbon. 
  * @author Mathieu Fortin - August 2013
  */
-public interface CATBelowGroundVolumeProvider {
+public interface CATBelowGroundCarbonProvider {
 
 	/**
-	 * This method returns the belowground volume (m3), INCLUDING bark and WITHOUT expansion factor.
+	 * This method returns the belowground carbon (Mg), INCLUDING bark and WITHOUT expansion factor.
 	 * @return a double
 	 */
-	public double getBelowGroundVolumeM3();
-	
-	
+	public double getBelowGroundCarbonMg();
+
 	/**
 	 * If the predictor benefits from a stochastic implementation, then the sensitivity analysis is enabled.
 	 * @return a boolean
 	 */
-	public default boolean isBelowGroundVolumePredictorStochastic() {return false;}
+	public default boolean isBelowGroundCarbonPredictorStochastic() {return false;}
 
 }

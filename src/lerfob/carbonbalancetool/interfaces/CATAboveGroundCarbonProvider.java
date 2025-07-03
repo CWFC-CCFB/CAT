@@ -16,7 +16,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package lerfob.carbonbalancetool;
+package lerfob.carbonbalancetool.interfaces;
 
 /**
  * This interface ensures that the instance can provide its above ground carbon in Mg.

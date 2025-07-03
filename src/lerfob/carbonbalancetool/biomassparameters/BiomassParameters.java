@@ -30,17 +30,17 @@ import java.util.logging.Level;
 
 import javax.swing.filechooser.FileFilter;
 
-import lerfob.carbonbalancetool.CATAboveGroundBiomassProvider;
-import lerfob.carbonbalancetool.CATAboveGroundCarbonProvider;
-import lerfob.carbonbalancetool.CATAboveGroundVolumeProvider;
-import lerfob.carbonbalancetool.CATBasicWoodDensityProvider;
-import lerfob.carbonbalancetool.CATBelowGroundBiomassProvider;
-import lerfob.carbonbalancetool.CATBelowGroundCarbonProvider;
-import lerfob.carbonbalancetool.CATBelowGroundVolumeProvider;
-import lerfob.carbonbalancetool.CATCarbonContentRatioProvider;
 import lerfob.carbonbalancetool.CATCompatibleTree;
 import lerfob.carbonbalancetool.CarbonAccountingTool;
 import lerfob.carbonbalancetool.biomassparameters.BiomassParametersDialog.MessageID;
+import lerfob.carbonbalancetool.interfaces.CATAboveGroundBiomassProvider;
+import lerfob.carbonbalancetool.interfaces.CATAboveGroundCarbonProvider;
+import lerfob.carbonbalancetool.interfaces.CATAboveGroundVolumeProvider;
+import lerfob.carbonbalancetool.interfaces.CATBasicWoodDensityProvider;
+import lerfob.carbonbalancetool.interfaces.CATBelowGroundBiomassProvider;
+import lerfob.carbonbalancetool.interfaces.CATBelowGroundCarbonProvider;
+import lerfob.carbonbalancetool.interfaces.CATBelowGroundVolumeProvider;
+import lerfob.carbonbalancetool.interfaces.CATCarbonContentRatioProvider;
 import lerfob.carbonbalancetool.memsconnectors.MEMSCompatibleTree;
 import lerfob.carbonbalancetool.sensitivityanalysis.CATSensitivityAnalysisSettings;
 import lerfob.carbonbalancetool.sensitivityanalysis.CATSensitivityAnalysisSettings.VariabilitySource;

@@ -1,7 +1,7 @@
 /*
  * This file is part of the lerfob-forestools library.
  *
- * Copyright (C) 2010-2018 Mathieu Fortin AgroParisTech/INRA UMR LERFoB, 
+ * Copyright (C) 2010-2013 Mathieu Fortin AgroParisTech/INRA UMR LERFoB, 
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -16,21 +16,24 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package lerfob.carbonbalancetool;
-
-import lerfob.carbonbalancetool.productionlines.CarbonUnit.Element;
-import repicea.simulation.processsystem.AmountMap;
+package lerfob.carbonbalancetool.interfaces;
 
 /**
- * This interface ensures that the wood piece can return its additional element concentrations.
- * @author Mathieu Fortin - February 2018
+ * This interface ensures the instance can provide its dry biomass.
+ * @author Mathieu Fortin - August 2013
  */
-public interface CATAdditionalElementsProvider {
+public interface CATAboveGroundBiomassProvider {
 
 	/**
-	 * This method returns a Map with the concentrations of additional elements (typically N, K, S, P).  
-	 * @return an AmountMap instance
+	 * This method returns the total above ground biomass (Mg), INCLUDING bark and WITHOUT expansion factor.
+	 * @return a double
 	 */
-	public AmountMap<Element> getAdditionalElementConcentrations();
+	public double getAboveGroundBiomassMg();
+	
+	/**
+	 * If the predictor benefits from a stochastic implementation, then the sensitivity analysis is enabled.
+	 * @return a boolean
+	 */
+	public default boolean isAboveGroundBiomassPredictorStochastic() {return false;};
 	
 }

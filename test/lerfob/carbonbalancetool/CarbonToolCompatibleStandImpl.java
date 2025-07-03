@@ -5,20 +5,18 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import repicea.simulation.covariateproviders.samplelevel.ApplicationScaleProvider.ApplicationScale;
-import repicea.simulation.covariateproviders.samplelevel.ManagementTypeProvider.ManagementType;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 
 class CarbonToolCompatibleStandImpl implements CATCompatibleStand {
 
 	
-	private final double areaHa;
-	private final int dateYr;
-	private final int ageYr;
+	final double areaHa;
+	final int dateYr;
+	final int ageYr;
 	@SuppressWarnings("rawtypes")
-	private final Map<StatusClass, Collection> treeMap;
-	private final String standID;
-	private final String species;
+	final Map<StatusClass, Collection> treeMap;
+	final String standID;
+	final String species;
 	
 	@SuppressWarnings("rawtypes")
 	protected CarbonToolCompatibleStandImpl(String species, String standID, double areaHa, int dateYr, int ageYr) {
