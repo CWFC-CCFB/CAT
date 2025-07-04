@@ -363,10 +363,9 @@ public class CATCompartmentManager implements MonteCarloSimulationCompliantObjec
 		return false;
 	}
 
-
-	static String getSamplingUnitID(CATCompatibleTree tree) {
-		return tree instanceof SamplingUnitIDProvider ? 
-				((SamplingUnitIDProvider) tree).getSamplingUnitID() : 
+	static String getSamplingUnitID(Object treeOrStand) {
+		return treeOrStand instanceof SamplingUnitIDProvider ? 
+				((SamplingUnitIDProvider) treeOrStand).getSamplingUnitID() : 
 					"";
 	}
 	

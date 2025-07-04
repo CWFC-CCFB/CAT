@@ -482,7 +482,53 @@ public class CarbonAccountingToolTest {
 		cat.requestShutdown();
 	}
 
+	@Test
+	public void initialDeadWoodTest() throws Exception {
+		String managerFilename = ObjectUtility.getPackagePath(getClass()) + "productionlines" + File.separator + "exampleProductionLines.prl";
+		final String standID = "StandTest";
+		final double areaHa = .04;
+		List<CATCompatibleStand> stands = new ArrayList<CATCompatibleStand>();
+		CATCompatibleStand stand;
+		for (int i = 1; i <= 2; i++) {
+			int dateYr = i * 10;
+			int ageYr = dateYr;
+			stand = new CATDeadWoodProviderImpl("beech", standID, areaHa, dateYr, ageYr, 20d);
+			stands.add(stand);
+		}
+		
+		CarbonAccountingTool tool = new CarbonAccountingTool(CATMode.SCRIPT);
+		tool.initializeTool(null);
+		tool.setStandList(stands);
+		try {
+			tool.getCarbonToolSettings().getCurrentProductionProcessorManager().load(managerFilename);
+			tool.calculateCarbon();
+			CATSingleSimulationResult result = tool.getCarbonCompartmentManager().getSimulationSummary();
+			Assert.assertTrue(result != null && result.isValid());
+			Matrix obsLivingBiomass = result.getEvolutionMap().get(CompartmentInfo.LivingBiomass).getMean();
+			Matrix obsDOM = result.getEvolutionMap().get(CompartmentInfo.DeadBiom).getMean();
+			Matrix obsProducts = result.getEvolutionMap().get(CompartmentInfo.TotalProducts).getMean();
+			Assert.assertEquals("Testing there is no living biomass",
+					0d, 
+					obsLivingBiomass.getSumOfElements(), 
+					1E-8);
+			Assert.assertEquals("Testing there is no HWP",
+					0d, 
+					obsProducts.getSumOfElements(), 
+					1E-8);
+			Assert.assertEquals("Testing initial DOM",
+					250d, 
+					obsDOM.getValueAt(0, 0),
+					1E-8);
 
+			tool.requestShutdown();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail("Unable to calculate carbon!");
+		}
+
+	}
+	
 	public static void main(String[] args) throws Exception {
 		CarbonAccountingToolTest test = new CarbonAccountingToolTest();
 		test.testMemoryLeakage();

@@ -8,8 +8,8 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import lerfob.carbonbalancetool.CATBasicWoodDensityProvider.AverageBasicDensity;
 import lerfob.carbonbalancetool.CATSettings.CATSpecies;
+import lerfob.carbonbalancetool.interfaces.CATBasicWoodDensityProvider.AverageBasicDensity;
 import lerfob.carbonbalancetool.productionlines.CarbonUnit;
 import lerfob.carbonbalancetool.productionlines.CarbonUnit.BiomassType;
 import lerfob.carbonbalancetool.productionlines.CarbonUnit.CarbonUnitStatus;

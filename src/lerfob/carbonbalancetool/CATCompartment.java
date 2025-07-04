@@ -112,13 +112,13 @@ public class CATCompartment extends CarbonArray implements Comparable {
 		/**
 		 * The humus layer
 		 */
-		Humus("Humus", "Humus", false, new Color(128,64,64)),
+		Humus("Forest floor", "Humus", false, new Color(128,64,64)),
 		/**
 		 * The soil layer (0-15cm)
 		 */
 		MineralSoil("Mineral Soil", "Sol Min/u00E9ral", false, new Color(96,48,48)),
 		/**
-		 * The humus plus the soil layer (0-15cm)
+		 * The forest floor plus the soil layer (0-15cm)
 		 */
 		Soil("Soil", "Sol", true, new Color(96,48,48));
 

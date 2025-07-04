@@ -169,6 +169,7 @@ public class CarbonUnit extends ProcessUnit<Element> implements BiomassTypeProvi
 	}
 
 	/**
+	 * Constructor for intermediate processing in the flux configuration. 
 	 * 
 	 * @param dateIndex the creation date index of the time scale
 	 * @param carbonUnitFeature a CarbonUnitFeature instance

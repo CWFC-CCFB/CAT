@@ -1,5 +1,5 @@
 /*
- * This file is part of the lerfob-forestools library.
+ * This file is part of the CAT library.
  *
  * Copyright (C) 2010-2013 Mathieu Fortin AgroParisTech/INRA UMR LERFoB, 
  *
@@ -16,7 +16,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package lerfob.carbonbalancetool;
+package lerfob.carbonbalancetool.interfaces;
 
 /**
  * This interface ensures the instance can provide its carbon content.

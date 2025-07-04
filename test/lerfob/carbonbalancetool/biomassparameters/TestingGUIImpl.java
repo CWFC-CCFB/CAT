@@ -18,13 +18,13 @@
  */
 package lerfob.carbonbalancetool.biomassparameters;
 
-import lerfob.carbonbalancetool.CATAboveGroundBiomassProvider;
-import lerfob.carbonbalancetool.CATAboveGroundCarbonProvider;
-import lerfob.carbonbalancetool.CATAboveGroundVolumeProvider;
-import lerfob.carbonbalancetool.CATBasicWoodDensityProvider;
-import lerfob.carbonbalancetool.CATBelowGroundBiomassProvider;
-import lerfob.carbonbalancetool.CATBelowGroundCarbonProvider;
-import lerfob.carbonbalancetool.CATCarbonContentRatioProvider;
+import lerfob.carbonbalancetool.interfaces.CATAboveGroundBiomassProvider;
+import lerfob.carbonbalancetool.interfaces.CATAboveGroundCarbonProvider;
+import lerfob.carbonbalancetool.interfaces.CATAboveGroundVolumeProvider;
+import lerfob.carbonbalancetool.interfaces.CATBasicWoodDensityProvider;
+import lerfob.carbonbalancetool.interfaces.CATBelowGroundBiomassProvider;
+import lerfob.carbonbalancetool.interfaces.CATBelowGroundCarbonProvider;
+import lerfob.carbonbalancetool.interfaces.CATCarbonContentRatioProvider;
 
 public class TestingGUIImpl {
 

@@ -26,6 +26,8 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import lerfob.carbonbalancetool.biomassparameters.BiomassParameters;
+import lerfob.carbonbalancetool.interfaces.CATAdditionalElementsProvider;
+import lerfob.carbonbalancetool.interfaces.CATDeadWoodProvider;
 import lerfob.carbonbalancetool.memsconnectors.MEMSCompatibleTree;
 import lerfob.carbonbalancetool.productionlines.CarbonUnit.BiomassType;
 import lerfob.carbonbalancetool.productionlines.CarbonUnit.Element;
@@ -47,7 +49,8 @@ import repicea.util.REpiceaLogManager;
 public class CATTask extends AbstractGenericTask {
 	
 	/**
-	 * This enum defines the different tasks performed by the InternalSwingWorker class.
+	 * This enum defines the different tasks performed by the InternalSwingWorker class. <p>
+	 * Long tasks, i.e. those with the boolean set to true, should be listed first.
 	 * @author Mathieu Fortin - December 2010
 	 */
 	public static enum Task {
@@ -56,6 +59,7 @@ public class CATTask extends AbstractGenericTask {
 		ACTUALIZE_CARBON(true),
 		RETRIEVE_SOIL_CARBON_INPUT(true),
 		COMPILE_CARBON(true),
+		RETRIEVE_INITIAL_CONDITIONS(false),
 		SET_REALIZATION(false),
 		SHUT_DOWN(false),
 		SET_STANDLIST(false),
@@ -142,6 +146,9 @@ public class CATTask extends AbstractGenericTask {
 			caller.setStandList();
 			REpiceaAWTEvent.fireEvent(new REpiceaAWTEvent(this, CATAWTProperty.StandListProperlySet));
 			break;
+		case RETRIEVE_INITIAL_CONDITIONS:
+			retrieveInitialConditions();
+			break;
 		case LOG_AND_BUCK_TREES:
 			firePropertyChange("OngoingTask", null, currentTask);
 			logAndBuckTrees();
@@ -225,8 +232,20 @@ public class CATTask extends AbstractGenericTask {
 	}
 
 
+	private void retrieveInitialConditions() {
+		CATCompartmentManager manager = caller.getCarbonCompartmentManager();
+		REpiceaLogManager.logMessage(CarbonAccountingTool.LOGGER_NAME, Level.FINEST, null, "Retrieving initial conditions if available...");
+
+		List<CATCompatibleStand> stands = manager.getTimeTable().getStandsForThisRealization();
+		CATCompatibleStand firstStand = stands.get(0);
+		if (firstStand instanceof CATDeadWoodProvider) {
+			int dateIndex = manager.getTimeTable().getIndexOfThisStandOnTheTimeTable(firstStand);
+			manager.getCarbonToolSettings().getCurrentProductionProcessorManager().createDeadWood((CATDeadWoodProvider) firstStand, dateIndex);
+		}
+	}
+	
 	/**
-	 * Task no 1 : log the trees and buck them into wood pieces
+	 * Task: log the trees and buck them into wood pieces
 	 * @throws Exception
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -256,7 +275,7 @@ public class CATTask extends AbstractGenericTask {
 	private ProductionProcessorManager getProcessorManager() {return caller.getCarbonToolSettings().getCurrentProductionProcessorManager();}
 	
 	/**
-	 * Task no 2 : process the logs into end use wood products
+	 * Task: process the logs into end use wood products
 	 * @throws Exception
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes"})
@@ -463,9 +482,6 @@ public class CATTask extends AbstractGenericTask {
 							samplingUnitID, 
 							amountMaps, 
 							tree,
-//							tree.getSpeciesName(), 
-//							tree.getSpeciesType(), 
-//							tree.getStatusClass(),
 							WoodDebrisType);
 				}
 			} else {
@@ -473,9 +489,6 @@ public class CATTask extends AbstractGenericTask {
 						samplingUnitID, 
 						amountMaps, 
 						tree,
-//						tree.getSpeciesName(), 
-//						tree.getSpeciesType(),
-//						tree.getStatusClass(),
 						WoodDebrisType);
 			}
 		}

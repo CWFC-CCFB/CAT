@@ -23,15 +23,15 @@ import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Test;
 
-import lerfob.carbonbalancetool.CATAboveGroundBiomassProvider;
-import lerfob.carbonbalancetool.CATAboveGroundCarbonProvider;
-import lerfob.carbonbalancetool.CATAboveGroundVolumeProvider;
-import lerfob.carbonbalancetool.CATBelowGroundBiomassProvider;
-import lerfob.carbonbalancetool.CATBelowGroundCarbonProvider;
-import lerfob.carbonbalancetool.CATBelowGroundVolumeProvider;
 import lerfob.carbonbalancetool.CATCompatibleTree;
 import lerfob.carbonbalancetool.CATSettings.CATSpecies;
 import lerfob.carbonbalancetool.biomassparameters.BiomassParameters.Tier2Implementation;
+import lerfob.carbonbalancetool.interfaces.CATAboveGroundBiomassProvider;
+import lerfob.carbonbalancetool.interfaces.CATAboveGroundCarbonProvider;
+import lerfob.carbonbalancetool.interfaces.CATAboveGroundVolumeProvider;
+import lerfob.carbonbalancetool.interfaces.CATBelowGroundBiomassProvider;
+import lerfob.carbonbalancetool.interfaces.CATBelowGroundCarbonProvider;
+import lerfob.carbonbalancetool.interfaces.CATBelowGroundVolumeProvider;
 import repicea.util.ObjectUtility;
 
 public class BiomassParametersTest {

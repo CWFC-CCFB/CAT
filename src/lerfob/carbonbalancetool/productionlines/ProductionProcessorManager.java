@@ -41,6 +41,7 @@ import lerfob.carbonbalancetool.CATCompartmentManager;
 import lerfob.carbonbalancetool.CATCompatibleTree;
 import lerfob.carbonbalancetool.CarbonAccountingTool;
 import lerfob.carbonbalancetool.catdiameterbasedtreelogger.CATDiameterBasedTreeLogger;
+import lerfob.carbonbalancetool.interfaces.CATDeadWoodProvider;
 import lerfob.carbonbalancetool.productionlines.CarbonUnit.BiomassType;
 import lerfob.carbonbalancetool.productionlines.CarbonUnit.CarbonUnitStatus;
 import lerfob.carbonbalancetool.productionlines.CarbonUnit.Element;
@@ -256,6 +257,8 @@ public class ProductionProcessorManager extends SystemManager implements Memoriz
 
 	private transient CarbonUnitMap<CarbonUnitStatus> carbonUnitMap;
 
+	private transient LeftInForestProcessor deadWoodProcessor;
+	
 	/**
 	 * Constructor.
 	 * @param defaultPermission a DefaultREpiceaGUIPermission instance
@@ -633,6 +636,52 @@ public class ProductionProcessorManager extends SystemManager implements Memoriz
 	}
 
 	/**
+	 * Create dead wood for the first stand if it is available
+	 * @param deadWoodPovider a CATDeadWoodProvide instance
+	 * @param dateIndex the date index
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void createDeadWood(CATDeadWoodProvider deadWoodPovider, int dateIndex) {
+		double averageLifeTimeYr = 0d;
+		if (deadWoodProcessor == null) {
+			for (Processor p : getList()) {
+				if (p instanceof LeftInForestProcessor) {
+					LeftInForestProcessor lp = (LeftInForestProcessor) p;
+					if (lp.getEndProductFeature().getDecayFunction().averageLifetimeYr > averageLifeTimeYr) {
+						averageLifeTimeYr = lp.getEndProductFeature().getDecayFunction().averageLifetimeYr;
+						deadWoodProcessor = lp;
+					}
+				}
+			}
+			if (deadWoodProcessor == null) {
+				throw new UnsupportedOperationException("The dead wood processor cannot be found in the flux configuration!");
+			}
+		}
+
+		
+		AmountMap<Element> woodAmountMap = new AmountMap<Element>();
+		Map<String, Double> biomasses = deadWoodPovider.getDeadWoodBiomassMgForTheseSamplingUnits();
+		for (String samplingUnitID : biomasses.keySet()) {
+			double biomassMg = biomasses.get(samplingUnitID);
+			woodAmountMap.put(Element.Volume, biomassMg / 0.45); // 0.45 an arbitrary factor to get some volume
+			woodAmountMap.put(Element.Biomass, biomassMg);
+			woodAmountMap.put(Element.C, biomassMg * 0.5); // 0.5 we use the average here because we do not know the species
+			CarbonUnit cu = new CarbonUnit(dateIndex, 
+					samplingUnitID, 
+					null, // no CarbonUnitFeature instance at this point
+					woodAmountMap,
+					"Unknown", // unknown species
+					null, // unknown species type
+					StatusClass.dead,
+					BiomassType.Wood,
+					WoodyDebrisProcessorID.CoarseWoodyDebris);
+			Collection<CarbonUnit> units = (Collection) deadWoodProcessor.createProcessUnitsFromThisProcessor(cu, 100); 
+			getCarbonUnitMap().add(units);
+		}
+	}
+
+	
+	/**
 	 * Process the carbon unit as woody debris.
 	 * 
 	 * @param dateIndex the index of the date in the time scale
@@ -750,6 +799,8 @@ public class ProductionProcessorManager extends SystemManager implements Memoriz
 		}
 	}
 
+	
+	
 	/**
 	 * This method returns the CarbonUnitList instance that match the type of
 	 * carbon.
