@@ -20,7 +20,7 @@ public class CATDeadWoodProviderImpl extends CarbonToolCompatibleStandImpl imple
 	}
 	
 	@Override
-	public Map<String, Double> getDeadWoodBiomassMgForThisSampleUnit() {
+	public Map<String, Double> getDeadWoodBiomassMgForTheseSamplingUnits() {
 		Map<String, Double> outputMap = new HashMap<String, Double>();
 		outputMap.put(standID, deadBiomassMg);
 		return outputMap;

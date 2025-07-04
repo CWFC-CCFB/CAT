@@ -660,7 +660,7 @@ public class ProductionProcessorManager extends SystemManager implements Memoriz
 
 		
 		AmountMap<Element> woodAmountMap = new AmountMap<Element>();
-		Map<String, Double> biomasses = deadWoodPovider.getDeadWoodBiomassMgForThisSampleUnit();
+		Map<String, Double> biomasses = deadWoodPovider.getDeadWoodBiomassMgForTheseSamplingUnits();
 		for (String samplingUnitID : biomasses.keySet()) {
 			double biomassMg = biomasses.get(samplingUnitID);
 			woodAmountMap.put(Element.Volume, biomassMg / 0.45); // 0.45 an arbitrary factor to get some volume

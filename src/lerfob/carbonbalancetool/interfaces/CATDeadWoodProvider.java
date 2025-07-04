@@ -30,8 +30,8 @@ public interface CATDeadWoodProvider {
 
 	/**
 	 * Provide the deadwood biomass (Mg).
-	 * @return a Map whose keys are the sample unit ID and the values are the dead biomasses (Mg)
+	 * @return a Map whose keys are the sampling unit ID and the values are the dead biomasses (Mg)
 	 */
-	public Map<String, Double> getDeadWoodBiomassMgForThisSampleUnit();	
+	public Map<String, Double> getDeadWoodBiomassMgForTheseSamplingUnits();	
 	
 }
