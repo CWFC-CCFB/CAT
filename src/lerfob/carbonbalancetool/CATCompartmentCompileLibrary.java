@@ -21,6 +21,7 @@ package lerfob.carbonbalancetool;
 import java.util.Collection;
 import java.util.List;
 
+import lerfob.carbonbalancetool.interfaces.CATSaplingsProvider;
 import lerfob.carbonbalancetool.productionlines.CarbonUnit;
 import lerfob.carbonbalancetool.productionlines.EndUseWoodProductCarbonUnit;
 import lerfob.carbonbalancetool.productionlines.LandfillCarbonUnit;
@@ -59,6 +60,9 @@ class CATCompartmentCompileLibrary {
 			oMap = new CATIntermediateBiomassCarbonMap(timeTable, carbonCompartment);
 			for (CATCompatibleStand stand : stands) {
 				double carbonContent = manager.getCarbonToolSettings().getCurrentBiomassParameters().getBelowGroundCarbonMg(stand.getTrees(StatusClass.alive), manager);
+				if (stand instanceof CATSaplingsProvider) {
+					carbonContent += manager.getCarbonToolSettings().getCurrentBiomassParameters().getBelowGroundCarbonMg(((CATSaplingsProvider) stand).getSaplings(), manager);
+				}
 				oMap.put(stand, carbonContent);
 			}
 			oMap.interpolateIfNeeded();
@@ -70,6 +74,9 @@ class CATCompartmentCompileLibrary {
 			oMap = new CATIntermediateBiomassCarbonMap(timeTable, carbonCompartment);
 			for (CATCompatibleStand stand : stands) {
 				double carbonContent = manager.getCarbonToolSettings().getCurrentBiomassParameters().getAboveGroundCarbonMg(stand.getTrees(StatusClass.alive), manager);
+				if (stand instanceof CATSaplingsProvider) {
+					carbonContent += manager.getCarbonToolSettings().getCurrentBiomassParameters().getAboveGroundCarbonMg(((CATSaplingsProvider) stand).getSaplings(), manager);
+				}
 				oMap.put(stand, carbonContent);
 			}	
 			oMap.interpolateIfNeeded();

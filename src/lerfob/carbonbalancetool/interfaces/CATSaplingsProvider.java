@@ -17,32 +17,24 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package lerfob.carbonbalancetool;
+package lerfob.carbonbalancetool.interfaces;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
-import lerfob.carbonbalancetool.interfaces.CATDeadWoodProvider;
+import lerfob.carbonbalancetool.CATCompatibleTree;
 
-public class CATDeadWoodProviderImpl extends CarbonToolCompatibleStandImpl implements CATDeadWoodProvider {
+/**
+ * An interface that ensures that the stand instance can provide
+ * its saplings.<p>
+ * The sapling should be of the same class than the merchantable trees. 
+ */
+public interface CATSaplingsProvider {
 
-	final double deadBiomassMg;
+	/**
+	 * A list of saplings for this stand instance.<p>
+	 * This saplings should be of the same class as merchantable trees.
+	 * @return a List of CATCompatibleTree
+	 */
+	public List<CATCompatibleTree> getSaplings();
 	
-	protected CATDeadWoodProviderImpl(String species, 
-			String standID, 
-			double areaHa, 
-			int dateYr, 
-			int ageYr,
-			double deadBiomassMg) {
-		super(species, standID, areaHa, dateYr, ageYr);
-		this.deadBiomassMg = deadBiomassMg;
-	}
-	
-	@Override
-	public Map<String, Double> getDeadWoodBiomassMgForTheseSamplingUnits() {
-		Map<String, Double> outputMap = new HashMap<String, Double>();
-		outputMap.put(standID, deadBiomassMg);
-		return outputMap;
-	}
-
 }

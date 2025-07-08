@@ -19,30 +19,28 @@
  */
 package lerfob.carbonbalancetool;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
-import lerfob.carbonbalancetool.interfaces.CATDeadWoodProvider;
+import lerfob.carbonbalancetool.interfaces.CATSaplingsProvider;
 
-public class CATDeadWoodProviderImpl extends CarbonToolCompatibleStandImpl implements CATDeadWoodProvider {
+public class CATSaplingsProviderImpl extends CarbonToolCompatibleStandImpl implements CATSaplingsProvider{
 
-	final double deadBiomassMg;
-	
-	protected CATDeadWoodProviderImpl(String species, 
+	protected CATSaplingsProviderImpl(String species, 
 			String standID, 
 			double areaHa, 
 			int dateYr, 
-			int ageYr,
-			double deadBiomassMg) {
+			int ageYr) {
 		super(species, standID, areaHa, dateYr, ageYr);
-		this.deadBiomassMg = deadBiomassMg;
 	}
-	
+
 	@Override
-	public Map<String, Double> getDeadWoodBiomassMgForTheseSamplingUnits() {
-		Map<String, Double> outputMap = new HashMap<String, Double>();
-		outputMap.put(standID, deadBiomassMg);
-		return outputMap;
+	public List<CATCompatibleTree> getSaplings() {
+		List<CATCompatibleTree> saplings = new ArrayList<CATCompatibleTree>();
+		for (int i = 0; i < 10; i++) {
+			// TODO Auto-generated method stub
+		}
+		return saplings;
 	}
 
 }
