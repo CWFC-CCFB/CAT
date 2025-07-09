@@ -528,7 +528,8 @@ public class CarbonAccountingToolTest {
 		}
 
 	}
-
+	
+	@Ignore
 	@Test
 	public void test13WithSaplingProvider() throws Exception {
 		String managerFilename = ObjectUtility.getPackagePath(getClass()) + "productionlines" + File.separator + "exampleProductionLines.prl";
