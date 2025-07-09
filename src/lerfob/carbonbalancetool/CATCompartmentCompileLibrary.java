@@ -61,7 +61,7 @@ class CATCompartmentCompileLibrary {
 			for (CATCompatibleStand stand : stands) {
 				double carbonContent = manager.getCarbonToolSettings().getCurrentBiomassParameters().getBelowGroundCarbonMg(stand.getTrees(StatusClass.alive), manager);
 				if (stand instanceof CATSaplingsProvider) {
-					carbonContent += manager.getCarbonToolSettings().getCurrentBiomassParameters().getBelowGroundCarbonMg(((CATSaplingsProvider) stand).getSaplings(), manager);
+					carbonContent += manager.getCarbonToolSettings().getCurrentBiomassParameters().getBelowGroundCarbonMg((List) ((CATSaplingsProvider) stand).getSaplings(), manager);
 				}
 				oMap.put(stand, carbonContent);
 			}
@@ -75,7 +75,7 @@ class CATCompartmentCompileLibrary {
 			for (CATCompatibleStand stand : stands) {
 				double carbonContent = manager.getCarbonToolSettings().getCurrentBiomassParameters().getAboveGroundCarbonMg(stand.getTrees(StatusClass.alive), manager);
 				if (stand instanceof CATSaplingsProvider) {
-					carbonContent += manager.getCarbonToolSettings().getCurrentBiomassParameters().getAboveGroundCarbonMg(((CATSaplingsProvider) stand).getSaplings(), manager);
+					carbonContent += manager.getCarbonToolSettings().getCurrentBiomassParameters().getAboveGroundCarbonMg((List) ((CATSaplingsProvider) stand).getSaplings(), manager);
 				}
 				oMap.put(stand, carbonContent);
 			}	

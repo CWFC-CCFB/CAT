@@ -41,6 +41,7 @@ import lerfob.carbonbalancetool.interfaces.CATBelowGroundBiomassProvider;
 import lerfob.carbonbalancetool.interfaces.CATBelowGroundCarbonProvider;
 import lerfob.carbonbalancetool.interfaces.CATBelowGroundVolumeProvider;
 import lerfob.carbonbalancetool.interfaces.CATCarbonContentRatioProvider;
+import lerfob.carbonbalancetool.interfaces.CATSapling;
 import lerfob.carbonbalancetool.memsconnectors.MEMSCompatibleTree;
 import lerfob.carbonbalancetool.sensitivityanalysis.CATSensitivityAnalysisSettings;
 import lerfob.carbonbalancetool.sensitivityanalysis.CATSensitivityAnalysisSettings.VariabilitySource;
@@ -530,7 +531,7 @@ public class BiomassParameters implements REpiceaShowableUIWithParent, IOUserInt
 	 * @return a double (Mg)
 	 */
 	public double getAboveGroundCarbonMg(CATCompatibleTree tree, MonteCarloSimulationCompliantObject subject) {
-		boolean tier2Implementation = branchExpansionFactorFromModel && tree instanceof CATAboveGroundCarbonProvider;
+		boolean tier2Implementation = branchExpansionFactorFromModel && tree instanceof CATAboveGroundCarbonProvider; 
 		if (tier2Implementation) {
 			CATAboveGroundCarbonProvider t = (CATAboveGroundCarbonProvider) tree;
 			double value = t.getAboveGroundCarbonMg() * tree.getNumber() * tree.getPlotWeight();
@@ -552,7 +553,7 @@ public class BiomassParameters implements REpiceaShowableUIWithParent, IOUserInt
 	 * @return the aboveground biomass (Mg)
 	 */
 	double getAboveGroundBiomassMg(CATCompatibleTree tree, MonteCarloSimulationCompliantObject subject) {
-		boolean tier2Implementation = branchExpansionFactorFromModel && tree instanceof CATAboveGroundBiomassProvider;
+		boolean tier2Implementation = (branchExpansionFactorFromModel && tree instanceof CATAboveGroundBiomassProvider) || tree instanceof CATSapling; // saplings automatically provide their own biomass
 		if (tier2Implementation) {
 			CATAboveGroundBiomassProvider t = (CATAboveGroundBiomassProvider) tree;
 			double value = t.getAboveGroundBiomassMg() * tree.getNumber() * tree.getPlotWeight();

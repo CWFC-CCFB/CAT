@@ -21,8 +21,6 @@ package lerfob.carbonbalancetool.interfaces;
 
 import java.util.List;
 
-import lerfob.carbonbalancetool.CATCompatibleTree;
-
 /**
  * An interface that ensures that the stand instance can provide
  * its saplings.<p>
@@ -35,6 +33,6 @@ public interface CATSaplingsProvider {
 	 * This saplings should be of the same class as merchantable trees.
 	 * @return a List of CATCompatibleTree
 	 */
-	public List<CATCompatibleTree> getSaplings();
+	public List<CATSapling> getSaplings();
 	
 }

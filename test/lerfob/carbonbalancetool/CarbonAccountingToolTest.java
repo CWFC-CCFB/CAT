@@ -529,7 +529,6 @@ public class CarbonAccountingToolTest {
 
 	}
 	
-	@Ignore
 	@Test
 	public void test13WithSaplingProvider() throws Exception {
 		String managerFilename = ObjectUtility.getPackagePath(getClass()) + "productionlines" + File.separator + "exampleProductionLines.prl";
@@ -537,16 +536,11 @@ public class CarbonAccountingToolTest {
 		final double areaHa = .04;
 		List<CATCompatibleStand> stands = new ArrayList<CATCompatibleStand>();
 		CATCompatibleStand stand;
-		CATCompatibleTree tree;
 		for (int i = 1; i <= 2; i++) {
 			int dateYr = i * 10;
 			int ageYr = dateYr;
-			stand = new CATDeadWoodProviderImpl("beech", standID, areaHa, dateYr, ageYr, 20d);
+			stand = new CATSaplingsProviderImpl("beech", standID, areaHa, dateYr, ageYr);
 			stands.add(stand);
-			for (int j = 1; j <= 10; j++) {
-				tree = new CarbonToolCompatibleTreeImpl(stand.getDateYr() * .01, "Fagus sylvatica");
-				((CarbonToolCompatibleStandImpl) stand).addTree(tree);
-			}
 		}
 		
 		CarbonAccountingTool tool = new CarbonAccountingTool(CATMode.SCRIPT);
@@ -558,20 +552,13 @@ public class CarbonAccountingToolTest {
 			CATSingleSimulationResult result = tool.getCarbonCompartmentManager().getSimulationSummary();
 			Assert.assertTrue(result != null && result.isValid());
 			Matrix obsLivingBiomass = result.getEvolutionMap().get(CompartmentInfo.LivingBiomass).getMean();
-			Matrix obsDOM = result.getEvolutionMap().get(CompartmentInfo.DeadBiom).getMean();
-			Matrix obsProducts = result.getEvolutionMap().get(CompartmentInfo.TotalProducts).getMean();
-			Assert.assertEquals("Testing there is no living biomass",
-					0d, 
-					obsLivingBiomass.getSumOfElements(), 
+			Assert.assertEquals("Testing there is some living biomass",
+					8.25, 
+					obsLivingBiomass.getValueAt(0, 0), 
 					1E-8);
-			Assert.assertEquals("Testing there is no HWP",
-					0d, 
-					obsProducts.getSumOfElements(), 
-					1E-8);
-			Assert.assertEquals("Testing initial DOM",
-					250d, 
-					obsDOM.getValueAt(0, 0),
-					1E-8);
+			Matrix first10years = obsLivingBiomass.getSubMatrix(0, 10, 0, 0);
+			boolean anyElementDiff = first10years.anyElementDifferentFrom(8.25);
+			Assert.assertTrue("Testing that all values are equal for the first ten years of the simulation", !anyElementDiff);
 
 			tool.requestShutdown();
 			
