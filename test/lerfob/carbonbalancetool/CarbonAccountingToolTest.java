@@ -44,7 +44,7 @@ public class CarbonAccountingToolTest {
 	private final static NumberFormat FORMATTER = NumberFormat.getInstance();
 
 	@Test
-	public void deserializationTest() {
+	public void test01Deserialization() {
 		String filename = ObjectUtility.getPackagePath(getClass()) + "productionlines" + File.separator + "exampleProductionLines.prl";
 		ProductionProcessorManager ppm = new ProductionProcessorManager();
 		try {
@@ -65,7 +65,7 @@ public class CarbonAccountingToolTest {
 
 
 	@Test
-	public void simpleCarbonAccountingTest() throws Exception {
+	public void test02SimpleCarbonAccounting() throws Exception {
 		String managerFilename = ObjectUtility.getPackagePath(getClass()) + "productionlines" + File.separator + "exampleProductionLines.prl";
 		final String standID = "StandTest";
 		final double areaHa = .04;
@@ -100,7 +100,7 @@ public class CarbonAccountingToolTest {
 	
 
 	@Test
-	public void matterBalanceAfterHarvest() throws Exception {
+	public void test03MatterBalanceAfterHarvest() throws Exception {
 		String managerFilename = ObjectUtility.getPackagePath(getClass()) + "productionlines" + File.separator + "exampleProductionLines.prl";
 		final String standID = "StandTest";
 		final double areaHa = .04;
@@ -153,7 +153,7 @@ public class CarbonAccountingToolTest {
 
 	
 	@Test
-	public void testWithAgeDifferentFromDate() throws Exception {
+	public void test04WithAgeDifferentFromDate() throws Exception {
 		String managerFilename = ObjectUtility.getPackagePath(getClass()) + "productionlines" + File.separator + "exampleProductionLines.prl";
 		final String standID = "StandTest";
 		final double areaHa = .04;
@@ -212,7 +212,7 @@ public class CarbonAccountingToolTest {
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
-	public void testWithYieldTable() throws Exception {
+	public void test05WithYieldTable() throws Exception {
 		String filename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "ExampleYieldTable.csv";
 		String ifeFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "ExampleYieldTable.ife";
 		String refFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "ExampleYieldTableReference.xml";
@@ -247,7 +247,7 @@ public class CarbonAccountingToolTest {
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
-	public void testWithSimulationResults() throws Exception {
+	public void test06WithSimulationResults() throws Exception {
 		String filename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "MathildeTreeExport.csv";
 		String ifeFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "MathildeTreeExport.ife";
 		String speciesMatchFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "speciesCorrespondanceForSimulationData.xml";
@@ -288,7 +288,7 @@ public class CarbonAccountingToolTest {
 
 	@Ignore
 	@Test
-	public void testMemoryLeakage() throws Exception {
+	public void test07MemoryLeakage() throws Exception {
 		int nbSimulations = 10;
 		String filename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "MathildeTreeExport.csv";
 		String ifeFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "MathildeTreeExport.ife";
@@ -330,7 +330,7 @@ public class CarbonAccountingToolTest {
 	}
 	
 	@Test
-	public void testComparisonHalflifeVsAverageLifetime() throws Exception {
+	public void test08ComparisonHalflifeVsAverageLifetime() throws Exception {
 		String filename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "ExampleYieldTable.csv";
 		String ifeFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "ExampleYieldTable.ife";
 		String averageLifetimeFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "SingleProcessorWithAverageLifetime.prl";
@@ -369,7 +369,7 @@ public class CarbonAccountingToolTest {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
-	public void testWithYieldTableAndIPCCConfiguration() throws Exception {
+	public void test09WithYieldTableAndIPCCConfiguration() throws Exception {
 		String filename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "ExampleYieldTable.csv";
 		String ifeFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "ExampleYieldTable.ife";
 		String refFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "ExampleYieldTableWithIPCCReference.xml";
@@ -405,7 +405,7 @@ public class CarbonAccountingToolTest {
 	
 
 	@Test
-	public void testWithYieldTableAndIPCCConfigurationSensitivityAnalysis() throws Exception {
+	public void test10WithYieldTableAndIPCCConfigurationSensitivityAnalysis() throws Exception {
 		String filename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "ExampleYieldTable.csv";
 		String ifeFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "ExampleYieldTable.ife";
 		String prlFilename = ObjectUtility.getRelativePackagePath(ProductionProcessorManager.class) + "library" + ObjectUtility.PathSeparator + "ipcc2014_en.prl";
@@ -452,7 +452,7 @@ public class CarbonAccountingToolTest {
 	
 	
 	@Test
-	public void testWithYieldTableAndIPCCConfigurationSensitivityAnalysis2() throws Exception {
+	public void test11WithYieldTableAndIPCCConfigurationSensitivityAnalysis2() throws Exception {
 		String filename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "ExampleYieldTable.csv";
 		String ifeFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "ExampleYieldTable.ife";
 		String prlFilename = ObjectUtility.getRelativePackagePath(ProductionProcessorManager.class) + "library" + ObjectUtility.PathSeparator + "ipcc2014_en.prl";
@@ -483,7 +483,7 @@ public class CarbonAccountingToolTest {
 	}
 
 	@Test
-	public void initialDeadWoodTest() throws Exception {
+	public void test12InitialDeadWood() throws Exception {
 		String managerFilename = ObjectUtility.getPackagePath(getClass()) + "productionlines" + File.separator + "exampleProductionLines.prl";
 		final String standID = "StandTest";
 		final double areaHa = .04;
@@ -529,9 +529,49 @@ public class CarbonAccountingToolTest {
 
 	}
 	
+	@Test
+	public void test13WithSaplingProvider() throws Exception {
+		String managerFilename = ObjectUtility.getPackagePath(getClass()) + "productionlines" + File.separator + "exampleProductionLines.prl";
+		final String standID = "StandTest";
+		final double areaHa = .04;
+		List<CATCompatibleStand> stands = new ArrayList<CATCompatibleStand>();
+		CATCompatibleStand stand;
+		for (int i = 1; i <= 2; i++) {
+			int dateYr = i * 10;
+			int ageYr = dateYr;
+			stand = new CATSaplingsProviderImpl("beech", standID, areaHa, dateYr, ageYr);
+			stands.add(stand);
+		}
+		
+		CarbonAccountingTool tool = new CarbonAccountingTool(CATMode.SCRIPT);
+		tool.initializeTool(null);
+		tool.setStandList(stands);
+		try {
+			tool.getCarbonToolSettings().getCurrentProductionProcessorManager().load(managerFilename);
+			tool.calculateCarbon();
+			CATSingleSimulationResult result = tool.getCarbonCompartmentManager().getSimulationSummary();
+			Assert.assertTrue(result != null && result.isValid());
+			Matrix obsLivingBiomass = result.getEvolutionMap().get(CompartmentInfo.LivingBiomass).getMean();
+			Assert.assertEquals("Testing there is some living biomass",
+					8.25, 
+					obsLivingBiomass.getValueAt(0, 0), 
+					1E-8);
+			Matrix first10years = obsLivingBiomass.getSubMatrix(0, 10, 0, 0);
+			boolean anyElementDiff = first10years.anyElementDifferentFrom(8.25);
+			Assert.assertTrue("Testing that all values are equal for the first ten years of the simulation", !anyElementDiff);
+
+			tool.requestShutdown();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail("Unable to calculate carbon!");
+		}
+
+	}
+	
 	public static void main(String[] args) throws Exception {
 		CarbonAccountingToolTest test = new CarbonAccountingToolTest();
-		test.testMemoryLeakage();
+		test.test07MemoryLeakage();
 	}
 
 }

@@ -28,6 +28,7 @@ import java.util.logging.Level;
 import lerfob.carbonbalancetool.biomassparameters.BiomassParameters;
 import lerfob.carbonbalancetool.interfaces.CATAdditionalElementsProvider;
 import lerfob.carbonbalancetool.interfaces.CATDeadWoodProvider;
+import lerfob.carbonbalancetool.interfaces.CATSaplingsProvider;
 import lerfob.carbonbalancetool.memsconnectors.MEMSCompatibleTree;
 import lerfob.carbonbalancetool.productionlines.CarbonUnit.BiomassType;
 import lerfob.carbonbalancetool.productionlines.CarbonUnit.Element;
