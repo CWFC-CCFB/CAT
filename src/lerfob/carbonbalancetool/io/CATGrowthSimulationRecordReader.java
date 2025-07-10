@@ -71,8 +71,20 @@ public class CATGrowthSimulationRecordReader extends REpiceaRecordReader {
 		TreeFreqDescription("Tree frequency", "Fr\u00E9quence d'arbre"),
 		TreeFreqHelp("This field must contain the number of trees represented by the record in the plot. It is a double. This field is optional. If it is not specified, CAT assumes that the frequency is one.",
 				"Ce champ doit contenir le nombre d'arbres repr\u00E9sent\u00E9s par cet enregistrement dans la placette. Il s'agit d'un double. Ce champ est facultatif. S'il n'est pas sp\u00E9cifi\u00E9, CAT utilise une fr\u00E9quence unitaire."),
-		TreeVolumeDescription("Tree overbark volume (dm3)", "Volume d'arbre sur \u00E9corce (dm3)"),
+		TreeVolumeDescription("Tree overbark commercial volume (dm3)", "Volume commercial sur \u00E9corce (dm3)"),
 		TreeVolumeHelp("This field contains the commercial volume (dm3) for a single tree. It is a double.", "Ce champ contient le volume commercial (dm3) d'un arbre individuel. Il s'agit d'un double."),
+		TreeAboveGroundVolumeDescription("Tree overbark aboveground volume (m3)", "Volume a\u00E9rien sur \u00E9corce (m3)"),
+		TreeAboveGroundVolumeHelp("This field contains the overbark aboveground volume (m3) for a single tree. It is a double.", "Ce champ contient le volume a\u00E9rien sur \u00E9corce (m3) d'un arbre individuel. Il s'agit d'un double."),
+		TreeAboveGroundBiomassDescription("Tree overbark aboveground biomass (Mg)", "Biomasse a\u00E9rienne sur \u00E9corce (Mg)"),
+		TreeAboveGroundBiomassHelp("This field contains the overbark aboveground biomass (Mg) for a single tree. It is a double.", "Ce champ contient la biomasse a\u00E9rienne sur \u00E9corce (Mg) d'un arbre individuel. Il s'agit d'un double."),
+		TreeAboveGroundCarbonDescription("Tree overbark aboveground carbon (Mg)", "Carbone a\u00E9rien sur \u00E9corce (Mg)"),
+		TreeAboveGroundCarbonHelp("This field contains the overbark aboveground carbon (Mg) for a single tree. It is a double.", "Ce champ contient le carbone a\u00E9rien sur \u00E9corce (Mg) d'un arbre individuel. Il s'agit d'un double."),
+		TreeBelowGroundVolumeDescription("Tree overbark belowground volume (m3)", "Volume souterrain sur \u00E9corce (m3)"),
+		TreeBelowGroundVolumeHelp("This field contains the overbark belowground volume (m3) for a single tree. It is a double.", "Ce champ contient le volume souterrain sur \u00E9corce (m3) d'un arbre individuel. Il s'agit d'un double."),
+		TreeBelowGroundBiomassDescription("Tree overbark belowground biomass (Mg)", "Biomasse souterraine sur \u00E9corce (Mg)"),
+		TreeBelowGroundBiomassHelp("This field contains the overbark belowground biomass (Mg) for a single tree. It is a double.", "Ce champ contient la biomasse souterraine sur \u00E9corce (Mg) d'un arbre individuel. Il s'agit d'un double."),
+		TreeBelowGroundCarbonDescription("Tree overbark belowground carbon (Mg)", "Carbone souterrain sur \u00E9corce (Mg)"),
+		TreeBelowGroundCarbonHelp("This field contains the overbark belowground carbon (Mg) for a single tree. It is a double.", "Ce champ contient le carbone souterrain sur \u00E9corce (Mg) d'un arbre individuel. Il s'agit d'un double."),
 		InconsistentGrowthSimulation("The number of realizations is inconsistent along the projection!", "Le nombre de r\u00E9alisations n'est pas constant tout au long de la simulation!");
 		
 		MessageID(String englishText, String frenchText) {
@@ -104,7 +116,15 @@ public class CATGrowthSimulationRecordReader extends REpiceaRecordReader {
 		Status(CATGrowthSimulationFieldLevel.Tree),
 		DBH(CATGrowthSimulationFieldLevel.Tree),
 		Freq(CATGrowthSimulationFieldLevel.Tree),
-		Volume(CATGrowthSimulationFieldLevel.Tree);
+		Volume(CATGrowthSimulationFieldLevel.Tree),
+		AboveGroundVolume(CATGrowthSimulationFieldLevel.Tree),
+		AboveGroundBiomass(CATGrowthSimulationFieldLevel.Tree),
+		AboveGroundCarbon(CATGrowthSimulationFieldLevel.Tree),
+		BelowGroundVolume(CATGrowthSimulationFieldLevel.Tree),
+		BelowGroundBiomass(CATGrowthSimulationFieldLevel.Tree),
+		BelowGroundCarbon(CATGrowthSimulationFieldLevel.Tree),
+		;
+		
 		
 		private final CATGrowthSimulationFieldLevel level;
 		
@@ -204,7 +224,7 @@ public class CATGrowthSimulationRecordReader extends REpiceaRecordReader {
 				getClass().getSimpleName() + ".treeDBHDescription", 
 				true, 
 				MessageID.TreeDBHHelp.toString(),
-				FieldType.String);
+				FieldType.Double);
 		ifeList.add(ife);
 		ife = new ImportFieldElement(CATGrowthSimulationFieldID.Freq,
 				MessageID.TreeFreqDescription.toString(), 
@@ -220,6 +240,52 @@ public class CATGrowthSimulationRecordReader extends REpiceaRecordReader {
 				MessageID.TreeVolumeHelp.toString(),
 				FieldType.Double);
 		ifeList.add(ife);
+		
+		ife = new ImportFieldElement(CATGrowthSimulationFieldID.AboveGroundVolume,
+				MessageID.TreeAboveGroundVolumeDescription.toString(), 
+				getClass().getSimpleName() + ".treeAboveGroundVolumeDescription", 
+				true, 
+				MessageID.TreeAboveGroundVolumeHelp.toString(),
+				FieldType.Double);
+		ifeList.add(ife);
+		ife = new ImportFieldElement(CATGrowthSimulationFieldID.AboveGroundBiomass,
+				MessageID.TreeAboveGroundBiomassDescription.toString(), 
+				getClass().getSimpleName() + ".treeAboveGroundBiomassDescription", 
+				true, 
+				MessageID.TreeAboveGroundBiomassHelp.toString(),
+				FieldType.Double);
+		ifeList.add(ife);
+		ife = new ImportFieldElement(CATGrowthSimulationFieldID.AboveGroundCarbon,
+				MessageID.TreeAboveGroundCarbonDescription.toString(), 
+				getClass().getSimpleName() + ".treeAboveGroundCarbonDescription", 
+				true, 
+				MessageID.TreeAboveGroundCarbonHelp.toString(),
+				FieldType.Double);
+		ifeList.add(ife);
+
+		ife = new ImportFieldElement(CATGrowthSimulationFieldID.BelowGroundVolume,
+				MessageID.TreeBelowGroundVolumeDescription.toString(), 
+				getClass().getSimpleName() + ".treeBelowGroundVolumeDescription", 
+				true, 
+				MessageID.TreeBelowGroundVolumeHelp.toString(),
+				FieldType.Double);
+		ifeList.add(ife);
+		ife = new ImportFieldElement(CATGrowthSimulationFieldID.BelowGroundBiomass,
+				MessageID.TreeBelowGroundBiomassDescription.toString(), 
+				getClass().getSimpleName() + ".treeBelowGroundBiomassDescription", 
+				true, 
+				MessageID.TreeBelowGroundBiomassHelp.toString(),
+				FieldType.Double);
+		ifeList.add(ife);
+		ife = new ImportFieldElement(CATGrowthSimulationFieldID.BelowGroundCarbon,
+				MessageID.TreeBelowGroundCarbonDescription.toString(), 
+				getClass().getSimpleName() + ".treeBelowGroundCarbonDescription", 
+				true, 
+				MessageID.TreeBelowGroundCarbonHelp.toString(),
+				FieldType.Double);
+		ifeList.add(ife);
+
+		
 		return ifeList;
 	}
 
@@ -229,24 +295,24 @@ public class CATGrowthSimulationRecordReader extends REpiceaRecordReader {
 	@Override
 	protected void readLineRecord(Object[] oArray, int lineCounter) throws VariableValueException, Exception {
 		int index = getImportFieldManager().getIndexOfThisField(CATGrowthSimulationFieldID.Date);
-		int dateYr = Integer.parseInt(oArray[index].toString());
+		int dateYr = ((Number) oArray[index]).intValue();
 
 		index = getImportFieldManager().getIndexOfThisField(CATGrowthSimulationFieldID.Realization);
 		int realization = 0;			// default value for this optional field
 		if (index != -1 && oArray[index] != null) {	// means that a realization field has been specified
-			realization = Integer.parseInt(oArray[index].toString());
+			realization = ((Number) oArray[index]).intValue();
 		} 
 
 		index = getImportFieldManager().getIndexOfThisField(CATGrowthSimulationFieldID.PlotID);
 		String plotID = oArray[index].toString();
 
 		index = getImportFieldManager().getIndexOfThisField(CATGrowthSimulationFieldID.PlotArea);
-		double plotAreaHa = Double.parseDouble(oArray[index].toString());
+		double plotAreaHa = ((Number) oArray[index]).doubleValue();
 		
 		index = getImportFieldManager().getIndexOfThisField(CATGrowthSimulationFieldID.InterventionResult);
 		int interventionResult = 0;
 		if (index != -1 && oArray[index] != null) { 	// means that a realization field has been specified
-			interventionResult = ((Number) Double.parseDouble(oArray[index].toString())).intValue();
+			interventionResult = ((Number) oArray[index]).intValue();
 		}
 		boolean isInterventionResult = interventionResult == 1;
 		
@@ -259,21 +325,37 @@ public class CATGrowthSimulationRecordReader extends REpiceaRecordReader {
 		index = getImportFieldManager().getIndexOfThisField(CATGrowthSimulationFieldID.DBH);
 		Double dbhCm = null;
 		if (index != -1 && oArray[index] != null) { 	// means that a realization field has been specified
-			dbhCm = Double.parseDouble(oArray[index].toString());
+			dbhCm = ((Number) oArray[index]).doubleValue();
 		}
 
 		index = getImportFieldManager().getIndexOfThisField(CATGrowthSimulationFieldID.Freq);
 		double numberOfTrees = 1d;		// default value for this optional field
 		if (index != -1 && oArray[index] != null) { 	// means that a realization field has been specified
-			numberOfTrees = Double.parseDouble(oArray[index].toString());
+			numberOfTrees = ((Number) oArray[index]).doubleValue();
 		}
 
 		index = getImportFieldManager().getIndexOfThisField(CATGrowthSimulationFieldID.Volume);
-		double treeOverbarkVolumeDm3 = Double.parseDouble(oArray[index].toString());
-
+		double treeOverbarkVolumeDm3 = ((Number) oArray[index]).doubleValue();
+		
+		
 		instantiatePlotAndTree(getImportFieldManager().getFileSpecifications()[0], dateYr, realization, plotID, plotAreaHa, 
 				isInterventionResult, statusClass, treeOverbarkVolumeDm3, numberOfTrees, originalSpeciesName, dbhCm);
 	}
+
+	private Double getNonEmptyOptionalFieldValue(CATGrowthSimulationFieldID f, Object[] oArray) throws Exception {
+		int index = getImportFieldManager().getIndexOfThisField(f);
+		Double value = null;
+		if (index != -1) {
+			if (oArray[index] == null) {
+				throw new Exception("The optional field " + f.name() + " cannot contain any missing values!");
+			} else {
+				value = Double.parseDouble(oArray[index].toString());
+			}
+		}
+		return value;
+	}
+	
+	
 	
 	protected CATGrowthSimulationCompositeStand createCompositeStand(String standIdentification, int dateYr, boolean scaleDependentInterventionResult) {
 		return new CATGrowthSimulationCompositeStand(dateYr, standIdentification, this, scaleDependentInterventionResult);
