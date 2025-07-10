@@ -296,9 +296,13 @@ public class BiomassParameters implements REpiceaShowableUIWithParent, IOUserInt
 	}
 
 	private void testReferent(Object referent) {
-		branchExpansionFactorFromModelEnabled = referent instanceof CATAboveGroundVolumeProvider || referent instanceof CATAboveGroundBiomassProvider || referent instanceof CATAboveGroundCarbonProvider;
+		branchExpansionFactorFromModelEnabled = CATAboveGroundVolumeProvider.checkEligibility(referent) || 
+												CATAboveGroundBiomassProvider.checkEligibility(referent) || 
+												CATAboveGroundCarbonProvider.checkEligibility(referent);
 		branchExpansionFactorFromModel = branchExpansionFactorFromModelEnabled;
-		rootExpansionFactorFromModelEnabled = referent instanceof CATBelowGroundVolumeProvider || referent instanceof CATBelowGroundBiomassProvider || referent instanceof CATBelowGroundCarbonProvider;
+		rootExpansionFactorFromModelEnabled = 	CATBelowGroundVolumeProvider.checkEligibility(referent) || 
+												CATBelowGroundBiomassProvider.checkEligibility(referent) || 
+												CATBelowGroundCarbonProvider.checkEligibility(referent);
 		rootExpansionFactorFromModel = rootExpansionFactorFromModelEnabled;
 		basicWoodDensityFromModelEnabled = referent instanceof CATBasicWoodDensityProvider;
 		basicWoodDensityFromModel = basicWoodDensityFromModelEnabled;
@@ -458,7 +462,7 @@ public class BiomassParameters implements REpiceaShowableUIWithParent, IOUserInt
 	 * @return the carbon content (Mg)
 	 */
 	public double getBelowGroundCarbonMg(CATCompatibleTree tree, MonteCarloSimulationCompliantObject subject) {
-		boolean tier2Implementation = rootExpansionFactorFromModel && tree instanceof CATBelowGroundCarbonProvider;
+		boolean tier2Implementation = rootExpansionFactorFromModel && CATBelowGroundCarbonProvider.checkEligibility(tree);
 		if (tier2Implementation) {
 			CATBelowGroundCarbonProvider t = (CATBelowGroundCarbonProvider) tree;
 			double value = t.getBelowGroundCarbonMg() * tree.getNumber() * tree.getPlotWeight();
@@ -480,7 +484,7 @@ public class BiomassParameters implements REpiceaShowableUIWithParent, IOUserInt
 	 * @return the biomass (Mg)
 	 */
 	double getBelowGroundBiomassMg(CATCompatibleTree tree, MonteCarloSimulationCompliantObject subject) {
-		boolean tier2Implementation = rootExpansionFactorFromModel && tree instanceof CATBelowGroundBiomassProvider;
+		boolean tier2Implementation = rootExpansionFactorFromModel && CATBelowGroundBiomassProvider.checkEligibility(tree);
 		double value;
 		if (tier2Implementation) {
 			CATBelowGroundBiomassProvider t = (CATBelowGroundBiomassProvider) tree;
@@ -504,7 +508,7 @@ public class BiomassParameters implements REpiceaShowableUIWithParent, IOUserInt
 	 * @return the volume (m3)
 	 */
 	double getBelowGroundVolumeM3(CATCompatibleTree tree, MonteCarloSimulationCompliantObject subject) {
-		boolean tier2Implementation = rootExpansionFactorFromModel && tree instanceof CATBelowGroundVolumeProvider;
+		boolean tier2Implementation = rootExpansionFactorFromModel && CATBelowGroundVolumeProvider.checkEligibility(tree);
 		double value;
 		boolean isStochastic = false;
 		if (tier2Implementation) {
@@ -531,7 +535,7 @@ public class BiomassParameters implements REpiceaShowableUIWithParent, IOUserInt
 	 * @return a double (Mg)
 	 */
 	public double getAboveGroundCarbonMg(CATCompatibleTree tree, MonteCarloSimulationCompliantObject subject) {
-		boolean tier2Implementation = branchExpansionFactorFromModel && tree instanceof CATAboveGroundCarbonProvider; 
+		boolean tier2Implementation = branchExpansionFactorFromModel && CATAboveGroundCarbonProvider.checkEligibility(tree); 
 		if (tier2Implementation) {
 			CATAboveGroundCarbonProvider t = (CATAboveGroundCarbonProvider) tree;
 			double value = t.getAboveGroundCarbonMg() * tree.getNumber() * tree.getPlotWeight();
@@ -553,7 +557,8 @@ public class BiomassParameters implements REpiceaShowableUIWithParent, IOUserInt
 	 * @return the aboveground biomass (Mg)
 	 */
 	double getAboveGroundBiomassMg(CATCompatibleTree tree, MonteCarloSimulationCompliantObject subject) {
-		boolean tier2Implementation = (branchExpansionFactorFromModel && tree instanceof CATAboveGroundBiomassProvider) || tree instanceof CATSapling; // saplings automatically provide their own biomass
+		boolean tier2Implementation = (branchExpansionFactorFromModel && CATAboveGroundBiomassProvider.checkEligibility(tree)) || 
+										tree instanceof CATSapling; // saplings automatically provide their own biomass
 		if (tier2Implementation) {
 			CATAboveGroundBiomassProvider t = (CATAboveGroundBiomassProvider) tree;
 			double value = t.getAboveGroundBiomassMg() * tree.getNumber() * tree.getPlotWeight();
@@ -576,7 +581,7 @@ public class BiomassParameters implements REpiceaShowableUIWithParent, IOUserInt
 	 * @return the aboveground volume (m3)
 	 */
 	double getAboveGroundVolumeM3(CATCompatibleTree tree, MonteCarloSimulationCompliantObject subject) {
-		boolean tier2Implementation = branchExpansionFactorFromModel && tree instanceof CATAboveGroundVolumeProvider;
+		boolean tier2Implementation = branchExpansionFactorFromModel && CATAboveGroundVolumeProvider.checkEligibility(tree);
 		boolean isStochastic = false;
 		double value;
 		if (tier2Implementation) {
