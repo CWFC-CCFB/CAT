@@ -29,8 +29,24 @@ public class CATGrowthSimulationTreeWithDBH extends CATGrowthSimulationTree impl
 			double treeVolumeDm3,
 			double numberOfTrees, 
 			String originalSpeciesName,
-			double dbhCm) {
-		super(plot, statusClass, treeVolumeDm3, numberOfTrees, originalSpeciesName);
+			double dbhCm,
+			Double aboveGroundVolumeM3,
+			Double aboveGroundBiomassMg,
+			Double aboveGroundCarbonMg,
+			Double belowGroundVolumeM3,
+			Double belowGroundBiomassMg,
+			Double belowGroundCarbonMg) {
+		super(plot, 
+				statusClass, 
+				treeVolumeDm3, 
+				numberOfTrees, 
+				originalSpeciesName, 			
+				aboveGroundVolumeM3,
+				aboveGroundBiomassMg,
+				aboveGroundCarbonMg,
+				belowGroundVolumeM3,
+				belowGroundBiomassMg,
+				belowGroundCarbonMg);
 		this.dbhCm = dbhCm;
 	}
 

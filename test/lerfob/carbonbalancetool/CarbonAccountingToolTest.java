@@ -219,7 +219,7 @@ public class CarbonAccountingToolTest {
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
 		CATYieldTableRecordReader recordReader = new CATYieldTableRecordReader(CATSpecies.ABIES);
-		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(ifeFilename, filename);
+		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
 		cat.setStandList(recordReader.getStandList());
@@ -256,7 +256,7 @@ public class CarbonAccountingToolTest {
 		cat.initializeTool(null);
 		CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader();
 		recordReader.getSelector().load(speciesMatchFilename);
-		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(ifeFilename, filename);
+		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
 		cat.setStandList(recordReader.getStandList());
@@ -300,7 +300,7 @@ public class CarbonAccountingToolTest {
 			cat.initializeTool(null);
 			CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader();
 			recordReader.getSelector().load(speciesMatchFilename);
-			ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(ifeFilename, filename);
+			ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 			recordReader.initInScriptMode(ifm);
 			recordReader.readAllRecords();
 			cat.setStandList(recordReader.getStandList());
@@ -338,7 +338,7 @@ public class CarbonAccountingToolTest {
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
 		CATYieldTableRecordReader recordReader = new CATYieldTableRecordReader(CATSpecies.ABIES);
-		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(ifeFilename, filename);
+		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
 		cat.setStandList(recordReader.getStandList());
@@ -377,7 +377,7 @@ public class CarbonAccountingToolTest {
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
 		CATYieldTableRecordReader recordReader = new CATYieldTableRecordReader(CATSpecies.ABIES);
-		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(ifeFilename, filename);
+		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
 		cat.setStandList(recordReader.getStandList());
@@ -412,7 +412,7 @@ public class CarbonAccountingToolTest {
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
 		CATYieldTableRecordReader recordReader = new CATYieldTableRecordReader(CATSpecies.ABIES);
-		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(ifeFilename, filename);
+		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
 		cat.setStandList(recordReader.getStandList());
@@ -459,7 +459,7 @@ public class CarbonAccountingToolTest {
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
 		CATYieldTableRecordReader recordReader = new CATYieldTableRecordReader(CATSpecies.ABIES);
-		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(ifeFilename, filename);
+		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
 		cat.setStandList(recordReader.getStandList());

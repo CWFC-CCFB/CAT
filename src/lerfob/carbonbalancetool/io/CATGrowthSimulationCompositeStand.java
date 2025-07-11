@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import lerfob.carbonbalancetool.CATCompatibleStand;
+import lerfob.carbonbalancetool.io.CATGrowthSimulationRecordReader.CATGrowthSimulationFieldID;
 import repicea.simulation.covariateproviders.plotlevel.StochasticInformationProvider;
 import repicea.simulation.covariateproviders.samplelevel.ApplicationScaleProvider.ApplicationScale;
 import repicea.simulation.covariateproviders.samplelevel.ManagementTypeProvider.ManagementType;
@@ -43,8 +44,9 @@ public class CATGrowthSimulationCompositeStand implements CATCompatibleStand, St
 	private ManagementType managementType;
 	private ApplicationScale applicationScale;
 	private final boolean isInterventionResult;
+	private final Map<CATGrowthSimulationFieldID, Boolean> interfaceEnabledMap;
 	
-	protected CATGrowthSimulationCompositeStand(int dateYr, String standIdentification, CATGrowthSimulationRecordReader reader, boolean isInterventionResult) {
+	protected CATGrowthSimulationCompositeStand(int dateYr, String standIdentification, CATGrowthSimulationRecordReader reader, boolean isInterventionResult, Map<CATGrowthSimulationFieldID, Boolean> interfaceEnabledMap) {
 		this.dateYr = dateYr;
 		this.standIdentification = standIdentification;
 		this.reader = reader;
@@ -52,6 +54,7 @@ public class CATGrowthSimulationCompositeStand implements CATCompatibleStand, St
 		managementType = ManagementType.UnevenAged;
 		applicationScale = reader.scale;
 		this.isInterventionResult = isInterventionResult;
+		this.interfaceEnabledMap = interfaceEnabledMap;
 	}
 	
 	@Override
@@ -98,6 +101,12 @@ public class CATGrowthSimulationCompositeStand implements CATCompatibleStand, St
 		return new CATGrowthSimulationPlotSample(this);
 	}
 
+	protected boolean isAssociatedInterfaceEnabled(CATGrowthSimulationFieldID interfaceID) {
+		return interfaceEnabledMap == null ?
+				false :
+					interfaceEnabledMap.get(interfaceID);
+	}
+	
 	@Override
 	public ManagementType getManagementType() {return managementType;}
 
