@@ -54,7 +54,7 @@ class CATGrowthSimulationTree implements CATCompatibleTree,
 	
 	CATGrowthSimulationTree(CATGrowthSimulationPlot plot, 
 			StatusClass statusClass, 
-			double treeOverbarkVolumeDm3, 
+			double treeOverbarkVolumeM3, 
 			double numberOfTrees, 
 			String originalSpeciesName,
 			Double aboveGroundVolumeM3,
@@ -65,7 +65,7 @@ class CATGrowthSimulationTree implements CATCompatibleTree,
 			Double belowGroundCarbonMg
 			) {
 		this.plot = plot;
-		commercialVolumeM3 = treeOverbarkVolumeDm3 * .001;
+		commercialVolumeM3 = treeOverbarkVolumeM3;
 		this.numberOfTrees = numberOfTrees;
 		this.originalSpeciesName = originalSpeciesName;
 		setStatusClass(statusClass);

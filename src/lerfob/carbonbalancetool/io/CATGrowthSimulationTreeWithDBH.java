@@ -26,7 +26,7 @@ public class CATGrowthSimulationTreeWithDBH extends CATGrowthSimulationTree impl
 	
 	protected CATGrowthSimulationTreeWithDBH(CATGrowthSimulationPlot plot, 
 			StatusClass statusClass, 
-			double treeVolumeDm3,
+			double treeVolumeM3,
 			double numberOfTrees, 
 			String originalSpeciesName,
 			double dbhCm,
@@ -38,7 +38,7 @@ public class CATGrowthSimulationTreeWithDBH extends CATGrowthSimulationTree impl
 			Double belowGroundCarbonMg) {
 		super(plot, 
 				statusClass, 
-				treeVolumeDm3, 
+				treeVolumeM3, 
 				numberOfTrees, 
 				originalSpeciesName, 			
 				aboveGroundVolumeM3,

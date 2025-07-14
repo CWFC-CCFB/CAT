@@ -71,8 +71,8 @@ public class CATGrowthSimulationRecordReader extends REpiceaRecordReader {
 		TreeFreqDescription("Tree frequency", "Fr\u00E9quence d'arbre"),
 		TreeFreqHelp("This field must contain the number of trees represented by the record in the plot. It is a double. This field is optional. If it is not specified, CAT assumes that the frequency is one.",
 				"Ce champ doit contenir le nombre d'arbres repr\u00E9sent\u00E9s par cet enregistrement dans la placette. Il s'agit d'un double. Ce champ est facultatif. S'il n'est pas sp\u00E9cifi\u00E9, CAT utilise une fr\u00E9quence unitaire."),
-		TreeVolumeDescription("Tree overbark commercial volume (dm3)", "Volume commercial sur \u00E9corce (dm3)"),
-		TreeVolumeHelp("This field contains the commercial volume (dm3) for a single tree. It is a double.", "Ce champ contient le volume commercial (dm3) d'un arbre individuel. Il s'agit d'un double."),
+		TreeVolumeDescription("Tree overbark commercial volume (m3)", "Volume commercial sur \u00E9corce (m3)"),
+		TreeVolumeHelp("This field contains the commercial volume (m3) for a single tree. It is a double.", "Ce champ contient le volume commercial (m3) d'un arbre individuel. Il s'agit d'un double."),
 		TreeAboveGroundVolumeDescription("Tree overbark aboveground volume (m3)", "Volume a\u00E9rien sur \u00E9corce (m3)"),
 		TreeAboveGroundVolumeHelp("This field contains the overbark aboveground volume (m3) for a single tree. It is a double.", "Ce champ contient le volume a\u00E9rien sur \u00E9corce (m3) d'un arbre individuel. Il s'agit d'un double."),
 		TreeAboveGroundBiomassDescription("Tree overbark aboveground biomass (Mg)", "Biomasse a\u00E9rienne sur \u00E9corce (Mg)"),
@@ -335,7 +335,7 @@ public class CATGrowthSimulationRecordReader extends REpiceaRecordReader {
 		}
 
 		index = getImportFieldManager().getIndexOfThisField(CATGrowthSimulationFieldID.Volume);
-		double treeOverbarkVolumeDm3 = ((Number) oArray[index]).doubleValue();
+		double treeOverbarkVolumeM3 = ((Number) oArray[index]).doubleValue();
 		
 		Double abovegroundVolumeM3 = this.getNonEmptyOptionalFieldValue(CATGrowthSimulationFieldID.AboveGroundVolume, oArray);
 		Double abovegroundBiomassMg = this.getNonEmptyOptionalFieldValue(CATGrowthSimulationFieldID.AboveGroundBiomass, oArray);
@@ -351,7 +351,7 @@ public class CATGrowthSimulationRecordReader extends REpiceaRecordReader {
 				plotAreaHa, 
 				isInterventionResult, 
 				statusClass, 
-				treeOverbarkVolumeDm3, 
+				treeOverbarkVolumeM3, 
 				numberOfTrees, 
 				originalSpeciesName, 
 				dbhCm,
@@ -404,7 +404,7 @@ public class CATGrowthSimulationRecordReader extends REpiceaRecordReader {
 			double plotAreaHa,
 			boolean isInterventionResult, 
 			StatusClass statusClass, 
-			double treeOverbarkVolumeDm3, 
+			double treeOverbarkVolumeM3, 
 			double numberOfTrees, 
 			String originalSpeciesName, 
 			Double dbhCm,
@@ -440,7 +440,7 @@ public class CATGrowthSimulationRecordReader extends REpiceaRecordReader {
 		
 		CATGrowthSimulationTree tree = createTree(plot, 
 				statusClass, 
-				treeOverbarkVolumeDm3, 
+				treeOverbarkVolumeM3, 
 				numberOfTrees, 
 				originalSpeciesName,
 				dbhCm,
@@ -462,7 +462,7 @@ public class CATGrowthSimulationRecordReader extends REpiceaRecordReader {
 	 * Create a Tree instance. 
 	 * @param plot a CATGrowthSimulationPlot instance
 	 * @param statusClass a StatusClass enum
-	 * @param treeOverbarkVolumeDm3 the overbark volume (dm3)
+	 * @param treeOverbarkVolumeDm3 the overbark volume (m3)
 	 * @param numberOfTrees the expansion factor 
 	 * @param originalSpeciesName the original species name
 	 * @param dbhCm DBH (cm)
@@ -470,7 +470,7 @@ public class CATGrowthSimulationRecordReader extends REpiceaRecordReader {
 	 */
 	protected CATGrowthSimulationTree createTree(CATGrowthSimulationPlot plot, 
 			StatusClass statusClass, 
-			double treeOverbarkVolumeDm3, 
+			double treeOverbarkVolumeM3, 
 			double numberOfTrees, 
 			String originalSpeciesName,
 			Double dbhCm,
@@ -481,9 +481,9 @@ public class CATGrowthSimulationRecordReader extends REpiceaRecordReader {
 			Double belowGroundBiomassMg,
 			Double belowGroundCarbonMg) {
 		return dbhCm == null ?
-				new CATGrowthSimulationTree(plot, statusClass, treeOverbarkVolumeDm3, numberOfTrees, originalSpeciesName,
+				new CATGrowthSimulationTree(plot, statusClass, treeOverbarkVolumeM3, numberOfTrees, originalSpeciesName,
 						aboveGroundVolumeM3, aboveGroundBiomassMg, aboveGroundCarbonMg, belowGroundVolumeM3, belowGroundBiomassMg, belowGroundCarbonMg) :
-					new CATGrowthSimulationTreeWithDBH(plot, statusClass, treeOverbarkVolumeDm3, numberOfTrees, originalSpeciesName, dbhCm, 
+					new CATGrowthSimulationTreeWithDBH(plot, statusClass, treeOverbarkVolumeM3, numberOfTrees, originalSpeciesName, dbhCm, 
 							aboveGroundVolumeM3, aboveGroundBiomassMg, aboveGroundCarbonMg, belowGroundVolumeM3, belowGroundBiomassMg, belowGroundCarbonMg);
 	}
 	
