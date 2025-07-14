@@ -25,6 +25,20 @@ package lerfob.carbonbalancetool.interfaces;
 public interface CATAboveGroundBiomassProvider {
 
 	/**
+	 * Check if the interface is implemented on the fly or not.
+	 * @param o the object to be tested
+	 * @return true if the interface is implemented and enabled
+	 */
+	public static boolean checkEligibility(Object o) {
+		if (o instanceof CATAboveGroundBiomassProvider) {
+			if (((CATAboveGroundBiomassProvider) o).isCATAboveGroundBiomassProviderInterfaceEnabled()) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
 	 * This method returns the total above ground biomass (Mg), INCLUDING bark and WITHOUT expansion factor.
 	 * @return a double
 	 */
@@ -36,4 +50,11 @@ public interface CATAboveGroundBiomassProvider {
 	 */
 	public default boolean isAboveGroundBiomassPredictorStochastic() {return false;};
 	
+	/**
+	 * Provide the current state of this interface for on-the-fly implementation.
+	 * @return a boolean
+	 */
+	public default boolean isCATAboveGroundBiomassProviderInterfaceEnabled() {
+		return true;
+	}
 }

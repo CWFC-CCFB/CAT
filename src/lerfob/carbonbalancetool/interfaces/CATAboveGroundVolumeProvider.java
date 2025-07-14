@@ -25,6 +25,20 @@ package lerfob.carbonbalancetool.interfaces;
 public interface CATAboveGroundVolumeProvider {
 
 	/**
+	 * Check if the interface is implemented on the fly or not.
+	 * @param o the object to be tested
+	 * @return true if the interface is implemented and enabled
+	 */
+	public static boolean checkEligibility(Object o) {
+		if (o instanceof CATAboveGroundVolumeProvider) {
+			if (((CATAboveGroundVolumeProvider) o).isCATAboveGroundVolumeProviderInterfaceEnabled()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * This method returns the total above ground volume (m3) , INCLUDING bark and WITHOUT any expansion factor.
 	 * @return a double
 	 */
@@ -36,4 +50,11 @@ public interface CATAboveGroundVolumeProvider {
 	 */
 	public default boolean isAboveGroundVolumePredictorStochastic() {return false;}
 
+	/**
+	 * Provide the current state of this interface for on-the-fly implementation.
+	 * @return a boolean
+	 */
+	public default boolean isCATAboveGroundVolumeProviderInterfaceEnabled() {
+		return true;
+	}
 }

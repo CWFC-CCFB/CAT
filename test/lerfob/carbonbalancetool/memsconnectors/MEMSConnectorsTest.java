@@ -22,6 +22,7 @@ package lerfob.carbonbalancetool.memsconnectors;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -60,12 +61,18 @@ public class MEMSConnectorsTest {
 				double treeOverbarkVolumeDm3, 
 				double numberOfTrees, 
 				String originalSpeciesName,
-				Double dbhCm) {
+				Double dbhCm,
+				Double aboveGroundVolumeM3,
+				Double aboveGroundBiomassMg,
+				Double aboveGroundCarbonMg,
+				Double belowGroundVolumeM3,
+				Double belowGroundBiomassMg,
+				Double belowGroundCarbonMg) {
 			return new CATGrowthSimulationTreeHacked(plot, statusClass, treeOverbarkVolumeDm3, numberOfTrees, originalSpeciesName, dbhCm);
 		}
 
 		@Override
-		protected CATGrowthSimulationCompositeStand createCompositeStand(String standIdentification, int dateYr, boolean scaleDependentInterventionResult) {
+		protected CATGrowthSimulationCompositeStand createCompositeStand(String standIdentification, int dateYr, boolean scaleDependentInterventionResult, Map<CATGrowthSimulationFieldID, Boolean> interfaceEnablingMap) {
 			return new CATGrowthSimulationCompositeStandHacked(dateYr, standIdentification, this, scaleDependentInterventionResult);
 		}
 	}
@@ -102,7 +109,8 @@ public class MEMSConnectorsTest {
 				double numberOfTrees, 
 				String originalSpeciesName,
 				double dbhCm) {
-			super(plot, statusClass, treeVolumeDm3, numberOfTrees, originalSpeciesName, dbhCm);
+			super(plot, statusClass, treeVolumeDm3, numberOfTrees, originalSpeciesName, dbhCm,
+					null, null, null, null, null, null); // all above and below ground values set to null.
 		}
 
 		@Override
@@ -137,7 +145,7 @@ public class MEMSConnectorsTest {
 	static class CATGrowthSimulationCompositeStandHacked extends CATGrowthSimulationCompositeStand implements MEMSCompatibleStand {
 
 		CATGrowthSimulationCompositeStandHacked(int dateYr, String standIdentification, CATGrowthSimulationRecordReader reader, boolean isInterventionResult) {
-			super(dateYr, standIdentification, reader, isInterventionResult);
+			super(dateYr, standIdentification, reader, isInterventionResult, null); // Map set to null
 		}
 
 		@Override
@@ -180,7 +188,7 @@ public class MEMSConnectorsTest {
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
 		CATGrowthSimulationRecordReaderHacked recordReader = new CATGrowthSimulationRecordReaderHacked();
-		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(ifeFilename, filename);
+		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
 		cat.setStandList(recordReader.getStandList());

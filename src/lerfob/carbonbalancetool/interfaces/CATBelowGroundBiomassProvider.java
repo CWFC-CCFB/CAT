@@ -25,6 +25,20 @@ package lerfob.carbonbalancetool.interfaces;
 public interface CATBelowGroundBiomassProvider {
 
 	/**
+	 * Check if the interface is implemented on the fly or not.
+	 * @param o the object to be tested
+	 * @return true if the interface is implemented and enabled
+	 */
+	public static boolean checkEligibility(Object o) {
+		if (o instanceof CATBelowGroundBiomassProvider) {
+			if (((CATBelowGroundBiomassProvider) o).isCATBelowGroundBiomassProviderInterfaceEnabled()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * This method returns the dry belowground biomass (Mg), INCLUDING bark and WITHOUT expansion factor.
 	 * @return a double
 	 */
@@ -35,5 +49,13 @@ public interface CATBelowGroundBiomassProvider {
 	 * @return a boolean
 	 */
 	public default boolean isBelowGroundBiomassPredictorStochastic() {return false;}
+
+	/**
+	 * Provide the current state of this interface for on-the-fly implementation.
+	 * @return a boolean
+	 */
+	public default boolean isCATBelowGroundBiomassProviderInterfaceEnabled() {
+		return true;
+	}
 
 }

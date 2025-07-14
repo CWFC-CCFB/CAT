@@ -13,6 +13,7 @@ import org.junit.Test;
 
 import lerfob.carbonbalancetool.CATCompartment.CompartmentInfo;
 import lerfob.carbonbalancetool.CATSettings.CATSpecies;
+import lerfob.carbonbalancetool.CATUtility.BiomassParametersName;
 import lerfob.carbonbalancetool.CATUtility.ProductionManagerName;
 import lerfob.carbonbalancetool.CarbonAccountingTool.CATMode;
 import lerfob.carbonbalancetool.io.CATGrowthSimulationRecordReader;
@@ -219,7 +220,7 @@ public class CarbonAccountingToolTest {
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
 		CATYieldTableRecordReader recordReader = new CATYieldTableRecordReader(CATSpecies.ABIES);
-		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(ifeFilename, filename);
+		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
 		cat.setStandList(recordReader.getStandList());
@@ -256,7 +257,7 @@ public class CarbonAccountingToolTest {
 		cat.initializeTool(null);
 		CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader();
 		recordReader.getSelector().load(speciesMatchFilename);
-		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(ifeFilename, filename);
+		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
 		cat.setStandList(recordReader.getStandList());
@@ -300,7 +301,7 @@ public class CarbonAccountingToolTest {
 			cat.initializeTool(null);
 			CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader();
 			recordReader.getSelector().load(speciesMatchFilename);
-			ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(ifeFilename, filename);
+			ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 			recordReader.initInScriptMode(ifm);
 			recordReader.readAllRecords();
 			cat.setStandList(recordReader.getStandList());
@@ -338,7 +339,7 @@ public class CarbonAccountingToolTest {
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
 		CATYieldTableRecordReader recordReader = new CATYieldTableRecordReader(CATSpecies.ABIES);
-		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(ifeFilename, filename);
+		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
 		cat.setStandList(recordReader.getStandList());
@@ -377,7 +378,7 @@ public class CarbonAccountingToolTest {
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
 		CATYieldTableRecordReader recordReader = new CATYieldTableRecordReader(CATSpecies.ABIES);
-		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(ifeFilename, filename);
+		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
 		cat.setStandList(recordReader.getStandList());
@@ -412,7 +413,7 @@ public class CarbonAccountingToolTest {
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
 		CATYieldTableRecordReader recordReader = new CATYieldTableRecordReader(CATSpecies.ABIES);
-		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(ifeFilename, filename);
+		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
 		cat.setStandList(recordReader.getStandList());
@@ -459,7 +460,7 @@ public class CarbonAccountingToolTest {
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
 		CATYieldTableRecordReader recordReader = new CATYieldTableRecordReader(CATSpecies.ABIES);
-		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(ifeFilename, filename);
+		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
 		cat.setStandList(recordReader.getStandList());
@@ -568,6 +569,43 @@ public class CarbonAccountingToolTest {
 		}
 
 	}
+	
+	@Test
+	public void test14WithSimulationResultsWithFranceSubset() throws Exception {
+		String filename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "Statistiques_IFN_France_subset_exemple.csv";
+		String ifeFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "Statistiques_IFN_France_subset_exemple.ife";
+		String speciesMatchFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "Statistiques_IFN_France_subset_exemple.xml";
+//		String refFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "MathildeTreeExportReference.xml";
+		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
+		cat.initializeTool(null);
+		CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader();
+		recordReader.getSelector().load(speciesMatchFilename);
+		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
+		recordReader.initInScriptMode(ifm);
+		recordReader.readAllRecords();
+		cat.setStandList(recordReader.getStandList());
+		cat.getCarbonToolSettings().setCurrentBiomassParametersSelection(BiomassParametersName.customized);
+		cat.calculateCarbon();
+		CATSingleSimulationResult result = cat.getCarbonCompartmentManager().getSimulationSummary();
+		Map<CompartmentInfo, MonteCarloEstimate> obsMap = result.getEvolutionMap();
+		Matrix meanLivingBiomass = obsMap.get(CompartmentInfo.LivingBiomass).getMean();
+		Assert.assertEquals("Testing initial carbon in living biomass", 
+				11.15949982402814, 
+				meanLivingBiomass.getValueAt(0, 0), 1E-8);
+		Assert.assertEquals("Testing initial carbon in living biomass", 
+				11.678966454781719, 
+				meanLivingBiomass.getValueAt(4, 0), 1E-8);
+		Matrix DOM = obsMap.get(CompartmentInfo.DeadBiom).getMean();
+		Assert.assertEquals("Testing initial carbon in DOM", 
+				0.08344651687881643, 
+				DOM.getValueAt(0, 0), 1E-4);
+		Assert.assertEquals("Testing initial carbon in living biomass", 
+				0.3824199677541014, 
+				DOM.getValueAt(4, 0), 1E-3);
+		System.out.println("Successfully tested this subset of French national inventory");
+	}
+
+	
 	
 	public static void main(String[] args) throws Exception {
 		CarbonAccountingToolTest test = new CarbonAccountingToolTest();

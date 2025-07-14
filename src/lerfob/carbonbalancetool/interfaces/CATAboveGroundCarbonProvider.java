@@ -25,6 +25,20 @@ package lerfob.carbonbalancetool.interfaces;
 public interface CATAboveGroundCarbonProvider {
 
 	/**
+	 * Check if the interface is implemented on the fly or not.
+	 * @param o the object to be tested
+	 * @return true if the interface is implemented and enabled
+	 */
+	public static boolean checkEligibility(Object o) {
+		if (o instanceof CATAboveGroundCarbonProvider) {
+			if (((CATAboveGroundCarbonProvider) o).isCATAboveGroundCarbonProviderInterfaceEnabled()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * This method returns the aboveground carbon (Mg), INCLUDING bark and WITHOUT expansion factor.
 	 * @return a double
 	 */
@@ -35,5 +49,13 @@ public interface CATAboveGroundCarbonProvider {
 	 * @return a boolean
 	 */
 	public default boolean isAboveGroundCarbonPredictorStochastic() {return false;}
+
+	/**
+	 * Provide the current state of this interface for on-the-fly implementation.
+	 * @return a boolean
+	 */
+	public default boolean isCATAboveGroundCarbonProviderInterfaceEnabled() {
+		return true;
+	}
 
 }
