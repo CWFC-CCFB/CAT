@@ -1,4 +1,4 @@
-﻿Date,Realisation,Plot_ID,Plot_surface_ha,Classe_botanique,Espece,Statut_arbre,CD_arbre,Effectif,Volume_tige_m3,Volume_aerien_m3,Volume_souterrain_m3,Biomasse_tige_tonnes,Biomasse_aerienne_tonnes,Biomasse_souterraine_tonnes,Carbone_tige_tonnes,Carbone_aerien_tonnes,Carbone_souterrain_tonnes
+Date,Realisation,Plot_ID,Plot_surface_ha,Classe_botanique,Espece,Statut_arbre,CD_arbre,Effectif,Volume_tige_m3,Volume_aerien_m3,Volume_souterrain_m3,Biomasse_tige_tonnes,Biomasse_aerienne_tonnes,Biomasse_souterraine_tonnes,Carbone_tige_tonnes,Carbone_aerien_tonnes,Carbone_souterrain_tonnes
 2020,0,France,16059248.72,Feuillu,Ailante,alive,5,163377.927,0.018220427,0.030854636,0.008639298,0.01006132,0.01703793,0.00477062,0.004779127,0.008093017,0.002266045
 2021,0,France,16261842.52,Feuillu,Ailante,alive,5,163377.927,0.018220427,0.030854636,0.008639298,0.01006132,0.01703793,0.00477062,0.004779127,0.008093017,0.002266045
 2017,0,France,15806282.85,Feuillu,Ailante,alive,10,34947.71156,0.04408549,0.062899362,0.017611821,0.024344008,0.034733028,0.009725248,0.011563404,0.016498188,0.004619493
