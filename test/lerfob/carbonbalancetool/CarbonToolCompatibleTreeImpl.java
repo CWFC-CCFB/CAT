@@ -1,6 +1,6 @@
 package lerfob.carbonbalancetool;
 
-import lerfob.carbonbalancetool.CATSettings.CATSpecies;
+import repicea.simulation.species.REpiceaSpecies.Species;
 
 class CarbonToolCompatibleTreeImpl implements CATCompatibleTree, Cloneable {
 
@@ -9,18 +9,18 @@ class CarbonToolCompatibleTreeImpl implements CATCompatibleTree, Cloneable {
 	private final double volM3;
 	private final String speciesName;
 	private StatusClass statusClass;
-	private final CATSpecies species;
+	private final Species species;
 	
-	protected CarbonToolCompatibleTreeImpl(double number, double volM3, String speciesName) {
+	protected CarbonToolCompatibleTreeImpl(double number, double volM3, Species species) {
 		this.number = number;
 		this.volM3 = volM3;
-		this.speciesName = speciesName;
-		this.species = CATSpecies.getCATSpeciesFromThisString(speciesName);
+		this.speciesName = species.getLatinName();
+		this.species = species;
 		setStatusClass(StatusClass.alive);
 	}
 
-	protected CarbonToolCompatibleTreeImpl(double volM3, String speciesName) {
-		this(1d, volM3, speciesName);
+	protected CarbonToolCompatibleTreeImpl(double volM3, Species species) {
+		this(1d, volM3, species);
 	}
 
 	@Override
@@ -40,13 +40,11 @@ class CarbonToolCompatibleTreeImpl implements CATCompatibleTree, Cloneable {
 
 	@Override
 	public CATCompatibleTree clone() {
-		return new CarbonToolCompatibleTreeImpl(number, volM3, speciesName);
+		return new CarbonToolCompatibleTreeImpl(number, volM3, species);
 	}
 
 	@Override
-	public CATSpecies getCATSpecies() {
-		return species;
-	}
+	public Species getCATSpecies() {return species;}
 
 	@Override
 	public boolean isCommercialVolumeOverbark() {

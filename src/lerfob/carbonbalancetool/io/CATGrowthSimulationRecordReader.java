@@ -27,8 +27,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import lerfob.carbonbalancetool.CATCompatibleStand;
-import lerfob.carbonbalancetool.CATSettings.CATSpecies;
-import repicea.gui.components.REpiceaMatchSelector;
 import repicea.io.tools.ImportFieldElement;
 import repicea.io.tools.ImportFieldElement.FieldType;
 import repicea.io.tools.LevelProviderEnum;
@@ -159,7 +157,7 @@ public class CATGrowthSimulationRecordReader extends REpiceaRecordReader {
 	 * This method returns the selector for the species in CAT.
 	 * @return a REpiceaMatchSelector instance
 	 */
-	public REpiceaMatchSelector<CATSpecies> getSelector() {
+	public CATGrowthSimulationSpeciesSelector getSelector() {
 		if (selector == null) {
 			selector = new CATGrowthSimulationSpeciesSelector(speciesList.toArray());
 		}
@@ -462,10 +460,16 @@ public class CATGrowthSimulationRecordReader extends REpiceaRecordReader {
 	 * Create a Tree instance. 
 	 * @param plot a CATGrowthSimulationPlot instance
 	 * @param statusClass a StatusClass enum
-	 * @param treeOverbarkVolumeDm3 the overbark volume (m3)
+	 * @param treeOverbarkVolumeM3 the overbark volume (m3)
 	 * @param numberOfTrees the expansion factor 
 	 * @param originalSpeciesName the original species name
 	 * @param dbhCm DBH (cm)
+	 * @param aboveGroundVolumeM3 the aboveground volume (m3), can be null which means it is not provided
+	 * @param aboveGroundBiomassMg the aboveground biomass (Mg), can be null which means it is not provided
+	 * @param aboveGroundCarbonMg the aboveground carbon (Mg), can be null which means it is not provided
+	 * @param belowGroundVolumeM3 the belowground volume (m3), can be null which means it is not provided
+	 * @param belowGroundBiomassMg the belowground biomass (Mg), can be null which means it is not provided
+	 * @param belowGroundCarbonMg the belowground carbon (Mg), can be null which means it is not provided
 	 * @return a CATGrowthSimulationTree instance
 	 */
 	protected CATGrowthSimulationTree createTree(CATGrowthSimulationPlot plot, 

@@ -18,8 +18,8 @@
  */
 package lerfob.carbonbalancetool.pythonaccess;
 
-import lerfob.carbonbalancetool.CATSettings.CATSpecies;
 import lerfob.treelogger.europeanbeech.EuropeanBeechBasicTree;
+import repicea.simulation.species.REpiceaSpecies.Species;
 
 class PythonEuropeanBeechTree extends PythonCarbonToolCompatibleTree implements EuropeanBeechBasicTree {
 
@@ -31,7 +31,7 @@ class PythonEuropeanBeechTree extends PythonCarbonToolCompatibleTree implements 
 			double biomassBranches,
 			double dbhCm,
 			double dbhCmStandardDeviation) {
-		super(CATSpecies.FAGUS_SYLVATICA, statusClass, number, biomassRoots, biomassTrunk, biomassBranches, dbhCm, dbhCmStandardDeviation);
+		super(Species.Fagus_sylvatica, statusClass, number, biomassRoots, biomassTrunk, biomassBranches, dbhCm, dbhCmStandardDeviation);
 
 	}
 

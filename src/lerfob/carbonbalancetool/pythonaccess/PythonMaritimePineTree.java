@@ -18,8 +18,8 @@
  */
 package lerfob.carbonbalancetool.pythonaccess;
 
-import lerfob.carbonbalancetool.CATSettings.CATSpecies;
 import lerfob.treelogger.maritimepine.MaritimePineBasicLoggableTree;
+import repicea.simulation.species.REpiceaSpecies.Species;
 
 class PythonMaritimePineTree extends PythonCarbonToolCompatibleTree implements MaritimePineBasicLoggableTree {
 
@@ -31,7 +31,7 @@ class PythonMaritimePineTree extends PythonCarbonToolCompatibleTree implements M
 			double biomassBranches,
 			double dbhCm,
 			double dbhCmStandardDeviation) {
-		super(CATSpecies.PINUS_PINASTER, statusClass, number, biomassRoots, biomassTrunk, biomassBranches, dbhCm, dbhCmStandardDeviation);
+		super(Species.Pinus_pinaster, statusClass, number, biomassRoots, biomassTrunk, biomassBranches, dbhCm, dbhCmStandardDeviation);
 	}
 
 	@Override

@@ -2,12 +2,14 @@ package lerfob.carbonbalancetool.catdiameterbasedtreelogger;
 
 import java.util.List;
 
+import lerfob.carbonbalancetool.CATSettings.CATSpecies;
 import lerfob.treelogger.diameterbasedtreelogger.DiameterBasedTreeLogCategory;
 import lerfob.treelogger.diameterbasedtreelogger.DiameterBasedWoodPiece;
+import repicea.serial.PostUnmarshalling;
 import repicea.simulation.treelogger.LoggableTree;
 
-@SuppressWarnings("serial")
-public class CATDiameterBasedTreeLogCategory extends DiameterBasedTreeLogCategory {
+@SuppressWarnings({ "serial", "deprecation" })
+public class CATDiameterBasedTreeLogCategory extends DiameterBasedTreeLogCategory implements PostUnmarshalling {
 
 	private transient CATDiameterBasedTreeLogCategoryPanel guiInterface;
 
@@ -16,6 +18,14 @@ public class CATDiameterBasedTreeLogCategory extends DiameterBasedTreeLogCategor
 			DiameterBasedTreeLogCategory subCategory) {
 		super(logGrade, species.name(), minimumDbhCm, conversionFactor, downgradingFactor, isFromStump, subCategory);
 	}
+	
+//	/*
+//	 * For extended visibility
+//	 */
+//	@Override
+//	public void setSpecies(Object species) {
+//		super.setSpecies(species);
+//	}
 	
 	@Override
 	public CATDiameterBasedTreeLogCategoryPanel getUI() {
@@ -32,6 +42,13 @@ public class CATDiameterBasedTreeLogCategory extends DiameterBasedTreeLogCategor
 	@Override
 	protected List<DiameterBasedWoodPiece> extractFromTree(LoggableTree tree, Object... parms) {
 		return super.extractFromTree(tree, parms);
+	}
+
+	@Override
+	public void postUnmarshallingAction() {
+		if (this.getSpecies() instanceof CATSpecies) {
+			this.setSpecies(((CATSpecies) getSpecies()).species);
+		}
 	}
 
 }

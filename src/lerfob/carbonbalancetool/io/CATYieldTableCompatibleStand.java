@@ -26,10 +26,8 @@ import java.util.Map;
 
 import lerfob.carbonbalancetool.CATCompatibleStand;
 import lerfob.carbonbalancetool.CATCompatibleTree;
-import lerfob.carbonbalancetool.CATSettings.CATSpecies;
-import repicea.simulation.covariateproviders.samplelevel.ApplicationScaleProvider.ApplicationScale;
-import repicea.simulation.covariateproviders.samplelevel.ManagementTypeProvider.ManagementType;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
+import repicea.simulation.species.REpiceaSpecies.Species;
 
 /**
  * This class represents the stand in a yield table import in CAT.
@@ -40,21 +38,20 @@ class CATYieldTableCompatibleStand implements CATCompatibleStand {
 	private final String standId;
 	private final int dateYr;
 	private final boolean isInterventionResult;
-//	protected final String speciesName;
-	protected final CATSpecies species;
+	protected final Species species;
 	protected final Map<StatusClass, Collection<CATCompatibleTree>> statusClassMap;
 
-	CATYieldTableCompatibleStand(String standId, 
-			int dateYr, 
-			boolean isInterventionResult, 
-			String speciesName) {
-		this(standId, dateYr, isInterventionResult, CATSpecies.getCATSpeciesFromThisString(speciesName));
-	}
+//	CATYieldTableCompatibleStand(String standId, 
+//			int dateYr, 
+//			boolean isInterventionResult, 
+//			String speciesName) {
+//		this(standId, dateYr, isInterventionResult, CATSpecies.getCATSpeciesFromThisString(speciesName));
+//	}
 
 	CATYieldTableCompatibleStand(String standId, 
 			int dateYr, 
 			boolean isInterventionResult, 
-			CATSpecies species) {
+			Species species) {
 		this.standId = standId;
 		this.dateYr = dateYr;
 		this.isInterventionResult = isInterventionResult;

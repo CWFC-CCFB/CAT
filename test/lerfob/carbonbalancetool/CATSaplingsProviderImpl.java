@@ -22,9 +22,9 @@ package lerfob.carbonbalancetool;
 import java.util.ArrayList;
 import java.util.List;
 
-import lerfob.carbonbalancetool.CATSettings.CATSpecies;
 import lerfob.carbonbalancetool.interfaces.CATSapling;
 import lerfob.carbonbalancetool.interfaces.CATSaplingsProvider;
+import repicea.simulation.species.REpiceaSpecies.Species;
 
 public class CATSaplingsProviderImpl extends CarbonToolCompatibleStandImpl implements CATSaplingsProvider{
 
@@ -40,7 +40,7 @@ public class CATSaplingsProviderImpl extends CarbonToolCompatibleStandImpl imple
 	public List<CATSapling> getSaplings() {
 		List<CATSapling> saplings = new ArrayList<CATSapling>();
 		for (int i = 0; i < 10; i++) {
-			saplings.add(new CATSapling(0.05, CATSpecies.ABIES));
+			saplings.add(new CATSapling(0.05, Species.Abies_spp));
 		}
 		return saplings;
 	}
