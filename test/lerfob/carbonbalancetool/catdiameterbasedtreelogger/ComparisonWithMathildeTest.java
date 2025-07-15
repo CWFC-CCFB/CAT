@@ -30,12 +30,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import lerfob.carbonbalancetool.CATCompatibleTree;
-import lerfob.carbonbalancetool.CATSettings.CATSpecies;
 import lerfob.predictor.mathilde.MathildeTreeSpeciesProvider.MathildeTreeSpecies;
 import lerfob.treelogger.diameterbasedtreelogger.DiameterBasedTreeLoggerParameters;
 import lerfob.treelogger.mathilde.MathildeLoggableTree;
 import lerfob.treelogger.mathilde.MathildeTreeLogger;
 import lerfob.treelogger.mathilde.MathildeTreeLoggerParameters;
+import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.simulation.treelogger.WoodPiece;
 import repicea.util.ObjectUtility;
 import repicea.util.REpiceaTranslator;
@@ -73,16 +73,16 @@ public class ComparisonWithMathildeTest {
 		public StatusClass getStatusClass() {return statusClass;}
 
 		@Override
-		public CATSpecies getCATSpecies() {
+		public Species getCATSpecies() {
 			switch(species) {
 			case CARPINUS:
-				return CATSpecies.CARPINUS_BETULUS;
+				return Species.Carpinus_betulus;
 			case QUERCUS:
-				return CATSpecies.QUERCUS;
+				return Species.Quercus_spp;
 			case FAGUS:
-				return CATSpecies.FAGUS_SYLVATICA;
+				return Species.Fagus_sylvatica;
 			case OTHERS:
-				return CATSpecies.BETULA;
+				return Species.Betula_spp;
 			default:
 				return null;
 			}

@@ -21,16 +21,20 @@ package lerfob.carbonbalancetool.catdiameterbasedtreelogger;
 import java.awt.Container;
 import java.awt.Window;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import lerfob.carbonbalancetool.CATSettings.CATSpecies;
 import lerfob.treelogger.diameterbasedtreelogger.DiameterBasedTreeLogCategory;
 import lerfob.treelogger.diameterbasedtreelogger.DiameterBasedTreeLoggerParameters;
 import repicea.gui.permissions.DefaultREpiceaGUIPermission;
+import repicea.serial.PostUnmarshalling;
 import repicea.util.REpiceaTranslator;
 import repicea.util.REpiceaTranslator.TextableEnum;
 
-@SuppressWarnings("serial")
-public class CATDiameterBasedTreeLoggerParameters extends DiameterBasedTreeLoggerParameters {
+@SuppressWarnings({ "serial", "deprecation" })
+public class CATDiameterBasedTreeLoggerParameters extends DiameterBasedTreeLoggerParameters implements PostUnmarshalling {
 
 	protected static enum DefaultSpecies implements TextableEnum {
 		Default("By default", "Par d\u00E9faut");
@@ -95,6 +99,27 @@ public class CATDiameterBasedTreeLoggerParameters extends DiameterBasedTreeLogge
 		return guiInterface;
 	}
 
+	@Override
+	public void postUnmarshallingAction() {
+		super.postUnmarshallingAction();
+		List<Object> keysToBeRemoved = new ArrayList<Object>();
+		Map<Object, List<DiameterBasedTreeLogCategory>> keysToBeAdded = new HashMap<Object, List<DiameterBasedTreeLogCategory>>();
+		for (Object species : getLogCategories().keySet()) {
+			if (species instanceof CATSpecies) {
+				keysToBeRemoved.add(species);
+				Object newKey = ((CATSpecies) species).species;
+				for (DiameterBasedTreeLogCategory logCategory : getLogCategories().get(species)) {
+					((CATDiameterBasedTreeLogCategory) logCategory).postUnmarshallingAction();
+				}
+				keysToBeAdded.put(newKey, getLogCategories().get(species));
+			}
+		}
+		for (Object key : keysToBeRemoved) {
+			getLogCategories().remove(key);
+		}
+		getLogCategories().putAll(keysToBeAdded);
+	}
+	
 	public static void main(String[] args) {
 		CATDiameterBasedTreeLoggerParameters params = new CATDiameterBasedTreeLoggerParameters();
 		params.setReadWritePermissionGranted(new DefaultREpiceaGUIPermission(true));

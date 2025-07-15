@@ -69,8 +69,9 @@ public final class CATSettings {
 	 * and bark for 156 tree species found in North America. USDA Forest Service,
 	 * Northern Research Station. Research Note NRS-38.
 	 * @author Mathieu Fortin - August 2020
-	 *
+	 * @deprecated Use REpiceaSpecies.Species instead of CATSpecies
 	 */
+	@Deprecated
 	public static enum CATSpecies implements BasicWoodDensityProvider, 
 											SpeciesTypeProvider,
 											BarkProportionProvider {
@@ -101,7 +102,7 @@ public final class CATSettings {
 		TSUGA(REpiceaSpecies.Species.Tsuga_spp) // this one is from IPCC guidelines 2003
 		;
 
-		final REpiceaSpecies.Species species;
+		public final REpiceaSpecies.Species species;
 		
 		CATSpecies(REpiceaSpecies.Species species) {
 			this.species = species;

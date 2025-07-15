@@ -18,8 +18,8 @@
  */
 package lerfob.carbonbalancetool.pythonaccess;
 
-import lerfob.carbonbalancetool.CATSettings.CATSpecies;
 import lerfob.treelogger.douglasfirfcba.DouglasFCBALoggableTree;
+import repicea.simulation.species.REpiceaSpecies;
 
 class PythonDouglasFirTree extends PythonCarbonToolCompatibleTree implements DouglasFCBALoggableTree {
 
@@ -30,7 +30,7 @@ class PythonDouglasFirTree extends PythonCarbonToolCompatibleTree implements Dou
 			double biomassBranches, 
 			double dbhCm,
 			double dbhCmStandardDeviation) {
-		super(CATSpecies.PSEUDOTSUGA_MENZIESII, statusClass, number, biomassRoots, biomassTrunk, biomassBranches, dbhCm, dbhCmStandardDeviation);
+		super(REpiceaSpecies.Species.Pseudotsuga_menziesii, statusClass, number, biomassRoots, biomassTrunk, biomassBranches, dbhCm, dbhCmStandardDeviation);
 	}
 
 	@Override

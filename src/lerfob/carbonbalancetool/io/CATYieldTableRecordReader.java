@@ -22,13 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lerfob.carbonbalancetool.CATCompatibleStand;
-import lerfob.carbonbalancetool.CATSettings.CATSpecies;
 import repicea.io.tools.ImportFieldElement;
 import repicea.io.tools.ImportFieldElement.FieldType;
-import repicea.serial.SerializerChangeMonitor;
 import repicea.io.tools.LevelProviderEnum;
 import repicea.io.tools.REpiceaRecordReader;
+import repicea.serial.SerializerChangeMonitor;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
+import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.util.REpiceaTranslator;
 import repicea.util.REpiceaTranslator.TextableEnum;
 
@@ -81,14 +81,14 @@ public class CATYieldTableRecordReader extends REpiceaRecordReader {
 	
 	private final List<CATCompatibleStand> standList;
 	
-	private final CATSpecies catSpecies;
+	private final Species catSpecies;
 	
 	
 	/**
 	 * General constructor.
 	 * @param catSpecies a CATSpecies enum that stands for tree species in this stand
 	 */
-	public CATYieldTableRecordReader(CATSpecies catSpecies) {
+	public CATYieldTableRecordReader(Species catSpecies) {
 		super();
 		setPopUpWindowEnabled(true);
 		this.catSpecies = catSpecies;
@@ -135,18 +135,20 @@ public class CATYieldTableRecordReader extends REpiceaRecordReader {
 		CATYieldTableCompatibleStand stand;
 		if (harvestedVolumeM3 > 0d) {
 			if (standList.size() == 0 || standList.get(standList.size() - 1).getDateYr() != dateYr) { // means that there is no before harvest entry. Need to create one.
-				stand = new CATYieldTableCompatibleStand(getImportFieldManager().getFileSpecifications()[0],
+				stand = new CATYieldTableCompatibleStand(
+						getImportFieldManager().getFileSpecifications()[0],
 						dateYr,
 						false,
-						catSpecies.name());
+						catSpecies);
 				standList.add(stand);
 				stand.addTree(new CATYieldTableCompatibleTree(standingVolumeM3 + harvestedVolumeM3, StatusClass.alive)) ;
 			}
 		}
-		stand = new CATYieldTableCompatibleStand(getImportFieldManager().getFileSpecifications()[0],
+		stand = new CATYieldTableCompatibleStand(
+				getImportFieldManager().getFileSpecifications()[0],
 				dateYr,
 				harvestedVolumeM3 > 0,
-				catSpecies.name());
+				catSpecies);
 		standList.add(stand);
 		CATYieldTableCompatibleTree tree;
 		if (standingVolumeM3 > 0) {

@@ -19,8 +19,8 @@
  */
 package lerfob.carbonbalancetool.pythonaccess;
 
-import lerfob.carbonbalancetool.CATSettings.CATSpecies;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
+import repicea.simulation.species.REpiceaSpecies.Species;
 
 class PythonOakTree extends PythonCarbonToolCompatibleTree implements DbhCmProvider {
 
@@ -32,7 +32,7 @@ class PythonOakTree extends PythonCarbonToolCompatibleTree implements DbhCmProvi
 			double biomassBranches,
 			double dbhCm,
 			double dbhCmStandardDeviation) {
-		super(CATSpecies.QUERCUS, 
+		super(Species.Quercus_spp, 
 				statusClass, 
 				number, 
 				biomassRoots, 

@@ -1,3 +1,23 @@
+/*
+ * This file is part of the CAT library.
+ *
+ * Copyright (C) 2010-2017 Mathieu Fortin for LERFOB AgroParisTech/INRA, 
+ * Copyright (C) 2025 His Majesty the King in Right of Canada
+ * Author: Mathieu Fortin, Canadian Forest Service, 
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed with the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * License for more details.
+ *
+ * Please see the license at http://www.gnu.org/copyleft/lesser.html.
+ */
 package lerfob.carbonbalancetool.io;
 
 import java.awt.Container;
@@ -13,14 +33,21 @@ import lerfob.carbonbalancetool.CATSettings.CATSpecies;
 import repicea.gui.UIControlManager;
 import repicea.gui.components.REpiceaMatchSelector;
 import repicea.gui.components.REpiceaMatchSelectorDialog;
+import repicea.serial.PostUnmarshalling;
+import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.util.REpiceaTranslator;
 import repicea.util.REpiceaTranslator.TextableEnum;
 
-public class CATGrowthSimulationSpeciesSelector extends REpiceaMatchSelector<CATSpecies> {
+/**
+ * A class that matches the species in the file with those of CAT.
+ * @author Mathieu Fortin 2017, 2025
+ */
+@SuppressWarnings("deprecation")
+public class CATGrowthSimulationSpeciesSelector extends REpiceaMatchSelector<Enum<?>> implements PostUnmarshalling {
 
 
 	@SuppressWarnings("serial")
-	protected static class CATGrowthSimulationSpeciesSelectorDialog extends REpiceaMatchSelectorDialog {
+	public static class CATGrowthSimulationSpeciesSelectorDialog extends REpiceaMatchSelectorDialog {
 
 		protected static enum MessageID implements TextableEnum {
 			Instruction("Please select the species available in CAT to match those found in your input file", 
@@ -87,7 +114,7 @@ public class CATGrowthSimulationSpeciesSelector extends REpiceaMatchSelector<CAT
 	}
 
 	protected CATGrowthSimulationSpeciesSelector(Object[] toBeMatched) {
-		super(toBeMatched, CATSpecies.values(), 0, ColumnName.values());
+		super(toBeMatched, Species.values(), 0, ColumnName.values());
 	}
 
 	@Override
@@ -97,5 +124,19 @@ public class CATGrowthSimulationSpeciesSelector extends REpiceaMatchSelector<CAT
 		}
 		return (CATGrowthSimulationSpeciesSelectorDialog) guiInterface;
 	}
+
+	@Override
+	public void postUnmarshallingAction() {
+		if (!potentialMatches.isEmpty() && potentialMatches.get(0) instanceof CATSpecies) {
+			potentialMatches.replaceAll(p -> ((CATSpecies) p).species);
+			matchMap.replaceAll((k,v) -> ((CATSpecies) v).species);
+		}
+		int u = 0;
+	}
 	
+	
+	public static void main(String[] args) {
+		CATGrowthSimulationSpeciesSelector selector = new CATGrowthSimulationSpeciesSelector(new Object[] {"Carotte","Patate"});
+		selector.showUI(null);
+	}
 }

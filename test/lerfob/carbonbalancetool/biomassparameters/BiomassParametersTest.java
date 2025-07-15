@@ -24,7 +24,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import lerfob.carbonbalancetool.CATCompatibleTree;
-import lerfob.carbonbalancetool.CATSettings.CATSpecies;
 import lerfob.carbonbalancetool.biomassparameters.BiomassParameters.Tier2Implementation;
 import lerfob.carbonbalancetool.interfaces.CATAboveGroundBiomassProvider;
 import lerfob.carbonbalancetool.interfaces.CATAboveGroundCarbonProvider;
@@ -32,6 +31,7 @@ import lerfob.carbonbalancetool.interfaces.CATAboveGroundVolumeProvider;
 import lerfob.carbonbalancetool.interfaces.CATBelowGroundBiomassProvider;
 import lerfob.carbonbalancetool.interfaces.CATBelowGroundCarbonProvider;
 import lerfob.carbonbalancetool.interfaces.CATBelowGroundVolumeProvider;
+import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.util.ObjectUtility;
 
 public class BiomassParametersTest {
@@ -57,7 +57,7 @@ public class BiomassParametersTest {
 		public double getAboveGroundBiomassMg() {return 10;}
 
 		@Override
-		public CATSpecies getCATSpecies() {return CATSpecies.ABIES;}
+		public Species getCATSpecies() {return Species.Abies_spp;}
 		
 	}
 	
@@ -80,7 +80,7 @@ public class BiomassParametersTest {
 
 
 		@Override
-		public CATSpecies getCATSpecies() {return CATSpecies.ABIES;}
+		public Species getCATSpecies() {return Species.Abies_spp;}
 
 		@Override
 		public double getAboveGroundVolumeM3() {return 10d;}
@@ -106,7 +106,7 @@ public class BiomassParametersTest {
 
 
 		@Override
-		public CATSpecies getCATSpecies() {return CATSpecies.ABIES;}
+		public Species getCATSpecies() {return Species.Abies_spp;}
 
 		@Override
 		public double getAboveGroundCarbonMg() {return 10d;}
@@ -132,7 +132,7 @@ public class BiomassParametersTest {
 
 
 		@Override
-		public CATSpecies getCATSpecies() {return CATSpecies.ABIES;}
+		public Species getCATSpecies() {return Species.Abies_spp;}
 
 		@Override
 		public double getBelowGroundVolumeM3() {return 10d;}
@@ -158,7 +158,7 @@ public class BiomassParametersTest {
 
 
 		@Override
-		public CATSpecies getCATSpecies() {return CATSpecies.ABIES;}
+		public Species getCATSpecies() {return Species.Abies_spp;}
 
 		@Override
 		public double getBelowGroundBiomassMg() {return 10d;}
@@ -184,7 +184,7 @@ public class BiomassParametersTest {
 
 
 		@Override
-		public CATSpecies getCATSpecies() {return CATSpecies.ABIES;}
+		public Species getCATSpecies() {return Species.Abies_spp;}
 
 		@Override
 		public double getBelowGroundCarbonMg() {return 10d;}

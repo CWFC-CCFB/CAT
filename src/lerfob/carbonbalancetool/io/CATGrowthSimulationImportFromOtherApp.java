@@ -21,8 +21,6 @@ package lerfob.carbonbalancetool.io;
 import java.util.List;
 
 import lerfob.carbonbalancetool.CATCompatibleStand;
-import lerfob.carbonbalancetool.CATSettings.CATSpecies;
-import repicea.gui.components.REpiceaMatchSelector;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 
 /**
@@ -63,7 +61,7 @@ public class CATGrowthSimulationImportFromOtherApp {
 	 * This method returns the selector for the species in CAT.
 	 * @return a REpiceaMatchSelector instance
 	 */
-	public REpiceaMatchSelector<CATSpecies> getSelector() {
+	public CATGrowthSimulationSpeciesSelector getSelector() {
 		return recordReader.getSelector();
 	}
 

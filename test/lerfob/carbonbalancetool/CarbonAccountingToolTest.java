@@ -1,3 +1,22 @@
+/*
+ * This file is part of the CAT library.
+ *
+ * Copyright (C) 2022 Her Majesty the Queen in right of Canada
+ * Author: Mathieu Fortin, Canadian Wood Fibre Centre
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed with the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * License for more details.
+ *
+ * Please see the license at http://www.gnu.org/copyleft/lesser.html.
+ */
 package lerfob.carbonbalancetool;
 
 import java.io.File;
@@ -12,7 +31,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import lerfob.carbonbalancetool.CATCompartment.CompartmentInfo;
-import lerfob.carbonbalancetool.CATSettings.CATSpecies;
 import lerfob.carbonbalancetool.CATUtility.BiomassParametersName;
 import lerfob.carbonbalancetool.CATUtility.ProductionManagerName;
 import lerfob.carbonbalancetool.CarbonAccountingTool.CATMode;
@@ -25,8 +43,9 @@ import repicea.io.tools.ImportFieldManager;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
 import repicea.math.utility.GaussianUtility;
-import repicea.serial.xml.XmlDeserializer;
 import repicea.serial.SerializerChangeMonitor;
+import repicea.serial.xml.XmlDeserializer;
+import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.stats.Distribution.Type;
 import repicea.stats.estimates.Estimate;
 import repicea.stats.estimates.MonteCarloEstimate;
@@ -79,7 +98,7 @@ public class CarbonAccountingToolTest {
 			stand = new CarbonToolCompatibleStandImpl("beech", standID, areaHa, dateYr, ageYr);
 			stands.add(stand);
 			for (int j = 1; j <= 10; j++) {
-				tree = new CarbonToolCompatibleTreeImpl(stand.getDateYr() * .01, "Fagus sylvatica");
+				tree = new CarbonToolCompatibleTreeImpl(stand.getDateYr() * .01, Species.Fagus_sylvatica);
 				((CarbonToolCompatibleStandImpl) stand).addTree(tree);
 			}
 		}
@@ -114,7 +133,7 @@ public class CarbonAccountingToolTest {
 			stand = new CarbonToolCompatibleStandImpl("beech", standID, areaHa, dateYr, ageYr);
 			stands.add(stand);
 			for (int j = 1; j <= 10; j++) {
-				tree = new CarbonToolCompatibleTreeImpl(stand.getDateYr() * .01, "Fagus sylvatica");
+				tree = new CarbonToolCompatibleTreeImpl(stand.getDateYr() * .01, Species.Fagus_sylvatica);
 				((CarbonToolCompatibleStandImpl) stand).addTree(tree);
 			}
 		}
@@ -170,9 +189,9 @@ public class CarbonAccountingToolTest {
 			standsWithDifferentDates.add(stand0);
 			standsWithSameDates.add(stand1);
 			for (int j = 1; j <= 10; j++) {
-				tree0 = new CarbonToolCompatibleTreeImpl(ageYr * .01, "Fagus sylvatica");
+				tree0 = new CarbonToolCompatibleTreeImpl(ageYr * .01, Species.Fagus_sylvatica);
 				((CarbonToolCompatibleStandImpl) stand0).addTree(tree0);
-				tree1 = new CarbonToolCompatibleTreeImpl(ageYr * .01, "Fagus sylvatica");
+				tree1 = new CarbonToolCompatibleTreeImpl(ageYr * .01, Species.Fagus_sylvatica);
 				((CarbonToolCompatibleStandImpl) stand1).addTree(tree1);
 			}
 		}
@@ -219,7 +238,7 @@ public class CarbonAccountingToolTest {
 		String refFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "ExampleYieldTableReference.xml";
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
-		CATYieldTableRecordReader recordReader = new CATYieldTableRecordReader(CATSpecies.ABIES);
+		CATYieldTableRecordReader recordReader = new CATYieldTableRecordReader(Species.Abies_spp);
 		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
@@ -256,10 +275,10 @@ public class CarbonAccountingToolTest {
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
 		CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader();
-		recordReader.getSelector().load(speciesMatchFilename);
 		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
+		recordReader.getSelector().load(speciesMatchFilename);
 		cat.setStandList(recordReader.getStandList());
 		cat.calculateCarbon();
 		CATSingleSimulationResult result = cat.getCarbonCompartmentManager().getSimulationSummary();
@@ -338,7 +357,7 @@ public class CarbonAccountingToolTest {
 		String halflifeFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "SingleProcessorWithHalflife.prl";
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
-		CATYieldTableRecordReader recordReader = new CATYieldTableRecordReader(CATSpecies.ABIES);
+		CATYieldTableRecordReader recordReader = new CATYieldTableRecordReader(Species.Abies_spp);
 		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
@@ -377,7 +396,7 @@ public class CarbonAccountingToolTest {
 		String prlFilename = ObjectUtility.getRelativePackagePath(ProductionProcessorManager.class) + "library" + ObjectUtility.PathSeparator + "ipcc2014_en.prl";
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
-		CATYieldTableRecordReader recordReader = new CATYieldTableRecordReader(CATSpecies.ABIES);
+		CATYieldTableRecordReader recordReader = new CATYieldTableRecordReader(Species.Abies_spp);
 		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
@@ -412,7 +431,7 @@ public class CarbonAccountingToolTest {
 		String prlFilename = ObjectUtility.getRelativePackagePath(ProductionProcessorManager.class) + "library" + ObjectUtility.PathSeparator + "ipcc2014_en.prl";
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
-		CATYieldTableRecordReader recordReader = new CATYieldTableRecordReader(CATSpecies.ABIES);
+		CATYieldTableRecordReader recordReader = new CATYieldTableRecordReader(Species.Abies_spp);
 		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
@@ -421,7 +440,7 @@ public class CarbonAccountingToolTest {
 		CATSensitivityAnalysisSettings.getInstance().setNumberOfMonteCarloRealizations(2);
 		CATSensitivityAnalysisSettings.getInstance().setVariabilitySource(VariabilitySource.BasicDensity, Type.GAUSSIAN, true, 0.3);
 
-		double modifier1 = CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BasicDensity, cat.getCarbonCompartmentManager(), CATSpecies.ABIES.getSpeciesType().name());
+		double modifier1 = CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BasicDensity, cat.getCarbonCompartmentManager(), Species.Abies_spp.getSpeciesType().name());
 		cat.calculateCarbon();
 		CATSingleSimulationResult result1 = cat.getCarbonCompartmentManager().getSimulationSummary();
 		Map<CompartmentInfo, Estimate<Matrix, SymmetricMatrix, ?>> refMap = result1.getBudgetMap();
@@ -432,7 +451,7 @@ public class CarbonAccountingToolTest {
 		CATSensitivityAnalysisSettings.getInstance().setNumberOfMonteCarloRealizations(2);
 		CATSensitivityAnalysisSettings.getInstance().setVariabilitySource(VariabilitySource.BasicDensity, Type.GAUSSIAN, true, 0.3);
 
-		double modifier2 = CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BasicDensity, cat.getCarbonCompartmentManager(), CATSpecies.ABIES.getSpeciesType().name());
+		double modifier2 = CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BasicDensity, cat.getCarbonCompartmentManager(), Species.Abies_spp.getSpeciesType().name());
 		Assert.assertEquals("Comparting first deviate", modifier1, modifier2, 1E-8);
 		cat.calculateCarbon();
 		CATSingleSimulationResult result2 = cat.getCarbonCompartmentManager().getSimulationSummary();
@@ -459,7 +478,7 @@ public class CarbonAccountingToolTest {
 		String prlFilename = ObjectUtility.getRelativePackagePath(ProductionProcessorManager.class) + "library" + ObjectUtility.PathSeparator + "ipcc2014_en.prl";
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
-		CATYieldTableRecordReader recordReader = new CATYieldTableRecordReader(CATSpecies.ABIES);
+		CATYieldTableRecordReader recordReader = new CATYieldTableRecordReader(Species.Abies_spp);
 		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
@@ -468,7 +487,7 @@ public class CarbonAccountingToolTest {
 		CATSensitivityAnalysisSettings.getInstance().setNumberOfMonteCarloRealizations(2);
 		CATSensitivityAnalysisSettings.getInstance().setVariabilitySource(VariabilitySource.BasicDensity, Type.UNIFORM, true, 0.3);
 
-		double modifier1 = CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BasicDensity, cat.getCarbonCompartmentManager(), CATSpecies.ABIES.getSpeciesType().name());
+		double modifier1 = CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BasicDensity, cat.getCarbonCompartmentManager(), Species.Abies_spp.getSpeciesType().name());
 		cat.calculateCarbon();
 		
 		cat.setStandList(recordReader.getStandList());
@@ -476,7 +495,7 @@ public class CarbonAccountingToolTest {
 		CATSensitivityAnalysisSettings.getInstance().setNumberOfMonteCarloRealizations(2);
 		CATSensitivityAnalysisSettings.getInstance().setVariabilitySource(VariabilitySource.BasicDensity, Type.UNIFORM, true, 0.15);
 
-		double modifier2 = CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BasicDensity, cat.getCarbonCompartmentManager(), CATSpecies.ABIES.getSpeciesType().name());
+		double modifier2 = CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BasicDensity, cat.getCarbonCompartmentManager(), Species.Abies_spp.getSpeciesType().name());
 		Assert.assertEquals("Comparting first deviate", modifier1 - 1, (modifier2 - 1) * 2, 1E-8);
 		cat.calculateCarbon();
 		
@@ -579,10 +598,10 @@ public class CarbonAccountingToolTest {
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
 		CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader();
-		recordReader.getSelector().load(speciesMatchFilename);
 		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
+		recordReader.getSelector().load(speciesMatchFilename);
 		cat.setStandList(recordReader.getStandList());
 		cat.getCarbonToolSettings().setCurrentBiomassParametersSelection(BiomassParametersName.customized);
 		cat.calculateCarbon();

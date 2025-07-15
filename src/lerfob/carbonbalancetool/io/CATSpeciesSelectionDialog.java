@@ -30,10 +30,10 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import lerfob.carbonbalancetool.CATSettings.CATSpecies;
 import repicea.gui.REpiceaDialog;
 import repicea.gui.UIControlManager;
 import repicea.gui.UIControlManager.CommonControlID;
+import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.util.REpiceaTranslator;
 import repicea.util.REpiceaTranslator.TextableEnum;
 
@@ -57,7 +57,7 @@ public class CATSpeciesSelectionDialog extends REpiceaDialog implements ActionLi
 		public String toString() {return REpiceaTranslator.getString(this);}
 	}
 	
-	private final JComboBox<CATSpecies> speciesComboBox;
+	private final JComboBox<Species> speciesComboBox;
 	private final JButton okButton;
 	private boolean isValidated;
 	
@@ -65,7 +65,7 @@ public class CATSpeciesSelectionDialog extends REpiceaDialog implements ActionLi
 	public CATSpeciesSelectionDialog(Window parent) {
 		super(parent);
 		setCancelOnClose(true);
-		speciesComboBox = new JComboBox<CATSpecies>(CATSpecies.values());
+		speciesComboBox = new JComboBox<Species>(Species.values());
 		speciesComboBox.setSelectedIndex(0);
 		okButton = UIControlManager.createCommonButton(CommonControlID.Ok);
 		initUI();
@@ -125,7 +125,7 @@ public class CATSpeciesSelectionDialog extends REpiceaDialog implements ActionLi
 	
 	public boolean isValidated() {return isValidated;}
 	
-	public CATSpecies getCATSpecies() {return (CATSpecies) speciesComboBox.getSelectedItem();}
+	public Species getCATSpecies() {return (Species) speciesComboBox.getSelectedItem();}
 	
 	public static void main(String[] args) {
 		new CATSpeciesSelectionDialog(null);

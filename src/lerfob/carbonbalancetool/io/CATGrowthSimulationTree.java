@@ -19,7 +19,6 @@
 package lerfob.carbonbalancetool.io;
 
 import lerfob.carbonbalancetool.CATCompatibleTree;
-import lerfob.carbonbalancetool.CATSettings.CATSpecies;
 import lerfob.carbonbalancetool.interfaces.CATAboveGroundBiomassProvider;
 import lerfob.carbonbalancetool.interfaces.CATAboveGroundCarbonProvider;
 import lerfob.carbonbalancetool.interfaces.CATAboveGroundVolumeProvider;
@@ -27,6 +26,7 @@ import lerfob.carbonbalancetool.interfaces.CATBelowGroundBiomassProvider;
 import lerfob.carbonbalancetool.interfaces.CATBelowGroundCarbonProvider;
 import lerfob.carbonbalancetool.interfaces.CATBelowGroundVolumeProvider;
 import lerfob.carbonbalancetool.io.CATGrowthSimulationRecordReader.CATGrowthSimulationFieldID;
+import repicea.simulation.species.REpiceaSpecies.Species;
 
 /**
  * This class represents the trees in a growth simulation import in CAT.
@@ -87,7 +87,7 @@ class CATGrowthSimulationTree implements CATCompatibleTree,
 //	public SpeciesType getSpeciesType() {return getCATSpecies().getSpeciesType();}
 
 	@Override
-	public CATSpecies getCATSpecies() {return (CATSpecies) plot.plotSample.compositeStand.reader.getSelector().getMatch(originalSpeciesName);}
+	public Species getCATSpecies() {return (Species) plot.plotSample.compositeStand.reader.getSelector().getMatch(originalSpeciesName);}
 	
 	@Override
 	public double getNumber() {return numberOfTrees;}

@@ -13,7 +13,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import lerfob.carbonbalancetool.CATCompatibleTree;
-import lerfob.carbonbalancetool.CATSettings.CATSpecies;
 import lerfob.carbonbalancetool.productionlines.CarbonUnit.BiomassType;
 import lerfob.carbonbalancetool.productionlines.CarbonUnit.CarbonUnitStatus;
 import lerfob.carbonbalancetool.productionlines.CarbonUnit.Element;
@@ -23,6 +22,7 @@ import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.Status
 import repicea.simulation.processsystem.AmountMap;
 import repicea.simulation.processsystem.ProcessUnit;
 import repicea.simulation.processsystem.Processor;
+import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.util.ObjectUtility;
 
 @SuppressWarnings("deprecation")
@@ -30,11 +30,11 @@ public class ProductionLinesTest {
 
 	public static class CATCompatibleTreeImpl implements CATCompatibleTree {
 
-		final CATSpecies species;
+		final Species species;
 		final StatusClass statusClass;
 		
 		
-		public CATCompatibleTreeImpl(CATSpecies species, StatusClass statusClass) {
+		public CATCompatibleTreeImpl(Species species, StatusClass statusClass) {
 			this.species = species;
 			this.statusClass = statusClass;
 		}
@@ -63,9 +63,7 @@ public class ProductionLinesTest {
 		}
 
 		@Override
-		public CATSpecies getCATSpecies() {
-			return species;
-		}
+		public Species getCATSpecies() {return species;}
 		
 	}
 	
@@ -107,7 +105,7 @@ public class ProductionLinesTest {
 			for (String productionLine : wpmm.getProductionLineNames()) {
 				System.out.println("Testing " + productionLine);
 				wpmm.resetCarbonUnitMap();
-				wpmm.processWoodPiece(productionLine, 2010, CATSpecies.FAGUS_SYLVATICA.name(), CATSpecies.FAGUS_SYLVATICA.getSpeciesType(), StatusClass.cut, amountMap);
+				wpmm.processWoodPiece(productionLine, 2010, Species.Fagus_sylvatica.name(), Species.Fagus_sylvatica.getSpeciesType(), StatusClass.cut, amountMap);
 				CarbonUnitList list = new CarbonUnitList();
 				for (CarbonUnitStatus type : CarbonUnitStatus.values()) {
 					list.addAll(wpmm.getCarbonUnits(type));
@@ -153,7 +151,7 @@ public class ProductionLinesTest {
 			amountMap.put(Element.Biomass, volume * basicWoodDensity);
 			amountMap.put(Element.C, volume * basicWoodDensity * carbonContent);
 			
-			CarbonUnit carbonUnit = new CarbonUnit(2013, "", null, amountMap, CATSpecies.ABIES.name(), CATSpecies.ABIES.getSpeciesType(), StatusClass.cut, BiomassType.Wood, null); // last null stands for woodyDebrisType 
+			CarbonUnit carbonUnit = new CarbonUnit(2013, "", null, amountMap, Species.Abies_spp.name(), Species.Abies_spp.getSpeciesType(), StatusClass.cut, BiomassType.Wood, null); // last null stands for woodyDebrisType 
 			
 			int index = wpmm.getProductionLineNames().indexOf("Sawing");
 			if (index == -1) {
@@ -219,7 +217,7 @@ public class ProductionLinesTest {
 			}
 
 //			Collection<CarbonUnit> endProducts = processorManager.processWoodPiece(sawingProcessor.logCategory, 2015, amountMap);
-			processorManager.processWoodPiece(sawingProcessor.logCategory, 2015, "", amountMaps, new CATCompatibleTreeImpl(CATSpecies.ABIES, StatusClass.cut));
+			processorManager.processWoodPiece(sawingProcessor.logCategory, 2015, "", amountMaps, new CATCompatibleTreeImpl(Species.Abies_spp, StatusClass.cut));
 			Collection<CarbonUnit> endProducts = new ArrayList<CarbonUnit>();
 			for (CarbonUnitStatus status : CarbonUnitStatus.values()) {
 				endProducts.addAll(processorManager.getCarbonUnits(status));
@@ -274,7 +272,7 @@ public class ProductionLinesTest {
 			for (LogCategoryProcessor logCategoryProcessor : logCategoryProcessors) {
 				processorManager.resetCarbonUnitMap();
 				processorManager.validate();
-				processorManager.processWoodPiece(logCategoryProcessor.logCategory, 2015, "", amountMaps,  new CATCompatibleTreeImpl(CATSpecies.ABIES, StatusClass.cut));			
+				processorManager.processWoodPiece(logCategoryProcessor.logCategory, 2015, "", amountMaps,  new CATCompatibleTreeImpl(Species.Abies_spp, StatusClass.cut));			
 				Collection<CarbonUnit> endProducts = new ArrayList<CarbonUnit>();
 				for (CarbonUnitStatus status : CarbonUnitStatus.values()) {
 					endProducts.addAll(processorManager.getCarbonUnits(status));
@@ -353,7 +351,7 @@ public class ProductionLinesTest {
 			amountMap.put(Element.C, volume * basicWoodDensity * carbonContent);
 			amountMaps.put(BiomassType.Bark, amountMap);
 
-			processorManager.processWoodyDebris(2015, "", amountMaps, new CATCompatibleTreeImpl(CATSpecies.ABIES, StatusClass.cut), WoodyDebrisProcessorID.CommercialWoodyDebris);
+			processorManager.processWoodyDebris(2015, "", amountMaps, new CATCompatibleTreeImpl(Species.Abies_spp, StatusClass.cut), WoodyDebrisProcessorID.CommercialWoodyDebris);
 			Collection<CarbonUnit> endProducts = new ArrayList<CarbonUnit>();
 			for (CarbonUnitStatus status : CarbonUnitStatus.values()) {
 				endProducts.addAll(processorManager.getCarbonUnits(status));
@@ -417,7 +415,7 @@ public class ProductionLinesTest {
 				i--;
 			}
 //			Collection<CarbonUnit> endProducts = processorManager.processWoodPiece(sawingProcessor.logCategory, 2015, amountMap);
-			processorManager.processWoodPiece(sawingProcessor.logCategory, 2015, "", amountMaps, new CATCompatibleTreeImpl(CATSpecies.ABIES, StatusClass.cut));
+			processorManager.processWoodPiece(sawingProcessor.logCategory, 2015, "", amountMaps, new CATCompatibleTreeImpl(Species.Abies_spp, StatusClass.cut));
 				
 			Collection<CarbonUnit> endProducts = new ArrayList<CarbonUnit>();
 			for (CarbonUnitStatus status : CarbonUnitStatus.values()) {
@@ -476,7 +474,7 @@ public class ProductionLinesTest {
 				i--;
 			}
 //			Collection<CarbonUnit> endProducts = processorManager.processWoodPiece(sawingProcessor.logCategory, 2015, amountMap);
-			processorManager.processWoodPiece(sawingProcessor.logCategory, 2015, "", amountMaps, new CATCompatibleTreeImpl(CATSpecies.ABIES, StatusClass.cut));
+			processorManager.processWoodPiece(sawingProcessor.logCategory, 2015, "", amountMaps, new CATCompatibleTreeImpl(Species.Abies_spp, StatusClass.cut));
 				
 			Collection<CarbonUnit> endProducts = new ArrayList<CarbonUnit>();
 			for (CarbonUnitStatus status : CarbonUnitStatus.values()) {
@@ -531,8 +529,8 @@ public class ProductionLinesTest {
 			i--;
 		}
 
-		processorManager.processWoodPiece(sawingProcessor.logCategory, 2015, "", amountMaps, new CATCompatibleTreeImpl(CATSpecies.ABIES, StatusClass.cut));
-		processorManager.processWoodPiece(sawingProcessor.logCategory, 2015, "", amountMaps, new CATCompatibleTreeImpl(CATSpecies.FAGUS_SYLVATICA, StatusClass.cut));
+		processorManager.processWoodPiece(sawingProcessor.logCategory, 2015, "", amountMaps, new CATCompatibleTreeImpl(Species.Abies_spp, StatusClass.cut));
+		processorManager.processWoodPiece(sawingProcessor.logCategory, 2015, "", amountMaps, new CATCompatibleTreeImpl(Species.Fagus_sylvatica, StatusClass.cut));
 		List<CarbonUnit> endProducts = new ArrayList<CarbonUnit>();
 		for (CarbonUnitStatus status : CarbonUnitStatus.values()) {
 			endProducts.addAll(processorManager.getCarbonUnits(status));
@@ -584,8 +582,8 @@ public class ProductionLinesTest {
 			i--;
 		}
 
-		processorManager.processWoodPiece(sawingProcessor.logCategory, 2015, "", amountMaps, new CATCompatibleTreeImpl(CATSpecies.ABIES, StatusClass.cut));
-		processorManager.processWoodPiece(sawingProcessor.logCategory, 2015, "", amountMaps, new CATCompatibleTreeImpl(CATSpecies.FAGUS_SYLVATICA, StatusClass.dead));
+		processorManager.processWoodPiece(sawingProcessor.logCategory, 2015, "", amountMaps, new CATCompatibleTreeImpl(Species.Abies_spp, StatusClass.cut));
+		processorManager.processWoodPiece(sawingProcessor.logCategory, 2015, "", amountMaps, new CATCompatibleTreeImpl(Species.Fagus_sylvatica, StatusClass.dead));
 		List<CarbonUnit> endProducts = new ArrayList<CarbonUnit>();
 		for (CarbonUnitStatus status : CarbonUnitStatus.values()) {
 			endProducts.addAll(processorManager.getCarbonUnits(status));
@@ -635,7 +633,7 @@ public class ProductionLinesTest {
 			i--;
 		}
 
-		processorManager.processWoodPiece(sawingProcessor.logCategory, 2015, "", amountMaps, new CATCompatibleTreeImpl(CATSpecies.ABIES, StatusClass.cut));
+		processorManager.processWoodPiece(sawingProcessor.logCategory, 2015, "", amountMaps, new CATCompatibleTreeImpl(Species.Abies_spp, StatusClass.cut));
 		List<CarbonUnit> endProducts = new ArrayList<CarbonUnit>();
 		for (CarbonUnitStatus status : CarbonUnitStatus.values()) {
 			endProducts.addAll(processorManager.getCarbonUnits(status));

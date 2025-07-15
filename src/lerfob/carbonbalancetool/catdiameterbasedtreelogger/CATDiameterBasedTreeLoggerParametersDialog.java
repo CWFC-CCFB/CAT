@@ -25,9 +25,9 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import lerfob.carbonbalancetool.CATSettings.CATSpecies;
 import lerfob.treelogger.diameterbasedtreelogger.DiameterBasedTreeLoggerParametersDialog;
 import repicea.gui.UIControlManager;
+import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.simulation.treelogger.TreeLoggerAWTProperty;
 import repicea.simulation.treelogger.TreeLoggerParametersDialog;
 import repicea.util.REpiceaTranslator;
@@ -70,11 +70,11 @@ public class CATDiameterBasedTreeLoggerParametersDialog extends DiameterBasedTre
 	}
 
 	
-	private List<CATSpecies> retrieveCATSpeciesInCurrentList() {
-		List<CATSpecies> currentCATSpecies = new ArrayList<CATSpecies>();
+	private List<Species> retrieveSpeciesInCurrentList() {
+		List<Species> currentCATSpecies = new ArrayList<Species>();
 		for (Object key : getTreeLoggerParameters().getLogCategories().keySet()) {
-			if (key instanceof CATSpecies) {
-				currentCATSpecies.add((CATSpecies) key);
+			if (key instanceof Species) {
+				currentCATSpecies.add((Species) key);
 			}
 		}
 		return currentCATSpecies;
@@ -88,10 +88,10 @@ public class CATDiameterBasedTreeLoggerParametersDialog extends DiameterBasedTre
 	
 	@Override
 	protected void speciesAddAction() {
-		CATSpecies newSpecies;
-		List<CATSpecies> availableSpecies = new ArrayList<CATSpecies>();
-		availableSpecies.addAll(Arrays.asList(CATSpecies.values()));
-		availableSpecies.removeAll(retrieveCATSpeciesInCurrentList());
+		Species newSpecies;
+		List<Species> availableSpecies = new ArrayList<Species>();
+		availableSpecies.addAll(Arrays.asList(Species.values()));
+		availableSpecies.removeAll(retrieveSpeciesInCurrentList());
 		if (availableSpecies.isEmpty()) {
 			JOptionPane.showMessageDialog(this, 
 					REpiceaTranslator.getString(MessageID.ImpossibleToAddSpecies), 
@@ -100,7 +100,7 @@ public class CATDiameterBasedTreeLoggerParametersDialog extends DiameterBasedTre
 			// TODO FP display a message here
 			return;
 		} else {
-			newSpecies = (CATSpecies) JOptionPane.showInputDialog(this, 
+			newSpecies = (Species) JOptionPane.showInputDialog(this, 
 					REpiceaTranslator.getString(MessageID.PleaseChooseOneSpecies),
 					REpiceaTranslator.getString(TreeLoggerParametersDialog.MessageID.AddANewSpecies),
 					JOptionPane.QUESTION_MESSAGE,

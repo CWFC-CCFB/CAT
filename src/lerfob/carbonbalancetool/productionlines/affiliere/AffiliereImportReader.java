@@ -494,7 +494,6 @@ public class AffiliereImportReader implements REpiceaShowableUIWithParent {
 
 	/**
 	 * Return true if the locations are provided.
-	 * @return
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected void screenNodeMap() {

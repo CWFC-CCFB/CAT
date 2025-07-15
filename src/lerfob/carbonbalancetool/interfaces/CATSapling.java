@@ -22,7 +22,7 @@ package lerfob.carbonbalancetool.interfaces;
 import java.security.InvalidParameterException;
 
 import lerfob.carbonbalancetool.CATCompatibleTree;
-import lerfob.carbonbalancetool.CATSettings.CATSpecies;
+import repicea.simulation.species.REpiceaSpecies.Species;
 
 /**
  * A specific implementation of CATCompatibleTree for saplings.<p>
@@ -33,7 +33,7 @@ public final class CATSapling implements CATAboveGroundBiomassProvider,
 											CATCompatibleTree {
 
 	final double aboveGroundBiomassMg;
-	final CATSpecies species;
+	final Species species;
 	final double expansionFactor;
 	final double plotWeight;
 
@@ -45,7 +45,7 @@ public final class CATSapling implements CATAboveGroundBiomassProvider,
 	 * @param plotWeight the sampling weight of the plot
 	 */
 	public CATSapling(double aboveGroundBiomassMg,
-			CATSpecies species,
+			Species species,
 			double expansionFactor,
 			double plotWeight) {
 		this.aboveGroundBiomassMg = aboveGroundBiomassMg;
@@ -65,11 +65,11 @@ public final class CATSapling implements CATAboveGroundBiomassProvider,
 	 * For plots with a weight of 1. The expansion factor represents the number
 	 * of sapling with these characteristics in the plot.
 	 * @param aboveGroundBiomassMg the aboveground biomass of one sapling (Mg)
-	 * @param species a CATSpecies enum
+	 * @param species an REpiceaSpecies.Species
 	 * @param expansionFactor the number of saplings represented by this instance.
 	 */
 	public CATSapling(double aboveGroundBiomassMg,
-			CATSpecies species,
+			Species species,
 			double expansionFactor) {
 		this(aboveGroundBiomassMg, species, expansionFactor, 1d);
 	}
@@ -77,10 +77,9 @@ public final class CATSapling implements CATAboveGroundBiomassProvider,
 	/**
 	 * Constructor for tree instance  
 	 * @param aboveGroundBiomassMg the aboveground biomass of one sapling (Mg)
-	 * @param species a CATSpecies enum
+	 * @param species an REpiceaSpecies.Species enum
 	 */
-	public CATSapling(double aboveGroundBiomassMg,
-			CATSpecies species) {
+	public CATSapling(double aboveGroundBiomassMg, Species species) {
 		this(aboveGroundBiomassMg, species, 1d, 1d);
 	}
 
@@ -108,11 +107,12 @@ public final class CATSapling implements CATAboveGroundBiomassProvider,
 	public StatusClass getStatusClass() {return StatusClass.alive;}
 
 	@Override
-	public CATSpecies getCATSpecies() {return species;}
+	public Species getCATSpecies() {return species;}
 
 	@Override
 	public double getPlotWeight() {return plotWeight;}
 	
 	@Override
 	public double getNumber() {return expansionFactor;}
+
 }
