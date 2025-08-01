@@ -624,7 +624,42 @@ public class CarbonAccountingToolTest {
 		System.out.println("Successfully tested this subset of French national inventory");
 	}
 
-	
+
+	@Test
+	public void test15WithSimulationResultsWithFranceFullDataset() throws Exception {
+		String filename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "Statistiques_IFN_France_exemple.csv";
+		String ifeFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "Statistiques_IFN_France_exemple.ife";
+		String speciesMatchFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "speciesMatchFrance.xml";
+//		String refFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "MathildeTreeExportReference.xml";
+		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
+		cat.initializeTool(null);
+		CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader();
+		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
+		recordReader.initInScriptMode(ifm);
+		recordReader.readAllRecords();
+		recordReader.getSelector().load(speciesMatchFilename);
+		cat.setStandList(recordReader.getStandList());
+		cat.getCarbonToolSettings().setCurrentBiomassParametersSelection(BiomassParametersName.customized);
+		cat.calculateCarbon();
+		CATSingleSimulationResult result = cat.getCarbonCompartmentManager().getSimulationSummary();
+		Map<CompartmentInfo, MonteCarloEstimate> obsMap = result.getEvolutionMap();
+		Matrix meanLivingBiomass = obsMap.get(CompartmentInfo.LivingBiomass).getMean();
+		Assert.assertEquals("Testing initial carbon in living biomass", 
+				84.94894970310916, 
+				meanLivingBiomass.getValueAt(0, 0), 1E-8);
+		Assert.assertEquals("Testing initial carbon in living biomass", 
+				88.39055405531593, 
+				meanLivingBiomass.getValueAt(4, 0), 1E-8);
+		Matrix hwp = obsMap.get(CompartmentInfo.TotalProducts).getMean();
+		Assert.assertEquals("Testing initial carbon in HWPs", 
+				0.7631023392497845, 
+				hwp.getValueAt(0, 0), 1E-4);
+		Assert.assertEquals("Testing initial carbon in living biomass", 
+				2.1948745904359757, 
+				hwp.getValueAt(4, 0), 1E-3);
+		System.out.println("Successfully tested full dataset of French national inventory");
+	}
+
 	
 	public static void main(String[] args) throws Exception {
 		CarbonAccountingToolTest test = new CarbonAccountingToolTest();
