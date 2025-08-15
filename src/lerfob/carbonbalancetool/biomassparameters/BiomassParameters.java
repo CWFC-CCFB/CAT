@@ -308,6 +308,13 @@ public class BiomassParameters implements REpiceaShowableUIWithParent, IOUserInt
 		basicWoodDensityFromModel = basicWoodDensityFromModelEnabled;
 		carbonContentFromModelEnabled = referent instanceof CATCarbonContentRatioProvider;
 		carbonContentFromModel = carbonContentFromModelEnabled;
+		REpiceaLogManager.logMessage(CarbonAccountingTool.LOGGER_NAME, 
+				Level.INFO,
+				getClass().getName(),
+				"Referent tested for agBEF " + branchExpansionFactorFromModelEnabled + 
+									" - bgBEF " + rootExpansionFactorFromModelEnabled +
+									" - wood density " + basicWoodDensityFromModelEnabled +
+									" - carbon ratio " + carbonContentFromModelEnabled);
 	}
 
 	/**
