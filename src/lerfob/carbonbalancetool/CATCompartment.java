@@ -116,7 +116,7 @@ public class CATCompartment extends CarbonArray implements Comparable {
 		/**
 		 * The soil layer (0-15cm)
 		 */
-		MineralSoil("Mineral Soil", "Sol Min/u00E9ral", false, new Color(96,48,48)),
+		MineralSoil("Mineral Soil", "Sol min\u00E9ral", false, new Color(96,48,48)),
 		/**
 		 * The forest floor plus the soil layer (0-15cm)
 		 */
