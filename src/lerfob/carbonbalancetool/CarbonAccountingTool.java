@@ -631,8 +631,6 @@ public class CarbonAccountingTool extends AbstractGenericEngine implements REpic
 		} else  {
 			System.err.println("The log level option " + selectedLogLevel + " is not recognized!");
 		}
-//		ConsoleHandler ch = new ConsoleHandler();
-//		REpiceaLogManager.getLogger(CarbonAccountingTool.LOGGER_NAME).addHandler(ch);
 		CarbonAccountingTool tool = new CarbonAccountingTool();
 		try {
 			tool.initializeTool();

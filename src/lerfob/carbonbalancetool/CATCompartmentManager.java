@@ -29,6 +29,7 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 
 import lerfob.carbonbalancetool.CATCompartment.CompartmentInfo;
+import lerfob.carbonbalancetool.interfaces.CATSaplingsProvider;
 import lerfob.carbonbalancetool.memsconnectors.MEMSCompatibleStand;
 import lerfob.carbonbalancetool.memsconnectors.MEMSCompatibleTree;
 import lerfob.carbonbalancetool.memsconnectors.MEMSWrapper;
@@ -315,6 +316,8 @@ public class CATCompartmentManager implements MonteCarloSimulationCompliantObjec
 				for (CATCompatibleStand s : stands) {
 					for (StatusClass sc : StatusClass.values()) {
 						Collection<CATCompatibleTree> trees = s.getTrees(sc);
+						// TODO MF20250821 the collections should already been stored somewhere so that we call them once
+						// TODO MF20250821 Moreover, we add the saplings as they contribute to the carbon
 						for (CATCompatibleTree tree : trees) {
 							if (!speciesList.contains(tree.getSpeciesName())) {
 								speciesList.add(tree.getSpeciesName());
@@ -329,8 +332,6 @@ public class CATCompartmentManager implements MonteCarloSimulationCompliantObjec
 			} else { // if application scale is not stand then mems is disabled
 				isMEMSEnabled = false;
 			}
-			
-			
 		}
 	}
 	

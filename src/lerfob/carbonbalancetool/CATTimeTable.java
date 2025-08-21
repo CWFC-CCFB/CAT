@@ -114,6 +114,26 @@ public class CATTimeTable {
 		return realizationStandMap.get(stand);
 	}
 	
+	/**
+	 * Create a list of integers which are the indices that go from
+	 * the date of the initStand to the date of the finalStand.
+	 * @param initStand a CATCompatibleStand instance
+	 * @param finalStand a CATCompatibleStand instance
+	 * @return a List of indices
+	 */
+	public List<Integer> getIndicesFromTo(CATCompatibleStand initStand, CATCompatibleStand finalStand) {
+		int initIndex = getIndexOfThisStandOnTheTimeTable(initStand);
+		int finalIndex = getIndexOfThisStandOnTheTimeTable(finalStand);
+		if (initIndex > finalIndex) {
+			throw new UnsupportedOperationException("The initStand argument has a date later than that of the finalStand argument!");
+		}
+		List<Integer> outputList = new ArrayList<Integer>();
+		for (int i = initIndex; i <= finalIndex; i++) {
+			outputList.add(i);
+		}
+		return outputList;
+	}
+	
 	private int getLastStandDate() {return lastStandDate;}
 	int getInitialAgeYr() {return initialAgeYr;}
 	

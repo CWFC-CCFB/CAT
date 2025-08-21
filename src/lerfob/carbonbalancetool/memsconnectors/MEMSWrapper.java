@@ -149,9 +149,14 @@ public class MEMSWrapper {
     public void prepareSimulation(List<MEMSCompatibleStand> memsStands) {
 
     	CATTimeTable timeTable = manager.getTimeTable();
+    	List<Integer> indices = timeTable.getIndicesFromTo(memsStands.get(0), memsStands.get(memsStands.size() - 1));
         // run a simulation to reach stability into compartment bins
         // todo: use what input params ?  and what input npps ?
-        int nbYears = timeTable.size();
+
+    	if (indices.get(0) != 0) {
+    		throw new UnsupportedOperationException("The initial index should be 0!");
+    	}
+        int nbYears = indices.size();
 
         // prepare the carbon stock array
         inputAnnualStocksGCm2 = new InputCarbonStock[nbYears];
@@ -160,14 +165,15 @@ public class MEMSWrapper {
         inputFromLivingTreesAboveGroundMgHa = new CarbonArray(nbYears);
         inputFromLivingTreesBelowGroundMgHa = new CarbonArray(nbYears);
 
+        int maxDateYr = memsStands.get(memsStands.size() -1).getDateYr();
         int j = 0;
         MEMSCompatibleStand memsStand = memsStands.get(j);
         isFromAir = memsStand.isInterventionResult();
-        for (int i = 0; i < nbYears; i++) {
+        for (Integer i : indices) {
             inputAnnualStocksGCm2[i] = new InputCarbonStock();
             outputAnnualStocksMgHa[i] = new CarbonStockForReporting();
             int dateYr = timeTable.getDateYrAtThisIndex(i);
-            while (dateYr > memsStand.getDateYr()) {
+            while (dateYr > memsStand.getDateYr() && dateYr <= maxDateYr) {
             	j++;
             	if (j < memsStands.size()) {
             		memsStand = memsStands.get(j);
@@ -176,10 +182,6 @@ public class MEMSWrapper {
             dailyTemperatureAcrossSimulation[i] = memsStand.getMeanDailyTemperatureCForThisYear(dateYr);
         }
 
-        for (MEMSCompatibleStand s : memsStands) {
-        	s.getDateYr();
-        }
-        
         setSiteAndEstimateInitialCarbon(memsStands.get(0));	// the initial stand
     }
    
@@ -231,11 +233,13 @@ public class MEMSWrapper {
      * @param addToHumus a boolean (true: add to humus; false add to soil)
      */
     public void addCarbonToMEMSInput(int index, double carbonStockMgHa, boolean addToHumus) {
-        if (addToHumus) {
-            inputAnnualStocksGCm2[index].humus += carbonStockMgHa * InputCarbonStock.FactorMgHaToGCm2;
-        } else {
-            inputAnnualStocksGCm2[index].soil += carbonStockMgHa * InputCarbonStock.FactorMgHaToGCm2;
-        }
+    	if (index < inputAnnualStocksGCm2.length) {	// the soil is no longer updated after the date of the last stand
+            if (addToHumus) {
+                inputAnnualStocksGCm2[index].humus += carbonStockMgHa * InputCarbonStock.FactorMgHaToGCm2;
+            } else {
+                inputAnnualStocksGCm2[index].soil += carbonStockMgHa * InputCarbonStock.FactorMgHaToGCm2;
+            }
+    	}
     }
     
     /**
@@ -278,13 +282,19 @@ public class MEMSWrapper {
         }
     }
 
-    /**
-     * Provide the carbon stock in the soil for a particular year.
+
+	/**
+     * Provide the carbon stock in the soil for a particular year.<p>
+     * If the yearIndex exceeds that of the last stand, the carbon stock of the
+     * last stand is then provided instead.
+     * 
      * @param yearIndex the index of the year as defined in the CATTimeTable instance
      * @return a CarbonStockForReporting instance which contains the stocks in the soil and the humus.
      */
     public CarbonStockForReporting getCarbonStockMgHaForThisYear(int yearIndex) {
-        return outputAnnualStocksMgHa[yearIndex];
+        return yearIndex >= outputAnnualStocksMgHa.length ?
+        		outputAnnualStocksMgHa[outputAnnualStocksMgHa.length - 1] :
+        			outputAnnualStocksMgHa[yearIndex];
     }
     
     /**
