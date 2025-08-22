@@ -47,7 +47,6 @@ public class ComparisonWithMathildeTest {
 		
 		final MathildeTreeSpecies species;
 		final double dbhCm;
-		final StatusClass statusClass = StatusClass.cut;
 		
 		MathildeLoggableTreeImpl(MathildeTreeSpecies species, double dbhCm) {
 			this.species = species;
@@ -65,12 +64,6 @@ public class ComparisonWithMathildeTest {
 
 		@Override
 		public double getDbhCm() {return dbhCm;}
-
-		@Override
-		public void setStatusClass(StatusClass statusClass) {}
-
-		@Override
-		public StatusClass getStatusClass() {return statusClass;}
 
 		@Override
 		public Species getCATSpecies() {

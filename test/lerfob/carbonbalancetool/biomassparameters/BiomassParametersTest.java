@@ -48,12 +48,6 @@ public class BiomassParametersTest {
 		public String getSpeciesName() {return "Abies balsamea";}
 
 		@Override
-		public void setStatusClass(StatusClass statusClass) {}
-
-		@Override
-		public StatusClass getStatusClass() {return StatusClass.alive;}
-
-		@Override
 		public double getAboveGroundBiomassMg() {return 10;}
 
 		@Override
@@ -71,13 +65,6 @@ public class BiomassParametersTest {
 
 		@Override
 		public String getSpeciesName() {return "Abies balsamea";}
-
-		@Override
-		public void setStatusClass(StatusClass statusClass) {}
-
-		@Override
-		public StatusClass getStatusClass() {return StatusClass.alive;}
-
 
 		@Override
 		public Species getCATSpecies() {return Species.Abies_spp;}
@@ -99,13 +86,6 @@ public class BiomassParametersTest {
 		public String getSpeciesName() {return "Abies balsamea";}
 
 		@Override
-		public void setStatusClass(StatusClass statusClass) {}
-
-		@Override
-		public StatusClass getStatusClass() {return StatusClass.alive;}
-
-
-		@Override
 		public Species getCATSpecies() {return Species.Abies_spp;}
 
 		@Override
@@ -123,13 +103,6 @@ public class BiomassParametersTest {
 
 		@Override
 		public String getSpeciesName() {return "Abies balsamea";}
-
-		@Override
-		public void setStatusClass(StatusClass statusClass) {}
-
-		@Override
-		public StatusClass getStatusClass() {return StatusClass.alive;}
-
 
 		@Override
 		public Species getCATSpecies() {return Species.Abies_spp;}
@@ -151,13 +124,6 @@ public class BiomassParametersTest {
 		public String getSpeciesName() {return "Abies balsamea";}
 
 		@Override
-		public void setStatusClass(StatusClass statusClass) {}
-
-		@Override
-		public StatusClass getStatusClass() {return StatusClass.alive;}
-
-
-		@Override
 		public Species getCATSpecies() {return Species.Abies_spp;}
 
 		@Override
@@ -175,13 +141,6 @@ public class BiomassParametersTest {
 
 		@Override
 		public String getSpeciesName() {return "Abies balsamea";}
-
-		@Override
-		public void setStatusClass(StatusClass statusClass) {}
-
-		@Override
-		public StatusClass getStatusClass() {return StatusClass.alive;}
-
 
 		@Override
 		public Species getCATSpecies() {return Species.Abies_spp;}

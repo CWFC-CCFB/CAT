@@ -99,14 +99,6 @@ public final class CATSapling implements CATAboveGroundBiomassProvider,
 	public String getSpeciesName() {return getCATSpecies().toString();}
 
 	@Override
-	public void setStatusClass(StatusClass statusClass) {
-		throw new UnsupportedOperationException("The status class of CATSapling instance cannot be changed!");
-	}
-
-	@Override
-	public StatusClass getStatusClass() {return StatusClass.alive;}
-
-	@Override
 	public Species getCATSpecies() {return species;}
 
 	@Override

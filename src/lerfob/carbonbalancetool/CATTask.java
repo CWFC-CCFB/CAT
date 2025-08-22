@@ -189,7 +189,7 @@ public class CATTask extends AbstractGenericTask {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void retrieveSoilInputFromLivingTreesAndSimulate() {
 		CATCompartmentManager manager = caller.getCarbonCompartmentManager();
 
@@ -199,9 +199,10 @@ public class CATTask extends AbstractGenericTask {
 		CATIntermediateBiomassCarbonMap aboveGroundMap = new CATIntermediateBiomassCarbonMap(manager.getTimeTable(), manager.getMEMS().getInputFromLivingTreesAboveGroundMgHaArray());
 		CATIntermediateBiomassCarbonMap belowGroundMap = new CATIntermediateBiomassCarbonMap(manager.getTimeTable(), manager.getMEMS().getInputFromLivingTreesBelowGroundMgHaArray());
 		for (CATCompatibleStand s : manager.getTimeTable().getStandsForThisRealization()) {
-			double soilCarbonMgInputFromLitterFall = biomassParameters.getLitterFallAnnualCarbonMg((Collection<MEMSCompatibleTree>) s.getTrees(StatusClass.alive), manager);
+			Collection<MEMSCompatibleTree> aliveTrees = (Collection) manager.treeCollManager.getTreeOfThisStatusInThisStand(StatusClass.alive, s);
+			double soilCarbonMgInputFromLitterFall = biomassParameters.getLitterFallAnnualCarbonMg(aliveTrees, manager);
 			aboveGroundMap.put(s, soilCarbonMgInputFromLitterFall / s.getAreaHa());
-			double soilCargonMgInputFromFineRootTurnover = biomassParameters.getFineRootDetritusAnnualCarbonMg((Collection<MEMSCompatibleTree>) s.getTrees(StatusClass.alive), manager);
+			double soilCargonMgInputFromFineRootTurnover = biomassParameters.getFineRootDetritusAnnualCarbonMg(aliveTrees, manager);
 			belowGroundMap.put(s, soilCargonMgInputFromFineRootTurnover / s.getAreaHa());
 		}
 		aboveGroundMap.interpolateIfNeeded();
@@ -212,20 +213,21 @@ public class CATTask extends AbstractGenericTask {
 	@SuppressWarnings("unchecked")
 	private void registerTrees() {
 		CATCompartmentManager manager = caller.getCarbonCompartmentManager();
-		REpiceaLogManager.logMessage(CarbonAccountingTool.LOGGER_NAME, Level.FINEST, null, "Creating last stand if needs be and registering trees...");
+		REpiceaLogManager.logMessage(CarbonAccountingTool.LOGGER_NAME, Level.FINEST, null, "Registering trees...");
 
 		List<CATCompatibleStand> stands = manager.getTimeTable().getStandsForThisRealization();
 
-		// retrieve the loggable trees
-		Collection<CATCompatibleTree> retrievedTreesFromStep;
+		final Collection<CATCompatibleTree> retrievedTreesFromStep = new ArrayList<CATCompatibleTree>();
 		for (CATCompatibleStand stand : stands) {
 			for (StatusClass statusClass : StatusClass.values()) {
-				retrievedTreesFromStep = stand.getTrees(statusClass);
+				retrievedTreesFromStep.clear();
+				retrievedTreesFromStep.addAll(stand.getTrees(statusClass));
+				if (statusClass == StatusClass.alive && stand instanceof CATSaplingsProvider) {
+					retrievedTreesFromStep.addAll(((CATSaplingsProvider) stand).getSaplings());
+				}
 				if (!retrievedTreesFromStep.isEmpty()) {
 					for (CATCompatibleTree t : retrievedTreesFromStep) {
-						if (statusClass != StatusClass.alive) {
 							manager.registerTree(statusClass, stand, t);
-						}
 					} 
 				}
 			}
@@ -257,11 +259,12 @@ public class CATTask extends AbstractGenericTask {
 		manager.setSimulationValid(false);
 
 		TreeLogger logger = caller.getCarbonToolSettings().getTreeLogger();
-		if (!manager.getTrees(StatusClass.cut).isEmpty()) {
+		if (!manager.treeCollManager.getAllTreesOfThisStatus(StatusClass.cut).isEmpty()) {
 			if (caller.guiInterface != null) {
 				logger.addTreeLoggerListener(caller.getUI()); 
 			}
-			logger.init(convertMapIntoCollectionOfLoggableTrees());		
+//			logger.init(convertMapIntoCollectionOfLoggableTrees());		
+			logger.init(manager.treeCollManager.getAllTreesOfThisStatus(StatusClass.cut));
 			logger.run();		// woodPieces collection is cleared here
 			if (caller.guiInterface != null) {
 				logger.removeTreeLoggerListener(caller.getUI()); 
@@ -357,14 +360,16 @@ public class CATTask extends AbstractGenericTask {
 							barkAmountMap.putAll(nutrientAmounts);
 						}
 						amountMaps.put(BiomassType.Bark, barkAmountMap);
-
+						CATCompatibleTree treeOfThisWoodPiece = (CATCompatibleTree) woodPiece.getTreeFromWhichComesThisPiece();
+						StatusClass statusClass = manager.treeCollManager.getStatusOfThisTree(treeOfThisWoodPiece);
 						if (shouldBeBrokenDownAnnually(applicationScale, nbYearsToPreviousMeasurement)) {
 							for (int i = 0; i < nbYearsToPreviousMeasurement; i++) {
 								getProcessorManager().processWoodPiece(woodPiece.getLogCategory(), 
 										currentDateIndex - i, 
 										samplingUnitID, 
 										amountMaps, 
-										(CATCompatibleTree) woodPiece.getTreeFromWhichComesThisPiece());
+										treeOfThisWoodPiece,
+										statusClass);
 
 							}
 						} else {
@@ -372,7 +377,8 @@ public class CATTask extends AbstractGenericTask {
 									currentDateIndex, 
 									samplingUnitID, 
 									amountMaps, 
-									(CATCompatibleTree) woodPiece.getTreeFromWhichComesThisPiece());
+									treeOfThisWoodPiece,
+									statusClass);
 						}
 
 					}
@@ -397,12 +403,12 @@ public class CATTask extends AbstractGenericTask {
 					setProgress((int) (numberOfTreesProcessed * progressFactor + (double) (currentTask.ordinal()) * 100 / Task.getNumberOfLongTasks()));
 				}
 		}
-		createWoodyDebris(manager.getTrees(StatusClass.dead), WoodyDebrisProcessorID.CoarseWoodyDebris);
-		createWoodyDebris(manager.getTrees(StatusClass.dead), WoodyDebrisProcessorID.CommercialWoodyDebris);
-		createWoodyDebris(manager.getTrees(StatusClass.dead), WoodyDebrisProcessorID.FineWoodyDebris);
-		createWoodyDebris(manager.getTrees(StatusClass.windfall), WoodyDebrisProcessorID.CoarseWoodyDebris);
-		createWoodyDebris(manager.getTrees(StatusClass.windfall), WoodyDebrisProcessorID.CommercialWoodyDebris);
-		createWoodyDebris(manager.getTrees(StatusClass.windfall), WoodyDebrisProcessorID.FineWoodyDebris);
+		createWoodyDebris(manager.treeCollManager.getTrees(StatusClass.dead), WoodyDebrisProcessorID.CoarseWoodyDebris);
+		createWoodyDebris(manager.treeCollManager.getTrees(StatusClass.dead), WoodyDebrisProcessorID.CommercialWoodyDebris);
+		createWoodyDebris(manager.treeCollManager.getTrees(StatusClass.dead), WoodyDebrisProcessorID.FineWoodyDebris);
+		createWoodyDebris(manager.treeCollManager.getTrees(StatusClass.windfall), WoodyDebrisProcessorID.CoarseWoodyDebris);
+		createWoodyDebris(manager.treeCollManager.getTrees(StatusClass.windfall), WoodyDebrisProcessorID.CommercialWoodyDebris);
+		createWoodyDebris(manager.treeCollManager.getTrees(StatusClass.windfall), WoodyDebrisProcessorID.FineWoodyDebris);
 	}
 
 	private int getNumberOfYearsBetweenStandOfThisTreeAndPreviousStand(CATCompartmentManager manager, CATCompatibleTree tree) {
@@ -476,13 +482,15 @@ public class CATTask extends AbstractGenericTask {
 			barkAmountMap.put(Element.Biomass, barkBiomassMg);
 			barkAmountMap.put(Element.C, barkCarbonMg);
 			amountMaps.put(BiomassType.Bark, barkAmountMap);
-
+			
+			StatusClass statusClass = manager.treeCollManager.getStatusOfThisTree(tree);
 			if (shouldBeBrokenDownAnnually(applicationScale, nbYearsToPreviousMeasurement)) {
 				for (int i = 0; i < nbYearsToPreviousMeasurement; i++) {
 					getProcessorManager().processWoodyDebris(dateIndex - i, 
 							samplingUnitID, 
 							amountMaps, 
 							tree,
+							statusClass,
 							WoodDebrisType);
 				}
 			} else {
@@ -490,6 +498,7 @@ public class CATTask extends AbstractGenericTask {
 						samplingUnitID, 
 						amountMaps, 
 						tree,
+						statusClass,
 						WoodDebrisType);
 			}
 		}
@@ -569,18 +578,18 @@ public class CATTask extends AbstractGenericTask {
 		manager.storeResults();
 	}
 
-	private Collection<CATCompatibleTree> convertMapIntoCollectionOfLoggableTrees() {
-		CATCompartmentManager manager = caller.getCarbonCompartmentManager();
-		Collection<CATCompatibleTree> loggableTreesCollection = new ArrayList<CATCompatibleTree>();
-		for (Map<String, Map<String, Collection<CATCompatibleTree>>> oMap : manager.getTrees(StatusClass.cut).values()) {
-			for (Map<String, Collection<CATCompatibleTree>> oInnerMap : oMap.values()) {
-				for (Collection<CATCompatibleTree> oColl : oInnerMap.values()) {
-					loggableTreesCollection.addAll(oColl);
-				}
-			}
-		}
-		return loggableTreesCollection;
-	}
+//	private Collection<CATCompatibleTree> convertMapIntoCollectionOfLoggableTrees() {
+//		CATCompartmentManager manager = caller.getCarbonCompartmentManager();
+//		Collection<CATCompatibleTree> loggableTreesCollection = new ArrayList<CATCompatibleTree>();
+//		for (Map<String, Map<String, Collection<CATCompatibleTree>>> oMap : manager.treeCollManager.getTrees(StatusClass.cut).values()) {
+//			for (Map<String, Collection<CATCompatibleTree>> oInnerMap : oMap.values()) {
+//				for (Collection<CATCompatibleTree> oColl : oInnerMap.values()) {
+//					loggableTreesCollection.addAll(oColl);
+//				}
+//			}
+//		}
+//		return loggableTreesCollection;
+//	}
 	
 
 //	private double getCarbonFromCarbonUnitList(Collection<CarbonUnit> carbonUnits) {

@@ -26,6 +26,7 @@ import lerfob.carbonbalancetool.interfaces.CATBelowGroundBiomassProvider;
 import lerfob.carbonbalancetool.interfaces.CATBelowGroundCarbonProvider;
 import lerfob.carbonbalancetool.interfaces.CATBelowGroundVolumeProvider;
 import lerfob.carbonbalancetool.io.CATGrowthSimulationRecordReader.CATGrowthSimulationFieldID;
+import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider;
 import repicea.simulation.species.REpiceaSpecies.Species;
 
 /**
@@ -33,6 +34,7 @@ import repicea.simulation.species.REpiceaSpecies.Species;
  * @author Mathieu Fortin - July 2017
  */
 class CATGrowthSimulationTree implements CATCompatibleTree,
+										TreeStatusProvider,
 										CATAboveGroundVolumeProvider,
 										CATAboveGroundBiomassProvider,
 										CATAboveGroundCarbonProvider,

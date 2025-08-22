@@ -29,8 +29,8 @@ class CarbonToolCompatibleStandImpl implements CATCompatibleStand {
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected void addTree(CATCompatibleTree tree) {
-		getTrees(tree.getStatusClass()).add(tree);
+	protected void addTree(CATCompatibleTree tree, StatusClass statusClass) {
+		getTrees(statusClass).add(tree);
 	}
 	
 	@Override
@@ -63,8 +63,7 @@ class CarbonToolCompatibleStandImpl implements CATCompatibleStand {
 		for (Object obj : coll) {
 			CarbonToolCompatibleTreeImpl tree = (CarbonToolCompatibleTreeImpl) obj;
 			CATCompatibleTree clonedTree = tree.clone();
-			clonedTree.setStatusClass(StatusClass.cut);
-			newStand.addTree(clonedTree);
+			newStand.addTree(clonedTree, StatusClass.cut);
 		}
 		return newStand;
 	}

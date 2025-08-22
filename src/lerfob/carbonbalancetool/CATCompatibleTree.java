@@ -19,7 +19,6 @@
 package lerfob.carbonbalancetool;
 
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider;
-import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.simulation.treelogger.LoggableTree;
 
@@ -28,7 +27,7 @@ import repicea.simulation.treelogger.LoggableTree;
  * the carbon assessment tool.
  * @author Mathieu Fortin - January 2013
  */
-public interface CATCompatibleTree extends LoggableTree, TreeStatusProvider, SpeciesTypeProvider {
+public interface CATCompatibleTree extends LoggableTree, SpeciesTypeProvider {
 
 	
 	/**

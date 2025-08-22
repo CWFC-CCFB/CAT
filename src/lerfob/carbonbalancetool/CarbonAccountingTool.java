@@ -319,7 +319,7 @@ public class CarbonAccountingTool extends AbstractGenericEngine implements REpic
 		outerloop:
 		for (CATCompatibleStand stand : carbonCompartmentManager.completeStandList) {
 			for (StatusClass status : StatusClass.values()) {
-				Collection coll = stand.getTrees(status);
+				Collection coll = stand.getTrees(status);	// here we need a merchantable tree and no sapling
 				if (coll != null && !coll.isEmpty()) {
 					treeInstance =  coll.iterator().next();
 					break outerloop;	// once we have found at least one instance, we get out of the loop
@@ -357,7 +357,7 @@ public class CarbonAccountingTool extends AbstractGenericEngine implements REpic
 				Collection<?> coll = null;
 				for (StatusClass statusClass : StatusClass.values()) {
 					if (coll == null) {
-						coll = stand.getTrees(statusClass);
+						coll = stand.getTrees(statusClass);	// here we need a merchantable tree and not a sapling
 					} else {
 						coll.addAll(stand.getTrees(statusClass));
 					}

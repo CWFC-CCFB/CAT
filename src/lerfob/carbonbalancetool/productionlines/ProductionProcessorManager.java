@@ -630,9 +630,17 @@ public class ProductionProcessorManager extends SystemManager implements Memoriz
 			int dateIndex, 
 			String samplingUnitID,
 			Map<BiomassType, AmountMap<Element>> amountMaps, 
-			CATCompatibleTree tree) {
+			CATCompatibleTree tree,
+			StatusClass statusClass) {
 		Processor processor = findLeftHandSideProcessor(logCategory);
-		processAmountMap(processor, dateIndex, samplingUnitID, amountMaps, tree.getSpeciesName(), tree.getSpeciesType(), tree.getStatusClass(), null); // woodyDebrisType is set to null
+		processAmountMap(processor, 
+				dateIndex, 
+				samplingUnitID, 
+				amountMaps, 
+				tree.getSpeciesName(), 
+				tree.getSpeciesType(), 
+				statusClass, 
+				null); // woodyDebrisType is set to null
 	}
 
 	/**
@@ -694,12 +702,20 @@ public class ProductionProcessorManager extends SystemManager implements Memoriz
 			String samplingUnitID,
 			Map<BiomassType, AmountMap<Element>> amountMaps, 
 			CATCompatibleTree tree,
+			StatusClass statusClass,
 			WoodyDebrisProcessorID woodyDebrisType) {
 		if (woodyDebrisType == null) {
 			throw new InvalidParameterException("The woodyDebrisType argument cannot be null!");
 		}
 		Processor processor = findWoodyDebrisProcessor(woodyDebrisType);
-		processAmountMap(processor, dateIndex, samplingUnitID, amountMaps, tree.getSpeciesName(), tree.getSpeciesType(), tree.getStatusClass(), woodyDebrisType);
+		processAmountMap(processor, 
+				dateIndex, 
+				samplingUnitID, 
+				amountMaps, 
+				tree.getSpeciesName(), 
+				tree.getSpeciesType(), 
+				statusClass, 
+				woodyDebrisType);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })

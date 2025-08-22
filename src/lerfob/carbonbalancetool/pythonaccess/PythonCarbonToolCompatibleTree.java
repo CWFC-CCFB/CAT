@@ -22,6 +22,7 @@ import lerfob.carbonbalancetool.CATCompatibleTree;
 import lerfob.carbonbalancetool.interfaces.CATAboveGroundVolumeProvider;
 import lerfob.carbonbalancetool.interfaces.CATBasicWoodDensityProvider;
 import lerfob.carbonbalancetool.interfaces.CATBelowGroundVolumeProvider;
+import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider;
 import repicea.simulation.species.REpiceaSpecies.Species;
 
 /**
@@ -29,6 +30,7 @@ import repicea.simulation.species.REpiceaSpecies.Species;
  * @author Mathieu Fortin - May 2014
  */
 abstract class PythonCarbonToolCompatibleTree implements 	CATCompatibleTree, 
+															TreeStatusProvider,
 															CATBasicWoodDensityProvider,
 															CATAboveGroundVolumeProvider, 
 															CATBelowGroundVolumeProvider {

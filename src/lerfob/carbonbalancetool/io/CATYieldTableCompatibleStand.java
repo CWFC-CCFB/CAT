@@ -100,7 +100,7 @@ class CATYieldTableCompatibleStand implements CATCompatibleStand {
 	private Collection<CATCompatibleTree> cloneCollection(Collection<CATCompatibleTree> trees, StatusClass newStatus) {
 		List<CATCompatibleTree> newTrees = new ArrayList<CATCompatibleTree>();
 		for (CATCompatibleTree tree : trees) {
-			CATCompatibleTree newTree = ((CATYieldTableCompatibleTree) tree).getClone();
+			CATYieldTableCompatibleTree newTree = ((CATYieldTableCompatibleTree) tree).getClone();
 			newTree.setStatusClass(newStatus);
 			newTrees.add(newTree);
 		}
