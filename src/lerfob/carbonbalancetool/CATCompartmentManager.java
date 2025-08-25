@@ -29,7 +29,6 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 
 import lerfob.carbonbalancetool.CATCompartment.CompartmentInfo;
-import lerfob.carbonbalancetool.interfaces.CATSaplingsProvider;
 import lerfob.carbonbalancetool.memsconnectors.MEMSCompatibleStand;
 import lerfob.carbonbalancetool.memsconnectors.MEMSCompatibleTree;
 import lerfob.carbonbalancetool.memsconnectors.MEMSWrapper;
@@ -76,23 +75,19 @@ public class CATCompartmentManager implements MonteCarloSimulationCompliantObjec
 	
 	private static int NumberOfExtraYrs = 80;	// number of years after the final cut
 
-	/**
-	 * The treeCollections member is a four-level map.<p>
-	 * The keys are:<ol>
-	 * <li> the StatusClass enum
-	 * <li> the CATCompatibleStand instance
-	 * <li> the samplingUnitId (String)
-	 * <li> the species (String)
-	 * </ol>
-	 * The value is a Collection of CATCompatibleTree instances
-	 */
-	private final Map<StatusClass, Map<CATCompatibleStand, Map<String, Map<String, Collection<CATCompatibleTree>>>>> treeCollections;
-	
-	/**
-	 * A map whose keys are the trees and values are the corresponding stands.<p>
-	 * This map is used to provide a date index in conjunction with the timeTable member.
-	 */
-	private final Map<CATCompatibleTree, CATCompatibleStand> treeRegister;
+//	/**
+//	 * The treeCollections member is a four-level map.<p>
+//	 * The keys are:<ol>
+//	 * <li> the StatusClass enum
+//	 * <li> the CATCompatibleStand instance
+//	 * <li> the samplingUnitId (String)
+//	 * <li> the species (String)
+//	 * </ol>
+//	 * The value is a Collection of CATCompatibleTree instances
+//	 */
+//	private final Map<StatusClass, Map<CATCompatibleStand, Map<String, Map<String, Collection<CATCompatibleTree>>>>> treeCollections;
+
+	final TreeCollectionManager treeCollManager;
 	
 	/**
 	 * A List of all the species found in the CATCompatibleStand instances.<p>
@@ -129,8 +124,8 @@ public class CATCompartmentManager implements MonteCarloSimulationCompliantObjec
 	 */
 	protected CATCompartmentManager(CarbonAccountingTool caller, CATSettings settings) {
 		this.caller = caller;
-		treeCollections = new HashMap<StatusClass, Map<CATCompatibleStand, Map<String, Map<String, Collection<CATCompatibleTree>>>>>();
-		treeRegister = new HashMap<CATCompatibleTree, CATCompatibleStand>();
+//		treeCollections = new HashMap<StatusClass, Map<CATCompatibleStand, Map<String, Map<String, Collection<CATCompatibleTree>>>>>();
+		treeCollManager = new TreeCollectionManager();
 		speciesList = new ArrayList<String>();
 		
 		this.carbonAccountingToolSettings = settings;
@@ -156,46 +151,20 @@ public class CATCompartmentManager implements MonteCarloSimulationCompliantObjec
 	 * @param tree a CATCompatibleTree instance
 	 */
 	protected void registerTree(StatusClass statusClass, CATCompatibleStand stand, CATCompatibleTree tree) {
-		if (!treeCollections.containsKey(statusClass)) {
-			treeCollections.put(statusClass, new HashMap<CATCompatibleStand, Map<String, Map<String, Collection<CATCompatibleTree>>>>());
-		}
-		
-		Map<CATCompatibleStand, Map<String, Map<String, Collection<CATCompatibleTree>>>> innerMap = treeCollections.get(statusClass);
-		if (!innerMap.containsKey(stand)) {
-			innerMap.put(stand, new HashMap<String, Map<String, Collection<CATCompatibleTree>>>());
-		}
-		
-		Map<String, Map<String, Collection<CATCompatibleTree>>> innerInnerMap = innerMap.get(stand);
-		
-		String samplingUnitID = getSamplingUnitID(tree); 
-		
-		if (!innerInnerMap.containsKey(samplingUnitID)) {
-			innerInnerMap.put(samplingUnitID, new HashMap<String, Collection<CATCompatibleTree>>());
-		}
-		
-		Map<String, Collection<CATCompatibleTree>> mostInsideMap = innerInnerMap.get(samplingUnitID);
-		if (!mostInsideMap.containsKey(tree.getSpeciesName())) {
-			mostInsideMap.put(tree.getSpeciesName(), new ArrayList<CATCompatibleTree>());
-		}
-		
-		Collection<CATCompatibleTree> trees = mostInsideMap.get(tree.getSpeciesName());
-		trees.add(tree);
-		treeRegister.put(tree, stand);
+		treeCollManager.add(statusClass, stand, tree);
 	}
 
 	
 	int getDateIndexForThisTree(CATCompatibleTree tree) {
-		if (treeRegister.containsKey(tree)) {
-			CATCompatibleStand stand = treeRegister.get(tree);
-			return getTimeTable().getIndexOfThisStandOnTheTimeTable(stand);
-		} else {
-			return -1;
-		}
+		CATCompatibleStand stand = treeCollManager.getStandOfThisTree(tree);
+		return stand == null ?
+				-1 :
+					getTimeTable().getIndexOfThisStandOnTheTimeTable(stand);
 	}
 	
 	int getDateIndexOfPreviousStandForThisTree(CATCompatibleTree tree) {
-		if (treeRegister.containsKey(tree)) {
-			CATCompatibleStand stand = treeRegister.get(tree);
+		CATCompatibleStand stand = treeCollManager.getStandOfThisTree(tree);
+		if (stand != null) {
 			int currentIndexOfThisStandAmongStands = getTimeTable().getStandsForThisRealization().lastIndexOf(stand);
 			if (currentIndexOfThisStandAmongStands > 0) {	// must be at least in the second slot
 				stand = getTimeTable().getStandsForThisRealization().get(currentIndexOfThisStandAmongStands - 1); // get the previous stand
@@ -205,24 +174,8 @@ public class CATCompartmentManager implements MonteCarloSimulationCompliantObjec
 		return -1;
 	}
 	
-	/**
-	 * Return the second-level Map from the treeCollections member.<p>
-	 * These second-level map are needed for the logging, bucking and transformation of trees into
-	 * harvest wood products.
-	 * @param statusClass a StatusClass enum
-	 * @return a Map instance
-	 */
-	protected Map<CATCompatibleStand, Map<String, Map<String, Collection<CATCompatibleTree>>>> getTrees(StatusClass statusClass) {
-		if (treeCollections.containsKey(statusClass)) {
-			return treeCollections.get(statusClass);
-		} else {
-			return new HashMap<CATCompatibleStand, Map<String, Map<String, Collection<CATCompatibleTree>>>>();
-		}
-	}
-
 	private void clearTreeCollections() {
-		treeCollections.clear();
-		treeRegister.clear();
+		treeCollManager.clear();
 //		speciesList.clear();  // is now set through the init method
 	}
 
@@ -266,6 +219,7 @@ public class CATCompartmentManager implements MonteCarloSimulationCompliantObjec
 	 */
 	@SuppressWarnings("unchecked")
 	public void init(List<CATCompatibleStand> stands) {
+		REpiceaLogManager.logMessage(CarbonAccountingTool.LOGGER_NAME, Level.FINEST, null, "Setting stand list and creating last stand if needs be...");
 		this.completeStandList = stands;
 		if (stands != null) {
 			CATCompatibleStand lastStand = stands.get(stands.size() - 1);
@@ -316,12 +270,7 @@ public class CATCompartmentManager implements MonteCarloSimulationCompliantObjec
 				for (CATCompatibleStand s : stands) {
 					for (StatusClass sc : StatusClass.values()) {
 						Collection<CATCompatibleTree> trees = s.getTrees(sc);
-						// TODO MF20250821 the collections should already been stored somewhere so that we call them once
-						// TODO MF20250821 Moreover, we add the saplings as they contribute to the carbon
 						for (CATCompatibleTree tree : trees) {
-							if (!speciesList.contains(tree.getSpeciesName())) {
-								speciesList.add(tree.getSpeciesName());
-							}
 							if (!(tree instanceof MEMSCompatibleTree)) {
 								isMEMSEnabled = false;	// false if at least one tree does not implement MEMSCompatibleTree
 								break outer;

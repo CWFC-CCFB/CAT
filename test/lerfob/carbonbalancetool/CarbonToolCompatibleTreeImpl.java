@@ -8,7 +8,6 @@ class CarbonToolCompatibleTreeImpl implements CATCompatibleTree, Cloneable {
 	private final double number;
 	private final double volM3;
 	private final String speciesName;
-	private StatusClass statusClass;
 	private final Species species;
 	
 	protected CarbonToolCompatibleTreeImpl(double number, double volM3, Species species) {
@@ -16,7 +15,6 @@ class CarbonToolCompatibleTreeImpl implements CATCompatibleTree, Cloneable {
 		this.volM3 = volM3;
 		this.speciesName = species.getLatinName();
 		this.species = species;
-		setStatusClass(StatusClass.alive);
 	}
 
 	protected CarbonToolCompatibleTreeImpl(double volM3, Species species) {
@@ -31,12 +29,6 @@ class CarbonToolCompatibleTreeImpl implements CATCompatibleTree, Cloneable {
 
 	@Override
 	public String getSpeciesName() {return speciesName;}
-
-	@Override
-	public void setStatusClass(StatusClass statusClass) {this.statusClass = statusClass;}
-
-	@Override
-	public StatusClass getStatusClass() {return statusClass;}
 
 	@Override
 	public CATCompatibleTree clone() {

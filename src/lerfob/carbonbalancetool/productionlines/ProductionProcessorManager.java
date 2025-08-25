@@ -625,14 +625,23 @@ public class ProductionProcessorManager extends SystemManager implements Memoriz
 	 * @param samplingUnitID a String that stands for the sampling unit, typically the plot
 	 * @param amountMaps a Map which contains the amounts of the different elements
 	 * @param tree a CATCompatibleTree instance
+	 * @param statusClass the status class of the tree instance (see repicea.simulation.covariateproviders.treelevel.TreeStatusProvider interface)
 	 */
 	public void processWoodPiece(LogCategory logCategory, 
 			int dateIndex, 
 			String samplingUnitID,
 			Map<BiomassType, AmountMap<Element>> amountMaps, 
-			CATCompatibleTree tree) {
+			CATCompatibleTree tree,
+			StatusClass statusClass) {
 		Processor processor = findLeftHandSideProcessor(logCategory);
-		processAmountMap(processor, dateIndex, samplingUnitID, amountMaps, tree.getSpeciesName(), tree.getSpeciesType(), tree.getStatusClass(), null); // woodyDebrisType is set to null
+		processAmountMap(processor, 
+				dateIndex, 
+				samplingUnitID, 
+				amountMaps, 
+				tree.getSpeciesName(), 
+				tree.getSpeciesType(), 
+				statusClass, 
+				null); // woodyDebrisType is set to null
 	}
 
 	/**
@@ -688,18 +697,27 @@ public class ProductionProcessorManager extends SystemManager implements Memoriz
 	 * @param samplingUnitID a String that stands for the sampling unit, typically the plot
 	 * @param amountMaps a Map which contains the amounts of the different elements
 	 * @param tree a CATCompatibleTree instance
+	 * @param statusClass the status class of the tree instance (see repicea.simulation.covariateproviders.treelevel.TreeStatusProvider interface)
 	 * @param woodyDebrisType a WoodyDebrisProcessorID enum variable
 	 */
 	public void processWoodyDebris(int dateIndex, 
 			String samplingUnitID,
 			Map<BiomassType, AmountMap<Element>> amountMaps, 
 			CATCompatibleTree tree,
+			StatusClass statusClass,
 			WoodyDebrisProcessorID woodyDebrisType) {
 		if (woodyDebrisType == null) {
 			throw new InvalidParameterException("The woodyDebrisType argument cannot be null!");
 		}
 		Processor processor = findWoodyDebrisProcessor(woodyDebrisType);
-		processAmountMap(processor, dateIndex, samplingUnitID, amountMaps, tree.getSpeciesName(), tree.getSpeciesType(), tree.getStatusClass(), woodyDebrisType);
+		processAmountMap(processor, 
+				dateIndex, 
+				samplingUnitID, 
+				amountMaps, 
+				tree.getSpeciesName(), 
+				tree.getSpeciesType(), 
+				statusClass, 
+				woodyDebrisType);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })

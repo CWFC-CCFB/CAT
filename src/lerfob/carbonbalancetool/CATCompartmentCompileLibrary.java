@@ -21,7 +21,6 @@ package lerfob.carbonbalancetool;
 import java.util.Collection;
 import java.util.List;
 
-import lerfob.carbonbalancetool.interfaces.CATSaplingsProvider;
 import lerfob.carbonbalancetool.productionlines.CarbonUnit;
 import lerfob.carbonbalancetool.productionlines.EndUseWoodProductCarbonUnit;
 import lerfob.carbonbalancetool.productionlines.LandfillCarbonUnit;
@@ -40,7 +39,6 @@ class CATCompartmentCompileLibrary {
 	 * the forecast period.
 	 * @param carbonCompartment = a carbon compartment (CarbonCompartment object)
 	 */
-	@SuppressWarnings("unchecked")
 	void selectCalculatorFunction(CATCompartment carbonCompartment) {
 		CATCompartmentManager manager = carbonCompartment.getCompartmentManager();
 		
@@ -59,10 +57,15 @@ class CATCompartmentCompileLibrary {
 		case Roots:
 			oMap = new CATIntermediateBiomassCarbonMap(timeTable, carbonCompartment);
 			for (CATCompatibleStand stand : stands) {
-				double carbonContent = manager.getCarbonToolSettings().getCurrentBiomassParameters().getBelowGroundCarbonMg(stand.getTrees(StatusClass.alive), manager);
-				if (stand instanceof CATSaplingsProvider) {
-					carbonContent += manager.getCarbonToolSettings().getCurrentBiomassParameters().getBelowGroundCarbonMg((List) ((CATSaplingsProvider) stand).getSaplings(), manager);
-				}
+				double carbonContent = manager.getCarbonToolSettings().getCurrentBiomassParameters().getBelowGroundCarbonMg(
+						manager.treeCollManager.getTreeOfThisStatusInThisStand(StatusClass.alive, stand),
+						manager);
+				// TODO MF20250822 The collection should include the saplings already
+
+//				double carbonContent = manager.getCarbonToolSettings().getCurrentBiomassParameters().getBelowGroundCarbonMg(stand.getTrees(StatusClass.alive), manager);
+//				if (stand instanceof CATSaplingsProvider) {
+//					carbonContent += manager.getCarbonToolSettings().getCurrentBiomassParameters().getBelowGroundCarbonMg((List) ((CATSaplingsProvider) stand).getSaplings(), manager);
+//				}
 				oMap.put(stand, carbonContent);
 			}
 			oMap.interpolateIfNeeded();
@@ -73,10 +76,13 @@ class CATCompartmentCompileLibrary {
 		case AbGround:
 			oMap = new CATIntermediateBiomassCarbonMap(timeTable, carbonCompartment);
 			for (CATCompatibleStand stand : stands) {
-				double carbonContent = manager.getCarbonToolSettings().getCurrentBiomassParameters().getAboveGroundCarbonMg(stand.getTrees(StatusClass.alive), manager);
-				if (stand instanceof CATSaplingsProvider) {
-					carbonContent += manager.getCarbonToolSettings().getCurrentBiomassParameters().getAboveGroundCarbonMg((List) ((CATSaplingsProvider) stand).getSaplings(), manager);
-				}
+				double carbonContent = manager.getCarbonToolSettings().getCurrentBiomassParameters().getAboveGroundCarbonMg(
+						manager.treeCollManager.getTreeOfThisStatusInThisStand(StatusClass.alive, stand), 
+						manager);
+				// TODO MF20250822 The collection should include the saplings already
+//				if (stand instanceof CATSaplingsProvider) {
+//					carbonContent += manager.getCarbonToolSettings().getCurrentBiomassParameters().getAboveGroundCarbonMg((List) ((CATSaplingsProvider) stand).getSaplings(), manager);
+//				}
 				oMap.put(stand, carbonContent);
 			}	
 			oMap.interpolateIfNeeded();

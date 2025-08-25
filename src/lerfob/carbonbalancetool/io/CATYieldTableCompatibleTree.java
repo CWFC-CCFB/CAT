@@ -19,6 +19,8 @@
 package lerfob.carbonbalancetool.io;
 
 import lerfob.carbonbalancetool.CATCompatibleTree;
+import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider;
+import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 import repicea.simulation.species.REpiceaSpecies.Species;
 
 /**
@@ -26,7 +28,7 @@ import repicea.simulation.species.REpiceaSpecies.Species;
  * compatibility with CAT. It is set to a single tree having the volume per ha of the stand.
  * @author Mathieu Fortin - June 2017
  */
-class CATYieldTableCompatibleTree implements CATCompatibleTree {
+class CATYieldTableCompatibleTree implements CATCompatibleTree, TreeStatusProvider {
 
 	private final double volumeM3;
 	private StatusClass statusClass;

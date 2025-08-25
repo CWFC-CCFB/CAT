@@ -29,8 +29,7 @@ import repicea.simulation.species.REpiceaSpecies.Species;
  * This class is the return type of the CATSaplingsProvider interface.
  * @author Mathieu Fortin - July 2025
  */
-public final class CATSapling implements CATAboveGroundBiomassProvider,
-											CATCompatibleTree {
+public class CATSapling implements CATAboveGroundBiomassProvider, CATCompatibleTree {
 
 	final double aboveGroundBiomassMg;
 	final Species species;
@@ -97,14 +96,6 @@ public final class CATSapling implements CATAboveGroundBiomassProvider,
 
 	@Override
 	public String getSpeciesName() {return getCATSpecies().toString();}
-
-	@Override
-	public void setStatusClass(StatusClass statusClass) {
-		throw new UnsupportedOperationException("The status class of CATSapling instance cannot be changed!");
-	}
-
-	@Override
-	public StatusClass getStatusClass() {return StatusClass.alive;}
 
 	@Override
 	public Species getCATSpecies() {return species;}

@@ -45,6 +45,7 @@ import repicea.math.SymmetricMatrix;
 import repicea.math.utility.GaussianUtility;
 import repicea.serial.SerializerChangeMonitor;
 import repicea.serial.xml.XmlDeserializer;
+import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.stats.Distribution.Type;
 import repicea.stats.estimates.Estimate;
@@ -99,7 +100,7 @@ public class CarbonAccountingToolTest {
 			stands.add(stand);
 			for (int j = 1; j <= 10; j++) {
 				tree = new CarbonToolCompatibleTreeImpl(stand.getDateYr() * .01, Species.Fagus_sylvatica);
-				((CarbonToolCompatibleStandImpl) stand).addTree(tree);
+				((CarbonToolCompatibleStandImpl) stand).addTree(tree, StatusClass.alive);
 			}
 		}
 		
@@ -134,7 +135,7 @@ public class CarbonAccountingToolTest {
 			stands.add(stand);
 			for (int j = 1; j <= 10; j++) {
 				tree = new CarbonToolCompatibleTreeImpl(stand.getDateYr() * .01, Species.Fagus_sylvatica);
-				((CarbonToolCompatibleStandImpl) stand).addTree(tree);
+				((CarbonToolCompatibleStandImpl) stand).addTree(tree, StatusClass.alive);
 			}
 		}
 		
@@ -190,9 +191,9 @@ public class CarbonAccountingToolTest {
 			standsWithSameDates.add(stand1);
 			for (int j = 1; j <= 10; j++) {
 				tree0 = new CarbonToolCompatibleTreeImpl(ageYr * .01, Species.Fagus_sylvatica);
-				((CarbonToolCompatibleStandImpl) stand0).addTree(tree0);
+				((CarbonToolCompatibleStandImpl) stand0).addTree(tree0, StatusClass.alive);
 				tree1 = new CarbonToolCompatibleTreeImpl(ageYr * .01, Species.Fagus_sylvatica);
-				((CarbonToolCompatibleStandImpl) stand1).addTree(tree1);
+				((CarbonToolCompatibleStandImpl) stand1).addTree(tree1, StatusClass.alive);
 			}
 		}
 		
