@@ -29,8 +29,7 @@ import repicea.simulation.species.REpiceaSpecies.Species;
  * This class is the return type of the CATSaplingsProvider interface.
  * @author Mathieu Fortin - July 2025
  */
-public final class CATSapling implements CATAboveGroundBiomassProvider,
-											CATCompatibleTree {
+public class CATSapling implements CATAboveGroundBiomassProvider, CATCompatibleTree {
 
 	final double aboveGroundBiomassMg;
 	final Species species;

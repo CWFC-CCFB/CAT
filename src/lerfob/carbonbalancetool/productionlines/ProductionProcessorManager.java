@@ -625,6 +625,7 @@ public class ProductionProcessorManager extends SystemManager implements Memoriz
 	 * @param samplingUnitID a String that stands for the sampling unit, typically the plot
 	 * @param amountMaps a Map which contains the amounts of the different elements
 	 * @param tree a CATCompatibleTree instance
+	 * @param statusClass the status class of the tree instance (see repicea.simulation.covariateproviders.treelevel.TreeStatusProvider interface)
 	 */
 	public void processWoodPiece(LogCategory logCategory, 
 			int dateIndex, 
@@ -696,6 +697,7 @@ public class ProductionProcessorManager extends SystemManager implements Memoriz
 	 * @param samplingUnitID a String that stands for the sampling unit, typically the plot
 	 * @param amountMaps a Map which contains the amounts of the different elements
 	 * @param tree a CATCompatibleTree instance
+	 * @param statusClass the status class of the tree instance (see repicea.simulation.covariateproviders.treelevel.TreeStatusProvider interface)
 	 * @param woodyDebrisType a WoodyDebrisProcessorID enum variable
 	 */
 	public void processWoodyDebris(int dateIndex, 
