@@ -1,3 +1,22 @@
+/*
+ * This file is part of the CAT library.
+ *
+ * Copyright (C) 2025 His Majesty the King in right of Canada
+ * Author: Mathieu Fortin, Canadian Forest Service
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed with the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * License for more details.
+ *
+ * Please see the license at http://www.gnu.org/copyleft/lesser.html.
+ */
 package lerfob.carbonbalancetool;
 
 import java.util.ArrayList;
@@ -7,6 +26,10 @@ import java.util.Map;
 
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 
+/**
+ * A class to handle different collections of trees.
+ * @author Mathieu Fortin - August 2025
+ */
 public class TreeCollectionManager {
 
 	/**
@@ -21,27 +44,17 @@ public class TreeCollectionManager {
 	 */
 	private final Map<StatusClass, Map<CATCompatibleStand, Map<String, Map<String, Collection<CATCompatibleTree>>>>> completeCollections;
 
-	private final Map<StatusClass, Collection<CATCompatibleTree>> statusPooledCollections;
-
-	private final Map<CATCompatibleTree, StatusClass> treeToStatusMap;
-
 	/**
 	 * A map whose keys are the trees and values are the corresponding stands.<p>
 	 * This map is used to provide a date index in conjunction with the timeTable member.
 	 */
-	private final Map<CATCompatibleTree, CATCompatibleStand> treeToStandMap;
+	private final Map<StatusClass, Map<CATCompatibleTree, CATCompatibleStand>> treeToStandMap;
 
 	TreeCollectionManager() {
 		completeCollections = new HashMap<StatusClass, Map<CATCompatibleStand, Map<String, Map<String, Collection<CATCompatibleTree>>>>>();
-		statusPooledCollections = new HashMap<StatusClass, Collection<CATCompatibleTree>>();
-		treeToStatusMap = new HashMap<CATCompatibleTree, StatusClass>();
-		treeToStandMap = new HashMap<CATCompatibleTree, CATCompatibleStand>();
+		treeToStandMap = new HashMap<StatusClass, Map<CATCompatibleTree, CATCompatibleStand>>();
 	}
 	
-	
-	CATCompatibleStand getStandOfThisTree(CATCompatibleTree tree) {
-		return treeToStandMap.get(tree);
-	}
 	
 	/**
 	 * Trees are registered in the treeCollections map and the treeRegister map immediately after the manager has been reset following
@@ -51,29 +64,29 @@ public class TreeCollectionManager {
 	 * @param tree a CATCompatibleTree instance
 	 */
 	void add(StatusClass statusClass, CATCompatibleStand stand, CATCompatibleTree tree) {
-		Map<CATCompatibleStand, Map<String, Map<String, Collection<CATCompatibleTree>>>> innerMap = completeCollections.get(statusClass);
-		if (!innerMap.containsKey(stand)) {
-			innerMap.put(stand, new HashMap<String, Map<String, Collection<CATCompatibleTree>>>());
-		}
-		
-		Map<String, Map<String, Collection<CATCompatibleTree>>> innerInnerMap = innerMap.get(stand);
-		
-		String samplingUnitID = CATCompartmentManager.getSamplingUnitID(tree); 
-		
-		if (!innerInnerMap.containsKey(samplingUnitID)) {
-			innerInnerMap.put(samplingUnitID, new HashMap<String, Collection<CATCompatibleTree>>());
-		}
-		
-		Map<String, Collection<CATCompatibleTree>> mostInsideMap = innerInnerMap.get(samplingUnitID);
-		if (!mostInsideMap.containsKey(tree.getSpeciesName())) {
-			mostInsideMap.put(tree.getSpeciesName(), new ArrayList<CATCompatibleTree>());
-		}
-		
-		Collection<CATCompatibleTree> trees = mostInsideMap.get(tree.getSpeciesName());
-		trees.add(tree);
-		statusPooledCollections.get(statusClass).add(tree);
-		treeToStatusMap.put(tree, statusClass);
-		treeToStandMap.put(tree, stand);
+		if (!treeToStandMap.get(statusClass).containsKey(tree)) { // this way we avoid storing several time dead, cut, or windfall trees
+			treeToStandMap.get(statusClass).put(tree, stand);
+			Map<CATCompatibleStand, Map<String, Map<String, Collection<CATCompatibleTree>>>> innerMap = completeCollections.get(statusClass);
+			if (!innerMap.containsKey(stand)) {
+				innerMap.put(stand, new HashMap<String, Map<String, Collection<CATCompatibleTree>>>());
+			}
+			
+			Map<String, Map<String, Collection<CATCompatibleTree>>> innerInnerMap = innerMap.get(stand);
+			
+			String samplingUnitID = CATCompartmentManager.getSamplingUnitID(tree); 
+			
+			if (!innerInnerMap.containsKey(samplingUnitID)) {
+				innerInnerMap.put(samplingUnitID, new HashMap<String, Collection<CATCompatibleTree>>());
+			}
+			
+			Map<String, Collection<CATCompatibleTree>> mostInsideMap = innerInnerMap.get(samplingUnitID);
+			if (!mostInsideMap.containsKey(tree.getSpeciesName())) {
+				mostInsideMap.put(tree.getSpeciesName(), new ArrayList<CATCompatibleTree>());
+			}
+			
+			Collection<CATCompatibleTree> trees = mostInsideMap.get(tree.getSpeciesName());
+			trees.add(tree);
+		} 
 	}
 
 	Collection<CATCompatibleTree> getTreeOfThisStatusInThisStand(StatusClass statusClass, CATCompatibleStand stand) {
@@ -90,8 +103,6 @@ public class TreeCollectionManager {
 		return outputColl;
 	}
 	
-	
-
 	/**
 	 * Return the second-level Map from the treeCollections member.<p>
 	 * These second-level map are needed for the logging, bucking and transformation of trees into
@@ -109,23 +120,21 @@ public class TreeCollectionManager {
 	 * @return a Map instance
 	 */
 	Collection<CATCompatibleTree> getAllTreesOfThisStatus(StatusClass statusClass) {
-		return statusPooledCollections.get(statusClass);
+		return treeToStandMap.get(statusClass).keySet();
 	}
 
-	StatusClass getStatusOfThisTree(CATCompatibleTree tree) {
-		return treeToStatusMap.get(tree);
+	CATCompatibleStand getStandOfThisTree(CATCompatibleTree tree, StatusClass statusClass) {
+		return treeToStandMap.get(statusClass).get(tree);
 	}
 	
 	
 	void clear() {
 		completeCollections.clear();
 		treeToStandMap.clear();
-		statusPooledCollections.clear();
-		treeToStatusMap.clear();
 
 		for (StatusClass sc : StatusClass.values()) {
 			completeCollections.put(sc, new HashMap<CATCompatibleStand, Map<String, Map<String, Collection<CATCompatibleTree>>>>());
-			statusPooledCollections.put(sc, new ArrayList<CATCompatibleTree>());
+			treeToStandMap.put(sc, new HashMap<CATCompatibleTree, CATCompatibleStand>());
 		}
 	}
 	

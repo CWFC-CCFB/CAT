@@ -22,7 +22,6 @@ package lerfob.carbonbalancetool;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -155,15 +154,15 @@ public class CATCompartmentManager implements MonteCarloSimulationCompliantObjec
 	}
 
 	
-	int getDateIndexForThisTree(CATCompatibleTree tree) {
-		CATCompatibleStand stand = treeCollManager.getStandOfThisTree(tree);
+	int getDateIndexForThisTree(CATCompatibleTree tree, StatusClass statusClass) {
+		CATCompatibleStand stand = treeCollManager.getStandOfThisTree(tree, statusClass);
 		return stand == null ?
 				-1 :
 					getTimeTable().getIndexOfThisStandOnTheTimeTable(stand);
 	}
 	
-	int getDateIndexOfPreviousStandForThisTree(CATCompatibleTree tree) {
-		CATCompatibleStand stand = treeCollManager.getStandOfThisTree(tree);
+	int getDateIndexOfPreviousStandForThisTree(CATCompatibleTree tree, StatusClass statusClass) {
+		CATCompatibleStand stand = treeCollManager.getStandOfThisTree(tree, statusClass);
 		if (stand != null) {
 			int currentIndexOfThisStandAmongStands = getTimeTable().getStandsForThisRealization().lastIndexOf(stand);
 			if (currentIndexOfThisStandAmongStands > 0) {	// must be at least in the second slot

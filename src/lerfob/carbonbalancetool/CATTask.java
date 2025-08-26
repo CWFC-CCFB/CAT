@@ -259,12 +259,13 @@ public class CATTask extends AbstractGenericTask {
 		manager.setSimulationValid(false);
 
 		TreeLogger logger = caller.getCarbonToolSettings().getTreeLogger();
-		if (!manager.treeCollManager.getAllTreesOfThisStatus(StatusClass.cut).isEmpty()) {
+		Collection<CATCompatibleTree> cutTrees = manager.treeCollManager.getAllTreesOfThisStatus(StatusClass.cut);
+		if (!cutTrees.isEmpty()) {
 			if (caller.guiInterface != null) {
 				logger.addTreeLoggerListener(caller.getUI()); 
 			}
 //			logger.init(convertMapIntoCollectionOfLoggableTrees());		
-			logger.init(manager.treeCollManager.getAllTreesOfThisStatus(StatusClass.cut));
+			logger.init(cutTrees);
 			logger.run();		// woodPieces collection is cleared here
 			if (caller.guiInterface != null) {
 				logger.removeTreeLoggerListener(caller.getUI()); 
@@ -287,6 +288,8 @@ public class CATTask extends AbstractGenericTask {
 		CATCompartmentManager manager = caller.getCarbonCompartmentManager();
 		ApplicationScale applicationScale = manager.getApplicationScale();
 
+		final StatusClass cutStatus = StatusClass.cut;
+		
 		REpiceaLogManager.logMessage(CarbonAccountingTool.LOGGER_NAME, Level.FINEST, null, "Creating HWP from wood pieces...");
 		
 		BiomassParameters biomassParameters = manager.getCarbonToolSettings().getCurrentBiomassParameters();
@@ -302,8 +305,8 @@ public class CATTask extends AbstractGenericTask {
 					MemoryWatchDog.checkAvailableMemory();		// memory check before going further on
 
 					CATCompatibleTree tree = (CATCompatibleTree) t;
-					int currentDateIndex = manager.getDateIndexForThisTree(tree);
-					int nbYearsToPreviousMeasurement = getNumberOfYearsBetweenStandOfThisTreeAndPreviousStand(manager, tree);
+					int currentDateIndex = manager.getDateIndexForThisTree(tree, cutStatus);
+					int nbYearsToPreviousMeasurement = getNumberOfYearsBetweenStandOfThisTreeAndPreviousStand(manager, tree, cutStatus);
 					double annualBreakdownRatio = getAnnualBreakdownRatio(applicationScale, nbYearsToPreviousMeasurement);
 					double carbonContentRatio = biomassParameters.getCarbonContentFromThisTree(tree, manager);
 					double basicWoodDensityMgM3 = biomassParameters.getBasicWoodDensityFromThisTree(tree, manager);
@@ -361,7 +364,7 @@ public class CATTask extends AbstractGenericTask {
 						}
 						amountMaps.put(BiomassType.Bark, barkAmountMap);
 						CATCompatibleTree treeOfThisWoodPiece = (CATCompatibleTree) woodPiece.getTreeFromWhichComesThisPiece();
-						StatusClass statusClass = manager.treeCollManager.getStatusOfThisTree(treeOfThisWoodPiece);
+//						StatusClass statusClass = manager.treeCollManager.getStatusOfThisTree(treeOfThisWoodPiece);
 						if (shouldBeBrokenDownAnnually(applicationScale, nbYearsToPreviousMeasurement)) {
 							for (int i = 0; i < nbYearsToPreviousMeasurement; i++) {
 								getProcessorManager().processWoodPiece(woodPiece.getLogCategory(), 
@@ -369,7 +372,7 @@ public class CATTask extends AbstractGenericTask {
 										samplingUnitID, 
 										amountMaps, 
 										treeOfThisWoodPiece,
-										statusClass);
+										cutStatus);
 
 							}
 						} else {
@@ -378,7 +381,7 @@ public class CATTask extends AbstractGenericTask {
 									samplingUnitID, 
 									amountMaps, 
 									treeOfThisWoodPiece,
-									statusClass);
+									cutStatus);
 						}
 
 					}
@@ -386,6 +389,7 @@ public class CATTask extends AbstractGenericTask {
 					double totalAboveGroundCarbonMg = biomassParameters.getAboveGroundCarbonMg(tree, manager);
 					double unconsideredAboveGroundCarbonMg = totalAboveGroundCarbonMg - totalAboveGroundWoodPieceCarbonMg;
 					processUnaccountedCarbon((CATCompatibleTree) t,
+							cutStatus,
 							unconsideredAboveGroundCarbonMg, 
 							currentDateIndex, 
 							samplingUnitID,
@@ -394,6 +398,7 @@ public class CATTask extends AbstractGenericTask {
 					double totalBelowGroundCarbonMg = biomassParameters.getBelowGroundCarbonMg(tree, manager);
 					double unconsideredBelowGroundCarbonMg = totalBelowGroundCarbonMg - totalBelowGroundWoodPieceCarbonMg;
 					processUnaccountedCarbon((CATCompatibleTree) t,
+							cutStatus,
 							unconsideredBelowGroundCarbonMg, 
 							currentDateIndex, 
 							samplingUnitID,
@@ -403,17 +408,17 @@ public class CATTask extends AbstractGenericTask {
 					setProgress((int) (numberOfTreesProcessed * progressFactor + (double) (currentTask.ordinal()) * 100 / Task.getNumberOfLongTasks()));
 				}
 		}
-		createWoodyDebris(manager.treeCollManager.getTrees(StatusClass.dead), WoodyDebrisProcessorID.CoarseWoodyDebris);
-		createWoodyDebris(manager.treeCollManager.getTrees(StatusClass.dead), WoodyDebrisProcessorID.CommercialWoodyDebris);
-		createWoodyDebris(manager.treeCollManager.getTrees(StatusClass.dead), WoodyDebrisProcessorID.FineWoodyDebris);
-		createWoodyDebris(manager.treeCollManager.getTrees(StatusClass.windfall), WoodyDebrisProcessorID.CoarseWoodyDebris);
-		createWoodyDebris(manager.treeCollManager.getTrees(StatusClass.windfall), WoodyDebrisProcessorID.CommercialWoodyDebris);
-		createWoodyDebris(manager.treeCollManager.getTrees(StatusClass.windfall), WoodyDebrisProcessorID.FineWoodyDebris);
+		createWoodyDebris(StatusClass.dead, WoodyDebrisProcessorID.CoarseWoodyDebris);
+		createWoodyDebris(StatusClass.dead, WoodyDebrisProcessorID.CommercialWoodyDebris);
+		createWoodyDebris(StatusClass.dead, WoodyDebrisProcessorID.FineWoodyDebris);
+		createWoodyDebris(StatusClass.windfall, WoodyDebrisProcessorID.CoarseWoodyDebris);
+		createWoodyDebris(StatusClass.windfall, WoodyDebrisProcessorID.CommercialWoodyDebris);
+		createWoodyDebris(StatusClass.windfall, WoodyDebrisProcessorID.FineWoodyDebris);
 	}
 
-	private int getNumberOfYearsBetweenStandOfThisTreeAndPreviousStand(CATCompartmentManager manager, CATCompatibleTree tree) {
-		int currentDateIndex = manager.getDateIndexForThisTree(tree);
-		int previousDateIndex = manager.getDateIndexOfPreviousStandForThisTree(tree);
+	private int getNumberOfYearsBetweenStandOfThisTreeAndPreviousStand(CATCompartmentManager manager, CATCompatibleTree tree, StatusClass statusClass) {
+		int currentDateIndex = manager.getDateIndexForThisTree(tree, statusClass);
+		int previousDateIndex = manager.getDateIndexOfPreviousStandForThisTree(tree, statusClass);
 
 		int nbYears;
 		if (previousDateIndex == -1 && currentDateIndex == 0) { // happens if the first stand is a harvested stand
@@ -445,14 +450,15 @@ public class CATTask extends AbstractGenericTask {
 	}
 	
 	
-	private void processUnaccountedCarbon(CATCompatibleTree tree, 
+	private void processUnaccountedCarbon(CATCompatibleTree tree,
+			StatusClass statusClass,
 			double carbonMg, 
 			int dateIndex, 
 			String samplingUnitID, 
 			WoodyDebrisProcessorID WoodDebrisType,
 			ApplicationScale applicationScale) {
 		CATCompartmentManager manager = caller.getCarbonCompartmentManager();
-		int nbYearsToPreviousMeasurement = getNumberOfYearsBetweenStandOfThisTreeAndPreviousStand(manager, tree);
+		int nbYearsToPreviousMeasurement = getNumberOfYearsBetweenStandOfThisTreeAndPreviousStand(manager, tree, statusClass);
 		double annualBreakdownRatio = getAnnualBreakdownRatio(applicationScale, nbYearsToPreviousMeasurement);
 		
 		
@@ -483,7 +489,6 @@ public class CATTask extends AbstractGenericTask {
 			barkAmountMap.put(Element.C, barkCarbonMg);
 			amountMaps.put(BiomassType.Bark, barkAmountMap);
 			
-			StatusClass statusClass = manager.treeCollManager.getStatusOfThisTree(tree);
 			if (shouldBeBrokenDownAnnually(applicationScale, nbYearsToPreviousMeasurement)) {
 				for (int i = 0; i < nbYearsToPreviousMeasurement; i++) {
 					getProcessorManager().processWoodyDebris(dateIndex - i, 
@@ -504,8 +509,9 @@ public class CATTask extends AbstractGenericTask {
 		}
 	}
 
-	private void createWoodyDebris(Map<CATCompatibleStand, Map<String, Map<String, Collection<CATCompatibleTree>>>> treeMap, WoodyDebrisProcessorID type) {
+	private void createWoodyDebris(StatusClass statusClass, WoodyDebrisProcessorID type) {
 		CATCompartmentManager manager = caller.getCarbonCompartmentManager();
+		Map<CATCompatibleStand, Map<String, Map<String, Collection<CATCompatibleTree>>>> treeMap = manager.treeCollManager.getTrees(statusClass);
 		BiomassParameters biomassParameters = manager.getCarbonToolSettings().getCurrentBiomassParameters();
 		for (CATCompatibleStand stand : treeMap.keySet()) {
 			if (isCancelled()) {
@@ -530,7 +536,7 @@ public class CATTask extends AbstractGenericTask {
 							carbonMg = biomassParameters.getBelowGroundCarbonMg(t, manager);
 							break;
 						}
-						processUnaccountedCarbon(t, carbonMg, dateIndex, samplingUnitID, type, manager.getApplicationScale());
+						processUnaccountedCarbon(t, statusClass, carbonMg, dateIndex, samplingUnitID, type, manager.getApplicationScale());
 					}
 				}				
 			}
