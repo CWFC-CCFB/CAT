@@ -44,9 +44,9 @@ public class CATGrowthSimulationImportFromOtherApp {
 	public void instantiatePlotAndTree(String standIdentification, int dateYr, int realization, String plotID, double plotAreaHa,
 			StatusClass statusClass, double treeOverbarkVolumeDm3, double numberOfTrees, String originalSpeciesName, Double dbhCm,
 			Double aboveGroundVolumeM3, Double aboveGroundBiomassMg, Double aboveGroundCarbonMg,
-			Double belowGroundVolumeM3, Double belowGroundBiomassMg, Double belowGroundCarbonMg) {
+			Double belowGroundVolumeM3, Double belowGroundBiomassMg, Double belowGroundCarbonMg, Double commercialBiomassMg) {
 		recordReader.instantiatePlotAndTree(standIdentification, dateYr, realization, plotID, plotAreaHa, false, statusClass, treeOverbarkVolumeDm3, numberOfTrees, originalSpeciesName, dbhCm,
-				aboveGroundVolumeM3, aboveGroundBiomassMg, aboveGroundCarbonMg, belowGroundVolumeM3, belowGroundBiomassMg, belowGroundCarbonMg);
+				aboveGroundVolumeM3, aboveGroundBiomassMg, aboveGroundCarbonMg, belowGroundVolumeM3, belowGroundBiomassMg, belowGroundCarbonMg, commercialBiomassMg);
 	}
 	
 	/**

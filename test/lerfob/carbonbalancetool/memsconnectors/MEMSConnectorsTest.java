@@ -67,7 +67,8 @@ public class MEMSConnectorsTest {
 				Double aboveGroundCarbonMg,
 				Double belowGroundVolumeM3,
 				Double belowGroundBiomassMg,
-				Double belowGroundCarbonMg) {
+				Double belowGroundCarbonMg,
+				Double commercialBiomassMg) {
 			return new CATGrowthSimulationTreeHacked(plot, statusClass, treeOverbarkVolumeDm3, numberOfTrees, originalSpeciesName, dbhCm);
 		}
 
@@ -110,7 +111,7 @@ public class MEMSConnectorsTest {
 				String originalSpeciesName,
 				double dbhCm) {
 			super(plot, statusClass, treeVolumeDm3, numberOfTrees, originalSpeciesName, dbhCm,
-					null, null, null, null, null, null); // all above and below ground values set to null.
+					null, null, null, null, null, null, null); // all above and below ground values set to null.
 		}
 
 		@Override
