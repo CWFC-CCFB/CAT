@@ -11,7 +11,6 @@ import org.junit.Test;
 import repicea.io.javacsv.CSVReader;
 import repicea.util.ObjectUtility;
 
-@SuppressWarnings("deprecation")
 public class PythonAccessTest {
 
 	static Map<?,?> InputMap;

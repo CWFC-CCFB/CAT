@@ -166,6 +166,6 @@ class CATGrowthSimulationTree implements CATCompatibleTree,
 	}
 
 	@Override
-	public double getCommercialBiomassMg() {return commercialVolumeM3;}
+	public double getCommercialBiomassMg() {return commercialBiomassMg;}
 
 }

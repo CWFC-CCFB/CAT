@@ -504,7 +504,7 @@ public class BiomassParameters implements REpiceaShowableUIWithParent, IOUserInt
 	 * @param subject a MonteCarloSimulationCompliantObject instance (typically the CATCompartmentManager instance)
 	 * @return the biomass (Mg)
 	 */
-	double getBelowGroundBiomassMg(CATCompatibleTree tree, MonteCarloSimulationCompliantObject subject) {
+	public double getBelowGroundBiomassMg(CATCompatibleTree tree, MonteCarloSimulationCompliantObject subject) {
 		boolean tier2Implementation = rootExpansionFactorFromModel && CATBelowGroundBiomassProvider.checkEligibility(tree);
 		double value;
 		if (tier2Implementation) {
@@ -531,7 +531,7 @@ public class BiomassParameters implements REpiceaShowableUIWithParent, IOUserInt
 	 * @param subject a MonteCarloSimulationCompliantObject instance (typically the CATCompartmentManager instance)
 	 * @return the volume (m3)
 	 */
-	double getBelowGroundVolumeM3(CATCompatibleTree tree, MonteCarloSimulationCompliantObject subject) {
+	public double getBelowGroundVolumeM3(CATCompatibleTree tree, MonteCarloSimulationCompliantObject subject) {
 		boolean tier2Implementation = rootExpansionFactorFromModel && CATBelowGroundVolumeProvider.checkEligibility(tree);
 		double value;
 		boolean isStochastic = false;
@@ -580,7 +580,7 @@ public class BiomassParameters implements REpiceaShowableUIWithParent, IOUserInt
 	 * @param subject a MonteCarloSimulationCompliantObject instance (typically the CATCompartmentManager instance)
 	 * @return the aboveground biomass (Mg)
 	 */
-	double getAboveGroundBiomassMg(CATCompatibleTree tree, MonteCarloSimulationCompliantObject subject) {
+	public double getAboveGroundBiomassMg(CATCompatibleTree tree, MonteCarloSimulationCompliantObject subject) {
 		boolean tier2Implementation = (branchExpansionFactorFromModel && CATAboveGroundBiomassProvider.checkEligibility(tree)) || 
 										tree instanceof CATSapling; // saplings automatically provide their own biomass
 		if (tier2Implementation) {
@@ -615,7 +615,7 @@ public class BiomassParameters implements REpiceaShowableUIWithParent, IOUserInt
 	 * @param subject a MonteCarloSimulationCompliantObject instance (typically the CATCompartmentManager instance)
 	 * @return the aboveground volume (m3)
 	 */
-	double getAboveGroundVolumeM3(CATCompatibleTree tree, MonteCarloSimulationCompliantObject subject) {
+	public double getAboveGroundVolumeM3(CATCompatibleTree tree, MonteCarloSimulationCompliantObject subject) {
 		boolean tier2Implementation = branchExpansionFactorFromModel && CATAboveGroundVolumeProvider.checkEligibility(tree);
 		boolean isStochastic = false;
 		double value;
@@ -624,7 +624,7 @@ public class BiomassParameters implements REpiceaShowableUIWithParent, IOUserInt
 			value = t.getAboveGroundVolumeM3() * getExpansionFactor(tree);
 			isStochastic = t.isAboveGroundVolumePredictorStochastic();
 		} else {
-			value = getCommercialVolumeM3ForThisTree(tree) * branchExpansionFactors.get(tree.getCATSpecies().getSpeciesType());
+			value = getCommercialVolumeM3(tree) * branchExpansionFactors.get(tree.getCATSpecies().getSpeciesType());
 		}
 		
 		if (subject != null && !isStochastic) {	// isStochastic = false if the provider is not stochastic or if the tree does not implement the provider
@@ -677,7 +677,7 @@ public class BiomassParameters implements REpiceaShowableUIWithParent, IOUserInt
 	 * @param tree a CATCompatibleTree instance
 	 * @return the overbark commercial volume (m3)
 	 */
-	private double getCommercialVolumeM3ForThisTree(CATCompatibleTree tree) {
+	public double getCommercialVolumeM3(CATCompatibleTree tree) {
 		return getOverbarkCommercialVolumeM3(tree) * getExpansionFactor(tree);
 	}
 	
@@ -712,7 +712,7 @@ public class BiomassParameters implements REpiceaShowableUIWithParent, IOUserInt
 			} 
 			return value;
 		} 
-		return getCommercialVolumeM3ForThisTree(tree) * getBasicWoodDensityFromThisTree(tree, subject);
+		return getCommercialVolumeM3(tree) * getBasicWoodDensityFromThisTree(tree, subject);
 	}
 
 	/**
