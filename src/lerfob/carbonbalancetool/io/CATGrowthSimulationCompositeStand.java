@@ -27,8 +27,6 @@ import java.util.Map;
 import lerfob.carbonbalancetool.CATCompatibleStand;
 import lerfob.carbonbalancetool.io.CATGrowthSimulationRecordReader.CATGrowthSimulationFieldID;
 import repicea.simulation.covariateproviders.plotlevel.StochasticInformationProvider;
-import repicea.simulation.covariateproviders.samplelevel.ApplicationScaleProvider.ApplicationScale;
-import repicea.simulation.covariateproviders.samplelevel.ManagementTypeProvider.ManagementType;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 
 /**
@@ -41,8 +39,8 @@ public class CATGrowthSimulationCompositeStand implements CATCompatibleStand, St
 	private final Map<Integer, CATGrowthSimulationPlotSample> realizationMap;
 	private final int dateYr;
 	protected final CATGrowthSimulationRecordReader reader;
-	private ManagementType managementType;
-	private ApplicationScale applicationScale;
+	private final ManagementType managementType;
+	private final ApplicationScale applicationScale;
 	private final boolean isInterventionResult;
 	private final Map<CATGrowthSimulationFieldID, Boolean> interfaceEnabledMap;
 	
@@ -51,8 +49,9 @@ public class CATGrowthSimulationCompositeStand implements CATCompatibleStand, St
 		this.standIdentification = standIdentification;
 		this.reader = reader;
 		realizationMap = new HashMap<Integer, CATGrowthSimulationPlotSample>();
-		managementType = ManagementType.UnevenAged;
+//		managementType = ManagementType.UnevenAged;
 		applicationScale = reader.scale;
+		managementType = reader.management;
 		this.isInterventionResult = isInterventionResult;
 		this.interfaceEnabledMap = interfaceEnabledMap;
 	}
@@ -113,18 +112,18 @@ public class CATGrowthSimulationCompositeStand implements CATCompatibleStand, St
 	@Override
 	public ApplicationScale getApplicationScale() {return applicationScale;}
 
-	/*
-	 * For test purposes
-	 */
-	void setApplicationScale(ApplicationScale appScale) {applicationScale = appScale;}
-	
-	/*
-	 * For test purposes
-	 */
-	void setManagementType(ManagementType managType) {managementType = managType;}
+//	/*
+//	 * For test purposes
+//	 */
+//	void setApplicationScale(ApplicationScale appScale) {applicationScale = appScale;}
+//	
+//	/*
+//	 * For test purposes
+//	 */
+//	void setManagementType(ManagementType managType) {managementType = managType;}
 	
 	@Override
-	public CATCompatibleStand getHarvestedStand() {return null;}
+	public CATCompatibleStand getHarvestedStand() {return null;} // TODO it should be able to return a fully harvested stand MF20250909
 
 	/*
 	 * Useless for this class.

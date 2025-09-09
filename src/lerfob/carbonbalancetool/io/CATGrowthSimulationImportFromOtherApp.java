@@ -21,6 +21,8 @@ package lerfob.carbonbalancetool.io;
 import java.util.List;
 
 import lerfob.carbonbalancetool.CATCompatibleStand;
+import repicea.simulation.covariateproviders.samplelevel.ApplicationScaleProvider.ApplicationScale;
+import repicea.simulation.covariateproviders.samplelevel.ManagementTypeProvider.ManagementType;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 
 /**
@@ -36,8 +38,8 @@ public class CATGrowthSimulationImportFromOtherApp {
 	private final CATGrowthSimulationRecordReader recordReader;
 	
 	
-	public CATGrowthSimulationImportFromOtherApp() {
-		recordReader = new CATGrowthSimulationRecordReader();
+	public CATGrowthSimulationImportFromOtherApp(ApplicationScale scale, ManagementType management) {
+		recordReader = new CATGrowthSimulationRecordReader(scale, management);
 	}
 	
 

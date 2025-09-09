@@ -20,6 +20,7 @@
  */
 package lerfob.carbonbalancetool.io;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +33,7 @@ import repicea.io.tools.ImportFieldElement.FieldType;
 import repicea.io.tools.LevelProviderEnum;
 import repicea.io.tools.REpiceaRecordReader;
 import repicea.simulation.covariateproviders.samplelevel.ApplicationScaleProvider.ApplicationScale;
+import repicea.simulation.covariateproviders.samplelevel.ManagementTypeProvider.ManagementType;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 import repicea.util.REpiceaTranslator;
 import repicea.util.REpiceaTranslator.TextableEnum;
@@ -103,7 +105,7 @@ public class CATGrowthSimulationRecordReader extends REpiceaRecordReader {
 		}
 	}
 
-	public static boolean TestUnevenAgedInfiniteSequence = false;
+//	public static boolean TestUnevenAgedInfiniteSequence = false;
 	
 	protected static enum CATGrowthSimulationFieldLevel {Stand, Tree;}
 
@@ -144,13 +146,21 @@ public class CATGrowthSimulationRecordReader extends REpiceaRecordReader {
 	private CATGrowthSimulationSpeciesSelector selector;
 	private final List<String> speciesList;
 	protected final ApplicationScale scale;
+	protected final ManagementType management;
 	
 	/**
 	 * General constructor.
+	 * @param scale an ApplicationScale enum
+	 * @param management a ManagementType enum
 	 */
-	public CATGrowthSimulationRecordReader() {
+	public CATGrowthSimulationRecordReader(ApplicationScale scale, ManagementType management) {
 		super();
-		this.scale = TestUnevenAgedInfiniteSequence ? ApplicationScale.Stand : ApplicationScale.FMU;
+//		this.scale = TestUnevenAgedInfiniteSequence ? ApplicationScale.Stand : ApplicationScale.FMU;
+		if (scale == null || management == null) {
+			throw new InvalidParameterException("The scale and management arguments must be non null!");
+		}
+		this.scale = scale;
+		this.management = management;
 		setPopUpWindowEnabled(true);
 		standMap = new TreeMap<Integer, Map<Boolean, CATGrowthSimulationCompositeStand>>();
 		speciesList = new ArrayList<String>();

@@ -45,6 +45,8 @@ import repicea.math.SymmetricMatrix;
 import repicea.math.utility.GaussianUtility;
 import repicea.serial.SerializerChangeMonitor;
 import repicea.serial.xml.XmlDeserializer;
+import repicea.simulation.covariateproviders.samplelevel.ApplicationScaleProvider.ApplicationScale;
+import repicea.simulation.covariateproviders.samplelevel.ManagementTypeProvider.ManagementType;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.stats.Distribution.Type;
@@ -275,7 +277,7 @@ public class CarbonAccountingToolTest {
 		String refFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "MathildeTreeExportReference.xml";
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
-		CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader();
+		CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader(ApplicationScale.FMU, ManagementType.UnevenAged);
 		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
@@ -319,7 +321,7 @@ public class CarbonAccountingToolTest {
 		for (int i = 0; i < nbSimulations; i++) {
 			CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 			cat.initializeTool(null);
-			CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader();
+			CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader(ApplicationScale.FMU, ManagementType.UnevenAged);
 			recordReader.getSelector().load(speciesMatchFilename);
 			ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 			recordReader.initInScriptMode(ifm);
@@ -598,7 +600,7 @@ public class CarbonAccountingToolTest {
 //		String refFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "MathildeTreeExportReference.xml";
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
-		CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader();
+		CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader(ApplicationScale.FMU, ManagementType.UnevenAged);
 		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
@@ -634,7 +636,7 @@ public class CarbonAccountingToolTest {
 //		String refFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "MathildeTreeExportReference.xml";
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
-		CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader();
+		CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader(ApplicationScale.FMU, ManagementType.UnevenAged);
 		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
@@ -669,7 +671,7 @@ public class CarbonAccountingToolTest {
 //		String refFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "MathildeTreeExportReference.xml";
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
-		CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader();
+		CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader(ApplicationScale.FMU, ManagementType.UnevenAged);
 		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();

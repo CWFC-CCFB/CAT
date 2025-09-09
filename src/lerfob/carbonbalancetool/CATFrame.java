@@ -538,7 +538,15 @@ public class CATFrame extends REpiceaFrame implements PropertyChangeListener,
 				return;
 			} 
 			growthSimulationFilename = fileChooserOutput.getFilename();
-			CATGrowthSimulationRecordReader catRecordReader = new CATGrowthSimulationRecordReader();
+			
+			CATScaleManagementSelectorDialog scaleManagDlg = new CATScaleManagementSelectorDialog(this);
+			scaleManagDlg.setVisible(true);
+			
+			if (scaleManagDlg.isCancelled()) {
+				return;
+			}
+			
+			CATGrowthSimulationRecordReader catRecordReader = new CATGrowthSimulationRecordReader(scaleManagDlg.getApplicationScale(), scaleManagDlg.getManagementType());
 			catRecordReader.initGUIMode(this, UseMode.GUI_MODE, growthSimulationFilename);
 			
 			catRecordReader.readAllRecords();

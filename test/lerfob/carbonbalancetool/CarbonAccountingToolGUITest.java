@@ -51,6 +51,7 @@ import repicea.gui.UIControlManager.CommonMenuTitle;
 import repicea.gui.components.REpiceaMatchSelectorDialog;
 import repicea.gui.genericwindows.REpiceaLicenseWindow;
 import repicea.io.tools.ImportFieldManagerDialog;
+import repicea.simulation.covariateproviders.samplelevel.ApplicationScaleProvider.ApplicationScale;
 import repicea.simulation.processsystem.SystemManagerDialog.MessageID;
 import repicea.util.ObjectUtility;
 import repicea.util.REpiceaLogManager;
@@ -211,7 +212,8 @@ public class CarbonAccountingToolGUITest {
 		Thread t = ROBOT.startGUI(toRun, JDialog.class);
 		String fileToLoad = ObjectUtility.getPackagePath(getClass()) + File.separator + "io" + File.separator + "MathildeTreeExport.csv";
 		ROBOT.fillThisTextField("Filename", fileToLoad);
-		ROBOT.clickThisButton("Open", ImportFieldManagerDialog.class);		
+		ROBOT.clickThisButton("Open", CATScaleManagementSelectorDialog.class);	
+		ROBOT.clickThisButton("Ok", ImportFieldManagerDialog.class);		
 		ROBOT.clickThisButton("Ok", REpiceaMatchSelectorDialog.class);
 		ROBOT.clickThisButton("File");
 
@@ -255,7 +257,6 @@ public class CarbonAccountingToolGUITest {
 			System.out.println("Test will be skipped because Mac does not support Times font.");
 			return;
 		}
-		CATGrowthSimulationRecordReader.TestUnevenAgedInfiniteSequence = true;
 
 		ROBOT.clickThisButton(UIControlManager.CommonMenuTitle.File.name());
 		ROBOT.clickThisButton(UIControlManager.CommonControlID.Import.name()); 
@@ -274,7 +275,10 @@ public class CarbonAccountingToolGUITest {
 		Thread t = ROBOT.startGUI(toRun, JDialog.class);
 		String fileToLoad = ObjectUtility.getPackagePath(getClass()) + File.separator + "io" + File.separator + "art2009UnevenagedSimulation.csv";
 		ROBOT.fillThisTextField("Filename", fileToLoad);
-		ROBOT.clickThisButton("Open", ImportFieldManagerDialog.class);		
+		ROBOT.clickThisButton("Open", CATScaleManagementSelectorDialog.class);	
+		JComboBox scaleCb = (JComboBox) ROBOT.findComponentWithThisName("scaleComboBox");
+		scaleCb.setSelectedItem(ApplicationScale.Stand);
+		ROBOT.clickThisButton("Ok", ImportFieldManagerDialog.class);		
 		ROBOT.clickThisButton("Ok", REpiceaMatchSelectorDialog.class);
 		ROBOT.clickThisButton("File");
 
@@ -312,7 +316,6 @@ public class CarbonAccountingToolGUITest {
 		
 		CATSingleSimulationResult summary = CAT.getCarbonCompartmentManager().getSimulationSummary();
 		Assert.assertTrue("Testing if budget map is not empty", !summary.getBudgetMap().isEmpty());
-		CATGrowthSimulationRecordReader.TestUnevenAgedInfiniteSequence = false;
 
 	}
 

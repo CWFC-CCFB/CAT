@@ -45,6 +45,8 @@ import repicea.io.javacsv.CSVReader;
 import repicea.io.tools.ImportFieldManager;
 import repicea.math.Matrix;
 import repicea.math.SymmetricMatrix;
+import repicea.simulation.covariateproviders.samplelevel.ApplicationScaleProvider.ApplicationScale;
+import repicea.simulation.covariateproviders.samplelevel.ManagementTypeProvider.ManagementType;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 import repicea.stats.estimates.Estimate;
 import repicea.stats.estimates.MonteCarloEstimate;
@@ -55,6 +57,10 @@ public class MEMSConnectorsTest {
 	@SuppressWarnings("serial")
 	static class CATGrowthSimulationRecordReaderHacked extends CATGrowthSimulationRecordReader {
 		
+		public CATGrowthSimulationRecordReaderHacked(ApplicationScale scale, ManagementType management) {
+			super(scale, management);
+		}
+
 		@Override
 		protected CATGrowthSimulationTreeHacked createTree(CATGrowthSimulationPlot plot, 
 				StatusClass statusClass, 
@@ -182,13 +188,13 @@ public class MEMSConnectorsTest {
 	@SuppressWarnings({ "rawtypes" })
 	@Test
 	public void testMEMSIntegration01() throws Exception {
-		CATGrowthSimulationRecordReader.TestUnevenAgedInfiniteSequence = true;	// this way we get the application scale set to stand
+//		CATGrowthSimulationRecordReader.TestUnevenAgedInfiniteSequence = true;	// this way we get the application scale set to stand
 		String filename = ObjectUtility.getPackagePath(CarbonAccountingToolTest.class) + "io" + File.separator + "MathildeTreeExport.csv";
 		String ifeFilename = ObjectUtility.getPackagePath(getClass()) + "MathildeTreeExportWithDBH.ife";
 //		String refFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "ExampleYieldTableReference.xml";
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
-		CATGrowthSimulationRecordReaderHacked recordReader = new CATGrowthSimulationRecordReaderHacked();
+		CATGrowthSimulationRecordReaderHacked recordReader = new CATGrowthSimulationRecordReaderHacked(ApplicationScale.Stand, ManagementType.UnevenAged);
 		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
@@ -227,7 +233,7 @@ public class MEMSConnectorsTest {
 		evolSoil = estimate.getMean();
 		Assert.assertEquals("Testing nb of entries", 1, evolSoil.m_iRows);
 		Assert.assertEquals("Testing entry", 59.56537843751747, evolSoil.getValueAt(0, 0), 1E-8);
-		CATGrowthSimulationRecordReader.TestUnevenAgedInfiniteSequence = false;	// set the static variable to its original value
+//		CATGrowthSimulationRecordReader.TestUnevenAgedInfiniteSequence = false;	// set the static variable to its original value
 		
 		MonteCarloEstimate mineralSoilInput = simResults.getMineralSoilCarbonInputMgHa();
 		Assert.assertTrue("Mineral soil input not null", mineralSoilInput != null);
