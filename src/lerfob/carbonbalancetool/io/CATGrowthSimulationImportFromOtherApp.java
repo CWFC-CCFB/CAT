@@ -21,6 +21,8 @@ package lerfob.carbonbalancetool.io;
 import java.util.List;
 
 import lerfob.carbonbalancetool.CATCompatibleStand;
+import repicea.simulation.covariateproviders.samplelevel.ApplicationScaleProvider.ApplicationScale;
+import repicea.simulation.covariateproviders.samplelevel.ManagementTypeProvider.ManagementType;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 
 /**
@@ -36,17 +38,17 @@ public class CATGrowthSimulationImportFromOtherApp {
 	private final CATGrowthSimulationRecordReader recordReader;
 	
 	
-	public CATGrowthSimulationImportFromOtherApp() {
-		recordReader = new CATGrowthSimulationRecordReader();
+	public CATGrowthSimulationImportFromOtherApp(ApplicationScale scale, ManagementType management) {
+		recordReader = new CATGrowthSimulationRecordReader(scale, management);
 	}
 	
 
 	public void instantiatePlotAndTree(String standIdentification, int dateYr, int realization, String plotID, double plotAreaHa,
 			StatusClass statusClass, double treeOverbarkVolumeDm3, double numberOfTrees, String originalSpeciesName, Double dbhCm,
 			Double aboveGroundVolumeM3, Double aboveGroundBiomassMg, Double aboveGroundCarbonMg,
-			Double belowGroundVolumeM3, Double belowGroundBiomassMg, Double belowGroundCarbonMg) {
+			Double belowGroundVolumeM3, Double belowGroundBiomassMg, Double belowGroundCarbonMg, Double commercialBiomassMg) {
 		recordReader.instantiatePlotAndTree(standIdentification, dateYr, realization, plotID, plotAreaHa, false, statusClass, treeOverbarkVolumeDm3, numberOfTrees, originalSpeciesName, dbhCm,
-				aboveGroundVolumeM3, aboveGroundBiomassMg, aboveGroundCarbonMg, belowGroundVolumeM3, belowGroundBiomassMg, belowGroundCarbonMg);
+				aboveGroundVolumeM3, aboveGroundBiomassMg, aboveGroundCarbonMg, belowGroundVolumeM3, belowGroundBiomassMg, belowGroundCarbonMg, commercialBiomassMg);
 	}
 	
 	/**

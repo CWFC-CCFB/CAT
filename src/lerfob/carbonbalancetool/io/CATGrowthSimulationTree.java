@@ -25,6 +25,7 @@ import lerfob.carbonbalancetool.interfaces.CATAboveGroundVolumeProvider;
 import lerfob.carbonbalancetool.interfaces.CATBelowGroundBiomassProvider;
 import lerfob.carbonbalancetool.interfaces.CATBelowGroundCarbonProvider;
 import lerfob.carbonbalancetool.interfaces.CATBelowGroundVolumeProvider;
+import lerfob.carbonbalancetool.interfaces.CATCommercialBiomassProvider;
 import lerfob.carbonbalancetool.io.CATGrowthSimulationRecordReader.CATGrowthSimulationFieldID;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider;
 import repicea.simulation.species.REpiceaSpecies.Species;
@@ -40,7 +41,8 @@ class CATGrowthSimulationTree implements CATCompatibleTree,
 										CATAboveGroundCarbonProvider,
 										CATBelowGroundVolumeProvider,
 										CATBelowGroundBiomassProvider,
-										CATBelowGroundCarbonProvider {
+										CATBelowGroundCarbonProvider,
+										CATCommercialBiomassProvider {
 
 	private final double commercialVolumeM3;
 	private final double numberOfTrees;
@@ -53,6 +55,7 @@ class CATGrowthSimulationTree implements CATCompatibleTree,
 	final Double belowGroundVolumeM3;
 	final Double belowGroundBiomassMg;
 	final Double belowGroundCarbonMg;
+	final Double commercialBiomassMg;
 	
 	CATGrowthSimulationTree(CATGrowthSimulationPlot plot, 
 			StatusClass statusClass, 
@@ -64,7 +67,8 @@ class CATGrowthSimulationTree implements CATCompatibleTree,
 			Double aboveGroundCarbonMg,
 			Double belowGroundVolumeM3,
 			Double belowGroundBiomassMg,
-			Double belowGroundCarbonMg
+			Double belowGroundCarbonMg,
+			Double commercialBiomassMg
 			) {
 		this.plot = plot;
 		commercialVolumeM3 = treeOverbarkVolumeM3;
@@ -77,6 +81,7 @@ class CATGrowthSimulationTree implements CATCompatibleTree,
 		this.belowGroundVolumeM3 = belowGroundVolumeM3;
 		this.belowGroundBiomassMg = belowGroundBiomassMg;
 		this.belowGroundCarbonMg = belowGroundCarbonMg;
+		this.commercialBiomassMg = commercialBiomassMg;
 	}
 	
 	@Override
@@ -155,4 +160,27 @@ class CATGrowthSimulationTree implements CATCompatibleTree,
 		return getCompositeStand().isAssociatedInterfaceEnabled(CATGrowthSimulationFieldID.BelowGroundCarbon);
 	}
 
+	@Override
+	public boolean isCATCommercialBiomassProviderInterfaceEnabled() {
+		return getCompositeStand().isAssociatedInterfaceEnabled(CATGrowthSimulationFieldID.CommercialBiomass);
+	}
+
+	@Override
+	public double getCommercialBiomassMg() {return commercialBiomassMg;}
+
+	CATGrowthSimulationTree getHarvestedTree(CATGrowthSimulationPlot harvestedPlot) {
+		return new CATGrowthSimulationTree(harvestedPlot, 
+				StatusClass.cut, 
+				commercialVolumeM3, 
+				numberOfTrees, 
+				originalSpeciesName,
+				aboveGroundVolumeM3,
+				aboveGroundBiomassMg,
+				aboveGroundCarbonMg,
+				belowGroundVolumeM3,
+				belowGroundBiomassMg,
+				belowGroundCarbonMg,
+				commercialBiomassMg);
+	}
+	
 }

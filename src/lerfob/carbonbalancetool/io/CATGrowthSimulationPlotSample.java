@@ -88,6 +88,15 @@ public class CATGrowthSimulationPlotSample implements CATCompatibleStand {
 	@Override
 	public CATCompatibleStand getHarvestedStand() {return null;}
 
+	CATGrowthSimulationPlotSample getHarvestedStand(CATGrowthSimulationCompositeStand harvestedCompositeStand) {
+		CATGrowthSimulationPlotSample harvestedPlotSample = new CATGrowthSimulationPlotSample(harvestedCompositeStand);
+		for (String k : plotMap.keySet()) {
+			CATGrowthSimulationPlot currentPlot = plotMap.get(k);
+			harvestedPlotSample.plotMap.put(k, currentPlot.getHarvestedPlot(harvestedPlotSample)); 
+		}
+		return harvestedPlotSample;
+	}
+	
 	/*
 	 * Useless for this class.
 	 */

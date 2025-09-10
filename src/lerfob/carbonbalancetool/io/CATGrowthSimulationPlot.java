@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import lerfob.carbonbalancetool.CATCompatibleStand;
-import repicea.simulation.covariateproviders.samplelevel.ApplicationScaleProvider.ApplicationScale;
-import repicea.simulation.covariateproviders.samplelevel.ManagementTypeProvider.ManagementType;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 
 public class CATGrowthSimulationPlot implements CATCompatibleStand {
@@ -63,7 +61,14 @@ public class CATGrowthSimulationPlot implements CATCompatibleStand {
 	@Override
 	public CATCompatibleStand getHarvestedStand() {return null;}
 
-
+	CATGrowthSimulationPlot getHarvestedPlot(CATGrowthSimulationPlotSample harvestedPlotSample) {
+		CATGrowthSimulationPlot harvestedPlot = new CATGrowthSimulationPlot(plotID, areaHa, true, harvestedPlotSample);
+		for (CATGrowthSimulationTree t : getTrees(StatusClass.alive)) {
+			harvestedPlot.addTree(t.getHarvestedTree(harvestedPlot));
+		}
+		return harvestedPlot;
+	}
+	
 	/*
 	 * Useless for this class.
 	 */

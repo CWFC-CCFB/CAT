@@ -164,72 +164,78 @@ public class BiomassParametersTest {
 	}
 	
 	@Test
-	public void testingTier2ApproachForAboveGroundVolume() {
+	public void test01Tier2ApproachForAboveGroundVolume() {
 		BiomassParameters bp = new BiomassParameters();
 		FakeTree2 t = new FakeTree2();
 		bp.setReferent(t);
 		double actualValue = bp.getAboveGroundVolumeM3(t, null);
 		Assert.assertEquals("Testing Tier 2 approach", 10d, actualValue, 1E-8);
+		bp.clearCache();
 		bp.setTier2ImplementationEnabled(Tier2Implementation.BranchExpansionFactor, false);
 		actualValue = bp.getAboveGroundVolumeM3(t, null);
 		Assert.assertEquals("Testing Tier 1 approach", 1.4534, actualValue, 1E-8);
 	}
 	
 	@Test
-	public void testingTier2ApproachForAboveGroundBiomass() {
+	public void test02Tier2ApproachForAboveGroundBiomass() {
 		BiomassParameters bp = new BiomassParameters();
 		FakeTree t = new FakeTree();
 		bp.setReferent(t);
 		double actualValue = bp.getAboveGroundBiomassMg(t, null);
 		Assert.assertEquals("Testing Tier 2 approach", 10d, actualValue, 1E-8);
+		bp.clearCache();
 		bp.setTier2ImplementationEnabled(Tier2Implementation.BranchExpansionFactor, false);
 		actualValue = bp.getAboveGroundBiomassMg(t, null);
 		Assert.assertEquals("Testing Tier 1 approach", 0.58136, actualValue, 1E-8);
 	}
 	
 	@Test
-	public void testingTier2ApproachForAboveGroundCarbon() {
+	public void test03Tier2ApproachForAboveGroundCarbon() {
 		BiomassParameters bp = new BiomassParameters();
 		FakeTree3 t = new FakeTree3();
 		bp.setReferent(t);
 		double actualValue = bp.getAboveGroundCarbonMg(t, null);
 		Assert.assertEquals("Testing Tier 2 approach", 10d, actualValue, 1E-8);
+		bp.clearCache();
 		bp.setTier2ImplementationEnabled(Tier2Implementation.BranchExpansionFactor, false);
 		actualValue = bp.getAboveGroundCarbonMg(t, null);
 		Assert.assertEquals("Testing Tier 1 approach", 0.29678427999999996, actualValue, 1E-8);
 	}
 
 	@Test
-	public void testingTier2ApproachForBelowGroundVolume() {
+	public void test04Tier2ApproachForBelowGroundVolume() {
 		BiomassParameters bp = new BiomassParameters();
 		FakeTree4 t = new FakeTree4();
 		bp.setReferent(t);
 		double actualValue = bp.getBelowGroundVolumeM3(t, null);
 		Assert.assertEquals("Testing Tier 2 approach", 10d, actualValue, 1E-8);
+		bp.clearCache();
 		bp.setTier2ImplementationEnabled(Tier2Implementation.RootExpansionFactor, false);
 		actualValue = bp.getBelowGroundVolumeM3(t, null);
 		Assert.assertEquals("Testing Tier 1 approach", 0.43602, actualValue, 1E-8);
 	}
 	
 	@Test
-	public void testingTier2ApproachForBelowGroundBiomass() {
+	public void test05Tier2ApproachForBelowGroundBiomass() {
 		BiomassParameters bp = new BiomassParameters();
 		FakeTree5 t = new FakeTree5();
 		bp.setReferent(t);
 		double actualValue = bp.getBelowGroundBiomassMg(t, null);
 		Assert.assertEquals("Testing Tier 2 approach", 10d, actualValue, 1E-8);
+		bp.clearCache();
 		bp.setTier2ImplementationEnabled(Tier2Implementation.RootExpansionFactor, false);
 		actualValue = bp.getBelowGroundBiomassMg(t, null);
 		Assert.assertEquals("Testing Tier 1 approach", 0.174408, actualValue, 1E-8);
 	}
 	
 	@Test
-	public void testingTier2ApproachForBelowGroundCarbon() {
+	public void test06Tier2ApproachForBelowGroundCarbon() {
 		BiomassParameters bp = new BiomassParameters();
 		FakeTree6 t = new FakeTree6();
 		bp.setReferent(t);
 		double actualValue = bp.getBelowGroundCarbonMg(t, null);
 		Assert.assertEquals("Testing biomass value with Tier 2 approach", 10d, actualValue, 1E-8);
+		bp.clearCache();
 		bp.setTier2ImplementationEnabled(Tier2Implementation.RootExpansionFactor, false);
 		actualValue = bp.getBelowGroundCarbonMg(t, null);
 		Assert.assertEquals("Testing biomass value with Tier 1 approach", 0.08903528399999999, actualValue, 1E-8);

@@ -35,7 +35,8 @@ public class CATGrowthSimulationTreeWithDBH extends CATGrowthSimulationTree impl
 			Double aboveGroundCarbonMg,
 			Double belowGroundVolumeM3,
 			Double belowGroundBiomassMg,
-			Double belowGroundCarbonMg) {
+			Double belowGroundCarbonMg,
+			Double commercialBiomassMg) {
 		super(plot, 
 				statusClass, 
 				treeVolumeM3, 
@@ -46,7 +47,8 @@ public class CATGrowthSimulationTreeWithDBH extends CATGrowthSimulationTree impl
 				aboveGroundCarbonMg,
 				belowGroundVolumeM3,
 				belowGroundBiomassMg,
-				belowGroundCarbonMg);
+				belowGroundCarbonMg,
+				commercialBiomassMg);
 		this.dbhCm = dbhCm;
 	}
 
