@@ -323,6 +323,7 @@ public class CATCompartmentManager implements MonteCarloSimulationCompliantObjec
 	 * manager.
 	 */
 	protected void resetManager() {
+		carbonAccountingToolSettings.getCurrentBiomassParameters().clearCache();
 		clearTreeCollections();
 		resetCompartments();
 

@@ -758,6 +758,18 @@ public class ProductionProcessorManager extends SystemManager implements Memoriz
 		actualizeCarbonUnitsOfThisType(CarbonUnitStatus.Recycled, compartmentManager);
 		actualizeCarbonUnitsOfThisType(CarbonUnitStatus.DeadWood, compartmentManager);
 		actualizeCarbonUnitsOfThisType(CarbonUnitStatus.LandFillDegradable, compartmentManager);
+		CarbonUnitStatus[] cuArray = new CarbonUnitStatus[] {CarbonUnitStatus.EndUseWoodProduct,
+				CarbonUnitStatus.Recycled,
+				CarbonUnitStatus.DeadWood,
+				CarbonUnitStatus.LandFillDegradable};
+		for (CarbonUnitStatus cuStatus : cuArray) {
+			CarbonUnitList list = getCarbonUnits(cuStatus);
+			for (CarbonUnit cu : list) {
+				if (!cu.isActualized()) {
+					throw new UnsupportedOperationException("Some carbon units of this status " + cuStatus + " have not been actualized!");
+				}
+			}
+		}
 	}
 
 	private void actualizeCarbonUnitsOfThisType(CarbonUnitStatus type, CATCompartmentManager compartmentManager) {

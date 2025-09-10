@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 
 import javax.swing.filechooser.FileFilter;
@@ -166,6 +167,17 @@ public class BiomassParameters implements REpiceaShowableUIWithParent, IOUserInt
 	
 	protected transient REpiceaGUIPermission permissions = new DefaultREpiceaGUIPermission(true);
 
+	private transient Map<CATCompatibleTree, Double> aboveGroundVolumeM3Cache;
+	private transient Map<CATCompatibleTree, Double> aboveGroundBiomassMgCache;
+	private transient Map<CATCompatibleTree, Double> aboveGroundCarbonMgCache;
+	private transient Map<CATCompatibleTree, Double> belowGroundVolumeM3Cache;
+	private transient Map<CATCompatibleTree, Double> belowGroundBiomassMgCache;
+	private transient Map<CATCompatibleTree, Double> belowGroundCarbonMgCache;
+	private transient Map<CATCompatibleTree, Double> commercialVolumeM3Cache;
+	private transient Map<CATCompatibleTree, Double> commercialBiomassMgCache;
+	private transient Map<CATCompatibleTree, Double> commercialCarbonMgCache;
+
+	
 	/**
 	 * Constructor with permissions.
 	 * @param permissions an REpiceaGUIPermission instance
@@ -180,7 +192,70 @@ public class BiomassParameters implements REpiceaShowableUIWithParent, IOUserInt
 		carbonContentFactors = new HashMap<SpeciesType, Double>();
 		reset();
 	}
+
+	private Map<CATCompatibleTree, Double> getAboveGroundVolumeM3Cache() {
+		if (aboveGroundVolumeM3Cache == null) {
+			aboveGroundVolumeM3Cache = new HashMap<CATCompatibleTree, Double>();
+		}
+		return aboveGroundVolumeM3Cache;
+	}
 	
+	private Map<CATCompatibleTree, Double> getAboveGroundBiomassMgCache() {
+		if (aboveGroundBiomassMgCache == null) {
+			aboveGroundBiomassMgCache = new HashMap<CATCompatibleTree, Double>();
+		}
+		return aboveGroundBiomassMgCache;
+	}
+
+	private Map<CATCompatibleTree, Double> getAboveGroundCarbonMgCache() {
+		if (aboveGroundCarbonMgCache == null) {
+			aboveGroundCarbonMgCache = new HashMap<CATCompatibleTree, Double>();
+		}
+		return aboveGroundCarbonMgCache;
+	}
+
+	private Map<CATCompatibleTree, Double> getBelowGroundVolumeM3Cache() {
+		if (belowGroundVolumeM3Cache == null) {
+			belowGroundVolumeM3Cache = new HashMap<CATCompatibleTree, Double>();
+		}
+		return belowGroundVolumeM3Cache;
+	}
+
+	private Map<CATCompatibleTree, Double> getBelowGroundBiomassMgCache() {
+		if (belowGroundBiomassMgCache == null) {
+			belowGroundBiomassMgCache = new HashMap<CATCompatibleTree, Double>();
+		}
+		return belowGroundBiomassMgCache;
+	}
+
+	private Map<CATCompatibleTree, Double> getBelowGroundCarbonMgCache() {
+		if (belowGroundCarbonMgCache == null) {
+			belowGroundCarbonMgCache = new HashMap<CATCompatibleTree, Double>();
+		}
+		return belowGroundCarbonMgCache;
+	}
+
+	private Map<CATCompatibleTree, Double> getCommercialVolumeM3Cache() {
+		if (commercialVolumeM3Cache == null) {
+			commercialVolumeM3Cache = new HashMap<CATCompatibleTree, Double>();
+		}
+		return commercialVolumeM3Cache;
+	}
+	
+	private Map<CATCompatibleTree, Double> getCommercialBiomassMgCache() {
+		if (commercialBiomassMgCache == null) {
+			commercialBiomassMgCache = new HashMap<CATCompatibleTree, Double>();
+		}
+		return commercialBiomassMgCache;
+	}
+
+	private Map<CATCompatibleTree, Double> getCommercialCarbonMgCache() {
+		if (commercialCarbonMgCache == null) {
+			commercialCarbonMgCache = new HashMap<CATCompatibleTree, Double>();
+		}
+		return commercialCarbonMgCache;
+	}
+
 	/**
 	 * Empty constructor for class.newInstance() call.
 	 */
@@ -483,19 +558,24 @@ public class BiomassParameters implements REpiceaShowableUIWithParent, IOUserInt
 	 * @return the carbon content (Mg)
 	 */
 	public double getBelowGroundCarbonMg(CATCompatibleTree tree, MonteCarloSimulationCompliantObject subject) {
-		boolean tier2Implementation = rootExpansionFactorFromModel && CATBelowGroundCarbonProvider.checkEligibility(tree);
-		if (tier2Implementation) {
-			CATBelowGroundCarbonProvider t = (CATBelowGroundCarbonProvider) tree;
-			double value = t.getBelowGroundCarbonMg() * getExpansionFactor(tree);
-			if (!t.isBelowGroundCarbonPredictorStochastic()) {	// will rely on sensitivity analysis instead
-				double biomassModifier = CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BiomassExpansionFactor, subject, getGroupId(VariabilitySource.BiomassExpansionFactor, tree));
-				double woodDensityModifier = CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BasicDensity, subject, getGroupId(VariabilitySource.BasicDensity, tree));
-				double carbonModifier = CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.CarbonContent, subject, getGroupId(VariabilitySource.CarbonContent, tree));
-				value *= biomassModifier * woodDensityModifier * carbonModifier;
+		if (!getBelowGroundCarbonMgCache().containsKey(tree)) {
+			boolean tier2Implementation = rootExpansionFactorFromModel && CATBelowGroundCarbonProvider.checkEligibility(tree);
+			double value;
+			if (tier2Implementation) {
+				CATBelowGroundCarbonProvider t = (CATBelowGroundCarbonProvider) tree;
+				value = t.getBelowGroundCarbonMg() * getExpansionFactor(tree);
+				if (!t.isBelowGroundCarbonPredictorStochastic()) {	// will rely on sensitivity analysis instead
+					double biomassModifier = CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BiomassExpansionFactor, subject, getGroupId(VariabilitySource.BiomassExpansionFactor, tree));
+					double woodDensityModifier = CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BasicDensity, subject, getGroupId(VariabilitySource.BasicDensity, tree));
+					double carbonModifier = CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.CarbonContent, subject, getGroupId(VariabilitySource.CarbonContent, tree));
+					value *= biomassModifier * woodDensityModifier * carbonModifier;
+				}
+			} else {
+				value = getBelowGroundBiomassMg(tree, subject) * getCarbonContentFromThisTree(tree, subject);
 			}
-			return value;
+			getBelowGroundCarbonMgCache().put(tree, value);
 		}
-		return getBelowGroundBiomassMg(tree, subject) * getCarbonContentFromThisTree(tree, subject);
+		return getBelowGroundCarbonMgCache().get(tree);
 	}
 	
 	/**
@@ -505,23 +585,40 @@ public class BiomassParameters implements REpiceaShowableUIWithParent, IOUserInt
 	 * @return the biomass (Mg)
 	 */
 	public double getBelowGroundBiomassMg(CATCompatibleTree tree, MonteCarloSimulationCompliantObject subject) {
-		boolean tier2Implementation = rootExpansionFactorFromModel && CATBelowGroundBiomassProvider.checkEligibility(tree);
-		double value;
-		if (tier2Implementation) {
-			CATBelowGroundBiomassProvider t = (CATBelowGroundBiomassProvider) tree;
-			value = t.getBelowGroundBiomassMg() * getExpansionFactor(tree);
-			if (!t.isBelowGroundBiomassPredictorStochastic() && subject != null) { // will rely on sensitivity analysis instead
-				double biomassModifier = CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BiomassExpansionFactor, subject, getGroupId(VariabilitySource.BiomassExpansionFactor, tree));
-				double woodDensityModifier = CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BasicDensity, subject, getGroupId(VariabilitySource.BasicDensity, tree));
-				value *= biomassModifier * woodDensityModifier;
+		if (!getBelowGroundBiomassMgCache().containsKey(tree)) {
+			boolean tier2Implementation = rootExpansionFactorFromModel && CATBelowGroundBiomassProvider.checkEligibility(tree);
+			double value;
+			if (tier2Implementation) {
+				CATBelowGroundBiomassProvider t = (CATBelowGroundBiomassProvider) tree;
+				value = t.getBelowGroundBiomassMg() * getExpansionFactor(tree);
+				if (!t.isBelowGroundBiomassPredictorStochastic() && subject != null) { // will rely on sensitivity analysis instead
+					double biomassModifier = CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BiomassExpansionFactor, subject, getGroupId(VariabilitySource.BiomassExpansionFactor, tree));
+					double woodDensityModifier = CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BasicDensity, subject, getGroupId(VariabilitySource.BasicDensity, tree));
+					value *= biomassModifier * woodDensityModifier;
+				}
+			} else {
+				value = getAboveGroundBiomassMg(tree, subject) * (rootExpansionFactors.get(tree.getCATSpecies().getSpeciesType()) - 1);		// minus 1 is required because we want to get only the belowground part;
+				value *= CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BiomassExpansionFactor, subject, getGroupId(VariabilitySource.BiomassExpansionFactor, tree));
 			}
-		} else {
-			value = getAboveGroundBiomassMg(tree, subject) * (rootExpansionFactors.get(tree.getCATSpecies().getSpeciesType()) - 1);		// minus 1 is required because we want to get only the belowground part;
-			value *= CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BiomassExpansionFactor, subject, getGroupId(VariabilitySource.BiomassExpansionFactor, tree));
+			getBelowGroundBiomassMgCache().put(tree, value);
 		}
-		return value;
+		return getBelowGroundBiomassMgCache().get(tree);
 	}
 
+	/**
+	 * Clear all the caches.
+	 */
+	public void clearCache() {
+		getBelowGroundVolumeM3Cache().clear();
+		getBelowGroundBiomassMgCache().clear();
+		getBelowGroundCarbonMgCache().clear();
+		getAboveGroundVolumeM3Cache().clear();
+		getAboveGroundBiomassMgCache().clear();
+		getAboveGroundCarbonMgCache().clear();
+		getCommercialVolumeM3Cache().clear();
+		getCommercialBiomassMgCache().clear();
+		getCommercialCarbonMgCache().clear();
+	}
 
 	
 	
@@ -532,23 +629,25 @@ public class BiomassParameters implements REpiceaShowableUIWithParent, IOUserInt
 	 * @return the volume (m3)
 	 */
 	public double getBelowGroundVolumeM3(CATCompatibleTree tree, MonteCarloSimulationCompliantObject subject) {
-		boolean tier2Implementation = rootExpansionFactorFromModel && CATBelowGroundVolumeProvider.checkEligibility(tree);
-		double value;
-		boolean isStochastic = false;
-		if (tier2Implementation) {
-			CATBelowGroundVolumeProvider t = (CATBelowGroundVolumeProvider) tree;
-			value = t.getBelowGroundVolumeM3() * getExpansionFactor(tree);
-			isStochastic = t.isBelowGroundVolumePredictorStochastic();
-		} else {
-			value = getAboveGroundVolumeM3(tree, subject) * (rootExpansionFactors.get(tree.getCATSpecies().getSpeciesType()) - 1);		// minus 1 is required because we want to get only the belowground part
+		if (!getBelowGroundVolumeM3Cache().containsKey(tree)) {
+			boolean tier2Implementation = rootExpansionFactorFromModel && CATBelowGroundVolumeProvider.checkEligibility(tree);
+			double value;
+			boolean isStochastic = false;
+			if (tier2Implementation) {
+				CATBelowGroundVolumeProvider t = (CATBelowGroundVolumeProvider) tree;
+				value = t.getBelowGroundVolumeM3() * getExpansionFactor(tree);
+				isStochastic = t.isBelowGroundVolumePredictorStochastic();
+			} else {
+				value = getAboveGroundVolumeM3(tree, subject) * (rootExpansionFactors.get(tree.getCATSpecies().getSpeciesType()) - 1);		// minus 1 is required because we want to get only the belowground part
+			}
+			
+			if (subject != null && !isStochastic) {	// isStochastic = false if the provider is not stochastic or if the tree does not implement the provider
+				String groupId = getGroupId(VariabilitySource.BiomassExpansionFactor, tree);
+				value *= CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BiomassExpansionFactor, subject, groupId);
+			} 
+			getBelowGroundVolumeM3Cache().put(tree, value);
 		}
-		
-		if (subject != null && !isStochastic) {	// isStochastic = false if the provider is not stochastic or if the tree does not implement the provider
-			String subjectId = getGroupId(VariabilitySource.BiomassExpansionFactor, tree);
-			return value * CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BiomassExpansionFactor, subject, subjectId);
-		} else {
-			return value;
-		}
+		return getBelowGroundVolumeM3Cache().get(tree);
 	}
 
 	
@@ -559,19 +658,24 @@ public class BiomassParameters implements REpiceaShowableUIWithParent, IOUserInt
 	 * @return a double (Mg)
 	 */
 	public double getAboveGroundCarbonMg(CATCompatibleTree tree, MonteCarloSimulationCompliantObject subject) {
-		boolean tier2Implementation = branchExpansionFactorFromModel && CATAboveGroundCarbonProvider.checkEligibility(tree); 
-		if (tier2Implementation) {
-			CATAboveGroundCarbonProvider t = (CATAboveGroundCarbonProvider) tree;
-			double value = t.getAboveGroundCarbonMg() * getExpansionFactor(tree);
-			if (!t.isAboveGroundCarbonPredictorStochastic() && subject != null) {	// then rely on sensitivity analysis if enabled
-				double biomassModifier = CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BiomassExpansionFactor, subject, getGroupId(VariabilitySource.BiomassExpansionFactor, tree));
-				double woodDensityModifier = CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BasicDensity, subject, getGroupId(VariabilitySource.BasicDensity, tree));
-				double carbonModifier = CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.CarbonContent, subject, getGroupId(VariabilitySource.CarbonContent, tree));
-				value *= biomassModifier * woodDensityModifier * carbonModifier;
+		if (!getAboveGroundCarbonMgCache().containsKey(tree)) {
+			boolean tier2Implementation = branchExpansionFactorFromModel && CATAboveGroundCarbonProvider.checkEligibility(tree); 
+			double value;
+			if (tier2Implementation) {
+				CATAboveGroundCarbonProvider t = (CATAboveGroundCarbonProvider) tree;
+				value = t.getAboveGroundCarbonMg() * getExpansionFactor(tree);
+				if (!t.isAboveGroundCarbonPredictorStochastic() && subject != null) {	// then rely on sensitivity analysis if enabled
+					double biomassModifier = CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BiomassExpansionFactor, subject, getGroupId(VariabilitySource.BiomassExpansionFactor, tree));
+					double woodDensityModifier = CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BasicDensity, subject, getGroupId(VariabilitySource.BasicDensity, tree));
+					double carbonModifier = CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.CarbonContent, subject, getGroupId(VariabilitySource.CarbonContent, tree));
+					value *= biomassModifier * woodDensityModifier * carbonModifier;
+				}
+			} else {
+				value = getAboveGroundBiomassMg(tree, subject) * getCarbonContentFromThisTree(tree, subject);
 			}
-			return value;
-		} 
-		return getAboveGroundBiomassMg(tree, subject) * getCarbonContentFromThisTree(tree, subject);
+			getAboveGroundCarbonMgCache().put(tree, value);
+		}
+		return getAboveGroundCarbonMgCache().get(tree);
 	}
 	
 	/**
@@ -581,30 +685,30 @@ public class BiomassParameters implements REpiceaShowableUIWithParent, IOUserInt
 	 * @return the aboveground biomass (Mg)
 	 */
 	public double getAboveGroundBiomassMg(CATCompatibleTree tree, MonteCarloSimulationCompliantObject subject) {
-		boolean tier2Implementation = (branchExpansionFactorFromModel && CATAboveGroundBiomassProvider.checkEligibility(tree)) || 
-										tree instanceof CATSapling; // saplings automatically provide their own biomass
-		if (tier2Implementation) {
-			CATAboveGroundBiomassProvider t = (CATAboveGroundBiomassProvider) tree;
-			double value = t.getAboveGroundBiomassMg() * getExpansionFactor(tree);
-			if (!t.isAboveGroundBiomassPredictorStochastic() && subject != null) { // then rely on sensitivity analysis if enabled
-				double biomassModifier = CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BiomassExpansionFactor, subject, getGroupId(VariabilitySource.BiomassExpansionFactor, tree));
-				double woodDensityModifier = CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BasicDensity, subject, getGroupId(VariabilitySource.BasicDensity, tree));
-				value *= biomassModifier * woodDensityModifier;
-			}
-			return value;
-		} 
-		
-		if (tree instanceof CATCommercialBiomassProvider) {		
-			double value = getCommercialBiomassMg(tree, subject) * branchExpansionFactors.get(tree.getCATSpecies().getSpeciesType());
-			if (subject != null) {	
-				String subjectId = getGroupId(VariabilitySource.BiomassExpansionFactor, tree);
-				return value * CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BiomassExpansionFactor, subject, subjectId);
+		if (!getAboveGroundBiomassMgCache().containsKey(tree)) {
+			boolean tier2Implementation = (branchExpansionFactorFromModel && CATAboveGroundBiomassProvider.checkEligibility(tree)) || 
+					tree instanceof CATSapling; // saplings automatically provide their own biomass
+			double value;
+			if (tier2Implementation) {
+				CATAboveGroundBiomassProvider t = (CATAboveGroundBiomassProvider) tree;
+				value = t.getAboveGroundBiomassMg() * getExpansionFactor(tree);
+				if (!t.isAboveGroundBiomassPredictorStochastic() && subject != null) { // then rely on sensitivity analysis if enabled
+					double biomassModifier = CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BiomassExpansionFactor, subject, getGroupId(VariabilitySource.BiomassExpansionFactor, tree));
+					double woodDensityModifier = CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BasicDensity, subject, getGroupId(VariabilitySource.BasicDensity, tree));
+					value *= biomassModifier * woodDensityModifier;
+				}
+			} else if (tree instanceof CATCommercialBiomassProvider) {		
+				value = getCommercialBiomassMg(tree, subject) * branchExpansionFactors.get(tree.getCATSpecies().getSpeciesType());
+				if (subject != null) {	
+					String subjectId = getGroupId(VariabilitySource.BiomassExpansionFactor, tree);
+					value *= CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BiomassExpansionFactor, subject, subjectId);
+				} 
 			} else {
-				return value;
+				value = getAboveGroundVolumeM3(tree, subject) * getBasicWoodDensityFromThisTree(tree, subject);
 			}
-		} else {
-			return getAboveGroundVolumeM3(tree, subject) * getBasicWoodDensityFromThisTree(tree, subject);
-		}
+			getAboveGroundBiomassMgCache().put(tree, value);
+		} 
+		return getAboveGroundBiomassMgCache().get(tree);
 	}
 
 	
@@ -616,23 +720,25 @@ public class BiomassParameters implements REpiceaShowableUIWithParent, IOUserInt
 	 * @return the aboveground volume (m3)
 	 */
 	public double getAboveGroundVolumeM3(CATCompatibleTree tree, MonteCarloSimulationCompliantObject subject) {
-		boolean tier2Implementation = branchExpansionFactorFromModel && CATAboveGroundVolumeProvider.checkEligibility(tree);
-		boolean isStochastic = false;
-		double value;
-		if (tier2Implementation) {
-			CATAboveGroundVolumeProvider t = (CATAboveGroundVolumeProvider) tree;
-			value = t.getAboveGroundVolumeM3() * getExpansionFactor(tree);
-			isStochastic = t.isAboveGroundVolumePredictorStochastic();
-		} else {
-			value = getCommercialVolumeM3(tree) * branchExpansionFactors.get(tree.getCATSpecies().getSpeciesType());
+		if (!getAboveGroundVolumeM3Cache().containsKey(tree)) {
+			boolean tier2Implementation = branchExpansionFactorFromModel && CATAboveGroundVolumeProvider.checkEligibility(tree);
+			boolean isStochastic = false;
+			double value;
+			if (tier2Implementation) {
+				CATAboveGroundVolumeProvider t = (CATAboveGroundVolumeProvider) tree;
+				value = t.getAboveGroundVolumeM3() * getExpansionFactor(tree);
+				isStochastic = t.isAboveGroundVolumePredictorStochastic();
+			} else {
+				value = getCommercialVolumeM3(tree) * branchExpansionFactors.get(tree.getCATSpecies().getSpeciesType());
+			}
+			
+			if (subject != null && !isStochastic) {	// isStochastic = false if the provider is not stochastic or if the tree does not implement the provider
+				String subjectId = getGroupId(VariabilitySource.BiomassExpansionFactor, tree);
+				value *= CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BiomassExpansionFactor, subject, subjectId);
+			} 
+			getAboveGroundVolumeM3Cache().put(tree, value);
 		}
-		
-		if (subject != null && !isStochastic) {	// isStochastic = false if the provider is not stochastic or if the tree does not implement the provider
-			String subjectId = getGroupId(VariabilitySource.BiomassExpansionFactor, tree);
-			return value * CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BiomassExpansionFactor, subject, subjectId);
-		} else {
-			return value;
-		}
+		return getAboveGroundVolumeM3Cache().get(tree);
 	}
 
 	/**
@@ -678,7 +784,11 @@ public class BiomassParameters implements REpiceaShowableUIWithParent, IOUserInt
 	 * @return the overbark commercial volume (m3)
 	 */
 	public double getCommercialVolumeM3(CATCompatibleTree tree) {
-		return getOverbarkCommercialVolumeM3(tree) * getExpansionFactor(tree);
+		if (!getCommercialVolumeM3Cache().containsKey(tree)) {
+			double value = getOverbarkCommercialVolumeM3(tree) * getExpansionFactor(tree);
+			getCommercialVolumeM3Cache().put(tree, value);
+		}
+		return getCommercialVolumeM3Cache().get(tree);
 	}
 	
 
@@ -702,17 +812,22 @@ public class BiomassParameters implements REpiceaShowableUIWithParent, IOUserInt
 	 * @return the commercial biomass (Mg)
 	 */
 	public double getCommercialBiomassMg(CATCompatibleTree tree, MonteCarloSimulationCompliantObject subject) {
-		boolean tier2Implementation = CATCommercialBiomassProvider.checkEligibility(tree);
-		if (tier2Implementation) {
-			CATCommercialBiomassProvider t = (CATCommercialBiomassProvider) tree;
-			double value = t.getCommercialBiomassMg() * getExpansionFactor(tree);
-			if (!t.isCommercialBiomassPredictorStochastic() && subject != null) { // then rely on sensitivity analysis if enabled
-				double woodDensityModifier = CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BasicDensity, subject, getGroupId(VariabilitySource.BasicDensity, tree));
-				value *= woodDensityModifier;
-			} 
-			return value;
-		} 
-		return getCommercialVolumeM3(tree) * getBasicWoodDensityFromThisTree(tree, subject);
+		if (!getCommercialBiomassMgCache().containsKey(tree)) {
+			boolean tier2Implementation = CATCommercialBiomassProvider.checkEligibility(tree);
+			double value;
+			if (tier2Implementation) {
+				CATCommercialBiomassProvider t = (CATCommercialBiomassProvider) tree;
+				value = t.getCommercialBiomassMg() * getExpansionFactor(tree);
+				if (!t.isCommercialBiomassPredictorStochastic() && subject != null) { // then rely on sensitivity analysis if enabled
+					double woodDensityModifier = CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BasicDensity, subject, getGroupId(VariabilitySource.BasicDensity, tree));
+					value *= woodDensityModifier;
+				} 
+			} else {
+				value = getCommercialVolumeM3(tree) * getBasicWoodDensityFromThisTree(tree, subject);
+			}
+			getCommercialBiomassMgCache().put(tree, value);
+		}
+		return getCommercialBiomassMgCache().get(tree);
 	}
 
 	/**
@@ -722,18 +837,23 @@ public class BiomassParameters implements REpiceaShowableUIWithParent, IOUserInt
 	 * @return the carbon in the commercial part of the tree (Mg)
 	 */
 	public double getCommercialCarbonMg(CATCompatibleTree tree, MonteCarloSimulationCompliantObject subject) {
-		boolean tier2Implementation = CATCommercialCarbonProvider.checkEligibility(tree); 
-		if (tier2Implementation) {
-			CATCommercialCarbonProvider t = (CATCommercialCarbonProvider) tree;
-			double value = t.getCommercialCarbonMg() * getExpansionFactor(tree);
-			if (!t.isCommercialCarbonPredictorStochastic() && subject != null) {	// then rely on sensitivity analysis if enabled
-				double woodDensityModifier = CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BasicDensity, subject, getGroupId(VariabilitySource.BasicDensity, tree));
-				double carbonModifier = CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.CarbonContent, subject, getGroupId(VariabilitySource.CarbonContent, tree));
-				value *= woodDensityModifier * carbonModifier;
+		if (!getCommercialCarbonMgCache().containsKey(tree)) {
+			boolean tier2Implementation = CATCommercialCarbonProvider.checkEligibility(tree); 
+			double value;
+			if (tier2Implementation) {
+				CATCommercialCarbonProvider t = (CATCommercialCarbonProvider) tree;
+				value = t.getCommercialCarbonMg() * getExpansionFactor(tree);
+				if (!t.isCommercialCarbonPredictorStochastic() && subject != null) {	// then rely on sensitivity analysis if enabled
+					double woodDensityModifier = CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BasicDensity, subject, getGroupId(VariabilitySource.BasicDensity, tree));
+					double carbonModifier = CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.CarbonContent, subject, getGroupId(VariabilitySource.CarbonContent, tree));
+					value *= woodDensityModifier * carbonModifier;
+				}
+			} else {
+				value = getCommercialBiomassMg(tree, subject) * getCarbonContentFromThisTree(tree, subject);
 			}
-			return value;
-		} 
-		return getCommercialBiomassMg(tree, subject) * getCarbonContentFromThisTree(tree, subject);
+			getCommercialCarbonMgCache().put(tree, value);
+		}
+		return getCommercialCarbonMgCache().get(tree);
 	}
 	
 	/**
