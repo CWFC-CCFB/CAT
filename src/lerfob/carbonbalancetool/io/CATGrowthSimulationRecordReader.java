@@ -49,8 +49,9 @@ import repicea.util.REpiceaTranslator.TextableEnum;
 public class CATGrowthSimulationRecordReader extends REpiceaRecordReader {
 	
 	protected static enum MessageID implements TextableEnum {
-		DateDescription("Date (years)","Date (ann\u00E9es)"),
-		DateHelp("This field must contains the date. It is an integer.", "Ce champ doit contenir la date. Il s'agit d'un entier."),
+		DateDescription("Date or age (years)","Date ou \u00E2ge (ann\u00E9es)"),
+		DateHelp("This field must contains the date or the age. It is an integer. In the context of regular management at the stand level this field must contain the age.", 
+				"Ce champ doit contenir la date ou l'\u00E2ge. Il s'agit d'un entier. Dans un contexte de gestion r\u00E9guli\u00E8re \u00E0 l'\u00E9chelle du peuplement, ce champ doit contenir l'\u00E2ge du peuplement."),
 		RealizationDescription("Realization", "R\u00E9alisation"),
 		RealizationHelp("This field must contain the realization identifier. It is an integer. This field is optional. If it is not specified, CAT considers that the simulation is deterministic.", 
 				"Ce champ doit contenir l'identifiant de la r\u00E9alisation. Il s'agit d'un entier. Ce champ est facultatif. S'il n'est pas sp\u00E9cifi\u00E9, CAT consid\u00E8re qu'il s'agit d'un simulation d\u00E9terministe."),

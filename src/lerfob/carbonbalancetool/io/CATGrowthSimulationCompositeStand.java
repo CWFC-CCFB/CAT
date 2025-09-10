@@ -123,7 +123,15 @@ public class CATGrowthSimulationCompositeStand implements CATCompatibleStand, St
 //	void setManagementType(ManagementType managType) {managementType = managType;}
 	
 	@Override
-	public CATCompatibleStand getHarvestedStand() {return null;} // TODO it should be able to return a fully harvested stand MF20250909
+	public CATGrowthSimulationCompositeStand getHarvestedStand() {
+		CATGrowthSimulationCompositeStand harvestedStand = new CATGrowthSimulationCompositeStand(dateYr, standIdentification, reader, true, interfaceEnabledMap);
+		for (Integer k : realizationMap.keySet()) {
+			CATGrowthSimulationPlotSample currentPlotSample = realizationMap.get(k);
+			CATGrowthSimulationPlotSample harvestedPlotSample = currentPlotSample.getHarvestedStand(harvestedStand);
+			harvestedStand.realizationMap.put(k, harvestedPlotSample);
+		}
+		return harvestedStand;
+	} 
 
 	/*
 	 * Useless for this class.

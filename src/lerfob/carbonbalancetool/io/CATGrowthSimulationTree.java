@@ -168,4 +168,19 @@ class CATGrowthSimulationTree implements CATCompatibleTree,
 	@Override
 	public double getCommercialBiomassMg() {return commercialBiomassMg;}
 
+	CATGrowthSimulationTree getHarvestedTree(CATGrowthSimulationPlot harvestedPlot) {
+		return new CATGrowthSimulationTree(harvestedPlot, 
+				StatusClass.cut, 
+				commercialVolumeM3, 
+				numberOfTrees, 
+				originalSpeciesName,
+				aboveGroundVolumeM3,
+				aboveGroundBiomassMg,
+				aboveGroundCarbonMg,
+				belowGroundVolumeM3,
+				belowGroundBiomassMg,
+				belowGroundCarbonMg,
+				commercialBiomassMg);
+	}
+	
 }
