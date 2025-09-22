@@ -8,6 +8,7 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
+import lerfob.carbonbalancetool.productionlines.EndUseWoodProductCarbonUnitFeature.UseClass;
 import repicea.io.javacsv.CSVReader;
 import repicea.util.ObjectUtility;
 
@@ -103,13 +104,16 @@ public class PythonAccessTest {
 				Map<String, Double> innerRefMap = inputMap.get(year).get("RESULTS");
 				Map<String, Double> innerActualMap = resultingMap.get(year);
 				innerActualMap.remove("BiomassMgHaFUEL");  // This class was added after the test was created
+				innerActualMap.remove("BiomassMgHaINDUSTRIAL_RESIDUES");  // This class was added after the test was created
 				Assert.assertEquals("Testing inner map sizes", innerRefMap.size(), innerActualMap.size());
-				for (String key : innerRefMap.keySet()) {
-					if (!innerActualMap.containsKey(key)) {
-						Assert.fail("The inner resulting map does not contain key " + key);
+				for (String key : innerActualMap.keySet()) {
+					double actualValue = innerActualMap.get(key);
+					Double refValue = (Double) innerRefMap.get(key.contains(UseClass.INTERNAL_CONSUMPTION.name()) ?
+							key.replace(UseClass.INTERNAL_CONSUMPTION.name(), "NONE") :
+								key);
+					if (refValue == null) {
+						Assert.fail();
 					} else {
-						double refValue = innerRefMap.get(key);
-						double actualValue = innerActualMap.get(key);
 						Assert.assertEquals("Testing value for key " + key, refValue, actualValue, 1E-8);
 					}
 				}
@@ -207,15 +211,14 @@ public class PythonAccessTest {
 				Map<String, Double> innerRefMap = inputMap.get(year).get("RESULTS");
 				Map<String, Double> innerActualMap = resultingMap.get(year);
 				innerActualMap.remove("BiomassMgHaFUEL");  // This class was added after the test was created
+				innerActualMap.remove("BiomassMgHaINDUSTRIAL_RESIDUES");  // This class was added after the test was created
 				Assert.assertEquals("Testing inner map sizes", innerRefMap.size(), innerActualMap.size());
-				for (String key : innerRefMap.keySet()) {
-					if (!innerActualMap.containsKey(key)) {
-						Assert.fail("The inner resulting map does not contain key " + key);
-					} else {
-						double refValue = innerRefMap.get(key);
-						double actualValue = innerActualMap.get(key);
-						Assert.assertEquals("Testing value for key " + key, refValue, actualValue, 1E-8);
-					}
+				for (String key : innerActualMap.keySet()) {
+					double actualValue = innerActualMap.get(key);
+					Double refValue = (Double) innerRefMap.get(key.contains(UseClass.INTERNAL_CONSUMPTION.name()) ?
+							key.replace(UseClass.INTERNAL_CONSUMPTION.name(), "NONE") :
+								key);
+					Assert.assertEquals("Testing value for key " + key, refValue, actualValue, 1E-8);
 				}
 			}
 		}

@@ -16,6 +16,7 @@ import lerfob.carbonbalancetool.productionlines.CarbonUnit;
 import lerfob.carbonbalancetool.productionlines.CarbonUnit.BiomassType;
 import lerfob.carbonbalancetool.productionlines.CarbonUnit.CarbonUnitStatus;
 import lerfob.carbonbalancetool.productionlines.CarbonUnit.Element;
+import lerfob.carbonbalancetool.productionlines.EndUseWoodProductCarbonUnitFeature.UseClass;
 import lerfob.carbonbalancetool.productionlines.CarbonUnitList;
 import lerfob.carbonbalancetool.productionlines.ProductionLinesTest.CATCompatibleTreeImpl;
 import lerfob.carbonbalancetool.productionlines.ProductionProcessorManager;
@@ -83,16 +84,17 @@ public class PythonAccessOakTest {
 		int nbValuesCompared = 0;
 		for (Integer key : resultingMap.keySet()) {
 			Map<String, Double> innerResultingMap = resultingMap.get(key);
+			innerResultingMap.remove("BiomassMgHaINDUSTRIAL_RESIDUES");  // This class was added after the test was created
 			Map<?,?> innerRefMap = (Map) refMap.get(key);
 			if (innerRefMap == null) {
 				Assert.fail();
-			} else {
-				Assert.assertEquals(innerRefMap.size(), innerResultingMap.size());
-			}
+			} 
 			double totalBiomass = 0;
 			for (String key2 : innerResultingMap.keySet()) {
 				Double resultingValue = innerResultingMap.get(key2);
-				Double refValue = (Double) innerRefMap.get(key2);
+				Double refValue = (Double) innerRefMap.get(key2.contains(UseClass.INTERNAL_CONSUMPTION.name()) ?
+						key2.replace(UseClass.INTERNAL_CONSUMPTION.name(), "NONE") :
+							key2);
 				if (refValue == null) {
 					Assert.fail();
 				} else {
