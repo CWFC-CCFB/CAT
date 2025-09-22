@@ -475,7 +475,7 @@ public final class ProductionLineProcessor extends AbstractProductionLineProcess
 			feature.setDisposable(false);
 			feature.setDisposableProportion(0);
 			feature.setLCA(null);
-			feature.setUseClass(UseClass.NONE);
+			feature.setUseClass(UseClass.INTERNAL_CONSUMPTION);
 		}
 		return LossProductionLineProcessor; 
 	}

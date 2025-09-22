@@ -35,6 +35,7 @@ import lerfob.carbonbalancetool.sensitivityanalysis.CATSensitivityAnalysisSettin
 import lerfob.carbonbalancetool.sensitivityanalysis.CATSensitivityAnalysisSettings.VariabilitySource;
 import repicea.gui.components.NumberFormatFieldFactory.NumberFieldDocument.NumberFieldEvent;
 import repicea.gui.components.NumberFormatFieldFactory.NumberFieldListener;
+import repicea.serial.SerializerChangeMonitor;
 import repicea.simulation.processsystem.ProcessorListTable.MemberInformation;
 import repicea.util.REpiceaTranslator;
 import repicea.util.REpiceaTranslator.TextableEnum;
@@ -49,6 +50,12 @@ public class EndUseWoodProductCarbonUnitFeature extends CarbonUnitFeature implem
 																					NumberFieldListener {
 
 	private static final long serialVersionUID = 20101020L;
+
+	static {
+		SerializerChangeMonitor.registerEnumNameChange("lerfob.carbonbalancetool.productionlines.EndUseWoodProductCarbonUnitFeature$UseClass",
+				"NONE",
+				"INTERNAL_CONSUMPTION");
+	}
 	
 
 	protected static enum MemberLabel implements TextableEnum {
@@ -71,7 +78,8 @@ public class EndUseWoodProductCarbonUnitFeature extends CarbonUnitFeature implem
 	
 	
 	public static enum UseClass implements TextableEnum {
-		NONE("Industrial loss", "Perte industrielle", true), 
+//		@Deprecated
+//		NONE("Industrial loss", "Perte industrielle", true), 
 		ENERGY("Energy wood", "Bois \u00E9nergie", true), 
 		PAPER("Paper", "Papier", false), 
 		WRAPPING("Packages", "Emballages", false), 
@@ -83,7 +91,10 @@ public class EndUseWoodProductCarbonUnitFeature extends CarbonUnitFeature implem
 		BRANCHES_FOR_ENERGY("Branches", "Menus bois", true),
 		STUMPS_FOR_ENERGY("Stumps", "Souches", true),
 		EXTRACTIVE("Wood extractives", "Extractibles du bois", false),
-		FUEL("Biofuel", "Biocarburant", false);
+		FUEL("Biofuel", "Biocarburant", false),
+		INTERNAL_CONSUMPTION("Industrial internal consumption", "Autoconsommation industrielle", true), 
+		INDUSTRIAL_RESIDUES("Industrial residues", "R\u00E9sidus industriels", false), 
+;
 
 		private final boolean meantForEnergyProduction;
 		
@@ -135,7 +146,7 @@ public class EndUseWoodProductCarbonUnitFeature extends CarbonUnitFeature implem
 	 */
 	protected EndUseWoodProductCarbonUnitFeature(ProductionLineProcessor processor) {
 		super(processor);
-		useClass = UseClass.NONE;
+		useClass = UseClass.INTERNAL_CONSUMPTION;
 	}
 	
 	protected CombustionProcess getCombustionProcess() {return combustionProcess;}
@@ -144,7 +155,7 @@ public class EndUseWoodProductCarbonUnitFeature extends CarbonUnitFeature implem
 	
 	protected UseClass getUseClass() {
 		if (useClass == null) {
-			useClass = UseClass.NONE;
+			useClass = UseClass.INTERNAL_CONSUMPTION;
 		}
 		return this.useClass;
 	}
@@ -341,5 +352,5 @@ public class EndUseWoodProductCarbonUnitFeature extends CarbonUnitFeature implem
 			getDecayFunction().setHalfLifeYr(feature.lifetimeYr);
 		}
 	}
-	
+
 }

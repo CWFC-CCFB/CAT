@@ -21,6 +21,10 @@ package lerfob.carbonbalancetool.productionlines;
 import java.awt.Dimension;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.JCheckBox;
@@ -91,6 +95,18 @@ public class EndUseWoodProductCarbonUnitFeaturePanel extends CarbonUnitFeaturePa
 	@Override
 	protected EndUseWoodProductCarbonUnitFeature getCaller() {return (EndUseWoodProductCarbonUnitFeature) super.getCaller();}
 	
+	private static class UseClassComparator implements Comparator<UseClass> {
+
+		private static UseClassComparator Singleton = new UseClassComparator();
+		
+		private static final Comparator<String> NaturalOrderString = Comparator.<String>naturalOrder();
+		
+		@Override
+		public int compare(UseClass o1, UseClass o2) {
+			return NaturalOrderString.compare(o1.toString(), o2.toString());
+		}
+	}
+	
 	@SuppressWarnings({ "rawtypes", "unchecked", "deprecation" })
 	@Override
 	protected void initializeFields() {
@@ -119,16 +135,14 @@ public class EndUseWoodProductCarbonUnitFeaturePanel extends CarbonUnitFeaturePa
 		substitutionTextField = NumberFormatFieldFactory.createNumberFormatField(Type.Double, Range.All, false);
 		substitutionTextField.setText(((Double) getCaller().getSubstitutionMgCO2EqByFunctionalUnit(null)).toString());
 		substitutionTextField.setPreferredSize(new Dimension(100, substitutionTextField.getFontMetrics(substitutionTextField.getFont()).getHeight() + 2));
+
+		List<UseClass> useClasses = Arrays.asList(UseClass.values());
+		Collections.sort(useClasses, UseClassComparator.Singleton);
 		
-		useClassList = new JComboBox(UseClass.values());
+		useClassList = new JComboBox(useClasses.toArray(new UseClass[] {}));
 		UseClass useClass = (getCaller()).getUseClass();
-		for (int i = 0; i < UseClass.values().length; i++) {
-			if (useClass == UseClass.values()[i]) {
-				useClassList.setSelectedIndex(i);
-				break;
-			}
-		}
-		
+		useClassList.setSelectedIndex(useClasses.indexOf(useClass));
+
 		combustionProcessList = new JComboBox(CombustionProcess.values());
 		CombustionProcess combustionProcess = getCaller().getCombustionProcess();
 		if (combustionProcess == null) {
