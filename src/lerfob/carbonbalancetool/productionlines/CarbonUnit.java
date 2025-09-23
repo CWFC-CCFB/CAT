@@ -278,8 +278,8 @@ public class CarbonUnit extends ProcessUnit<Element> implements BiomassTypeProvi
 			date = timeScale.getDateYrAtThisIndex(i);
 			if (date > getCreationDate() && currentCarbon > ProductionProcessorManager.VERY_SMALL) {
 				if (decayFunction.getInfiniteIntegral() > 0) {	// calculate the proportion only if lifetime is greater than 0
-					double thisRemains = decayFunction.getValueAtTime(date - getCreationDate());
-					double thatRemained = decayFunction.getValueAtTime(timeScale.getDateYrAtThisIndex(i - 1) - getCreationDate());
+					double thisRemains = decayFunction.getValueAtTime(date - getCreationDate(), compartmentManager);
+					double thatRemained = decayFunction.getValueAtTime(timeScale.getDateYrAtThisIndex(i - 1) - getCreationDate(), compartmentManager);
 					factor = thisRemains / thatRemained;	
 				} else { // otherwise all the carbon is gone
 					factor = 0d;

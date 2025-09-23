@@ -27,10 +27,13 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
+import lerfob.carbonbalancetool.sensitivityanalysis.CATSensitivityAnalysisSettings;
+import lerfob.carbonbalancetool.sensitivityanalysis.CATSensitivityAnalysisSettings.VariabilitySource;
 import repicea.gui.REpiceaUIObject;
 import repicea.gui.components.NumberFormatFieldFactory.NumberFieldDocument.NumberFieldEvent;
 import repicea.gui.components.NumberFormatFieldFactory.NumberFieldListener;
 import repicea.math.utility.GammaUtility;
+import repicea.simulation.MonteCarloSimulationCompliantObject;
 import repicea.simulation.processsystem.ProcessorListTable.MemberHandler;
 import repicea.simulation.processsystem.ProcessorListTable.MemberInformation;
 import repicea.simulation.processsystem.ResourceReleasable;
@@ -143,7 +146,12 @@ class DecayFunction implements Serializable, REpiceaUIObject, NumberFieldListene
 	
 	private void setInternalAverageLifetimeYr(double averageLifetimeYr) {
 		this.averageLifetimeYr = averageLifetimeYr;
-		this.weibullLambda = averageLifetimeYr / GammaUtility.gamma(1d + 1d / weibullBeta);
+//		this.weibullLambda = averageLifetimeYr / GammaUtility.gamma(1d + 1d / weibullBeta);
+		this.weibullLambda = getWeibullLambdaFromAverageLifetime(averageLifetimeYr);
+	}
+	
+	private double getWeibullLambdaFromAverageLifetime(double avgLifetimeYr) {
+		return avgLifetimeYr / GammaUtility.gamma(1d + 1d / weibullBeta);
 	}
 	
 	private double convertAverageLifetimeToHalfLife(double averageLifetimeYr) {
@@ -176,12 +184,18 @@ class DecayFunction implements Serializable, REpiceaUIObject, NumberFieldListene
 		}
 	}
 
-	double getValueAtTime(double timeYr) {
+	double getValueAtTime(double timeYr, MonteCarloSimulationCompliantObject subject) {
+		double avgLifetimeYr = subject != null ?
+				averageLifetimeYr * CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.Lifetime, 
+						subject, 
+						feature.getClass().getCanonicalName() + feature.hashCode()) :
+					averageLifetimeYr;
 		switch(functionType) {
 		case Exponential:
-			return Math.exp(- timeYr / averageLifetimeYr);
+			return Math.exp(- timeYr / avgLifetimeYr);
 		case Weibull:
-			return Math.exp(- Math.pow(timeYr / weibullLambda, weibullBeta));
+			double wblLambda = getWeibullLambdaFromAverageLifetime(avgLifetimeYr);
+			return Math.exp(- Math.pow(timeYr / wblLambda, weibullBeta));
 		default:
 			throw new InvalidParameterException("Decay function type " + functionType.name() + " has not been implemented yet!");
 		}
