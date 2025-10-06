@@ -18,6 +18,7 @@ import lerfob.carbonbalancetool.productionlines.CarbonUnit.CarbonUnitStatus;
 import lerfob.carbonbalancetool.productionlines.CarbonUnit.Element;
 import lerfob.carbonbalancetool.productionlines.EndUseWoodProductCarbonUnitFeature.UseClass;
 import lerfob.carbonbalancetool.productionlines.WoodyDebrisProcessor.WoodyDebrisProcessorID;
+import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 import repicea.simulation.processsystem.AmountMap;
 import repicea.simulation.processsystem.ProcessUnit;
@@ -61,7 +62,7 @@ public class ProductionLinesTest {
 	 * Tests if a production line file can be read successfully.
 	 */
 	@Test
-	public void testProductionLineDeserialisation() {
+	public void test01ProductionLineDeserialisation() {
 		try {
 			String filename = ObjectUtility.getPackagePath(getClass()) + "oakProductionLines20121112.prl";
 			ProductionLineManager wpmm = new ProductionLineManager();
@@ -76,7 +77,7 @@ public class ProductionLinesTest {
 	 * Tests if the amount in is equal to the amount out
 	 */
 	@Test
-	public void testBiomassBalanceInProductionLines() {
+	public void test02BiomassBalanceInProductionLines() {
 		try {
 			String filename = ObjectUtility.getPackagePath(getClass()) + "oakProductionLines20121112.prl";
 			ProductionLineManager wpmm = new ProductionLineManager();
@@ -125,7 +126,7 @@ public class ProductionLinesTest {
 	 */
 	@SuppressWarnings("rawtypes")
 	@Test
-	public void testBiomassBalanceInProductionLinesWithFormerNewImplementation() {
+	public void test03BiomassBalanceInProductionLinesWithFormerNewImplementation() {
 		try {
 			String filename = ObjectUtility.getPackagePath(getClass()) + "oakProductionLines20121112.prl";
 			ProductionLineManager wpmm = new ProductionLineManager();
@@ -176,7 +177,7 @@ public class ProductionLinesTest {
 	 * Tests if the amount in is equal to the amount out
 	 */
 	@Test
-	public void testBiomassBalanceInProductionLinesWithNewImplementation() {
+	public void test04BiomassBalanceInProductionLinesWithNewImplementation() {
 		try {
 			String filename = ObjectUtility.getRelativePackagePath(ProductionProcessorManager.class) + "library" + ObjectUtility.PathSeparator + "hardwood_simple_en.prl";
 			ProductionProcessorManager processorManager = new ProductionProcessorManager();
@@ -298,7 +299,7 @@ public class ProductionLinesTest {
 	 * Tests if the amount in is equal to the amount out
 	 */
 	@Test
-	public void testBiomassBalanceInProductionLinesWithNewImplementationAndDebarking() {
+	public void test05BiomassBalanceInProductionLinesWithNewImplementationAndDebarking() {
 		String filename = ObjectUtility.getPackagePath(getClass()) + "testHardwoodSimpleWithDebarking.prl";
 		testBiomassBalanceInProductionLinesWithNewImplementationAndDebarkingUsingThisFile(filename);
 	}
@@ -307,7 +308,7 @@ public class ProductionLinesTest {
 	 * Testing Quebec industrial sector 
 	 */
 	@Test
-	public void testBiomassBalanceInProductionLinesOfQuebecIndustrialSector() {
+	public void test06BiomassBalanceInProductionLinesOfQuebecIndustrialSector() {
 		String filename = ObjectUtility.getPackagePath(getClass()) + "QuebecIndustrialSectorReference.prl";
 		testBiomassBalanceInProductionLinesWithNewImplementationAndDebarkingUsingThisFile(filename);
 	}
@@ -317,7 +318,7 @@ public class ProductionLinesTest {
 	 * Tests if the amount in is equal to the amount out
 	 */
 	@Test
-	public void testBiomassBalanceInWoodyDebris() {
+	public void test07BiomassBalanceInWoodyDebris() {
 		try {
 			String filename = ObjectUtility.getPackagePath(getClass()) + "testHardwoodSimpleWithDebarking.prl";
 			ProductionProcessorManager processorManager = new ProductionProcessorManager();
@@ -374,7 +375,7 @@ public class ProductionLinesTest {
 	 * Tests if the amount in is equal to the amount out
 	 */
 	@Test
-	public void testCumulativeEmissionsWithValueForEachProcess() {
+	public void test08CumulativeEmissionsWithValueForEachProcess() {
 		try {
 			String filename = ObjectUtility.getPackagePath(getClass()) + File.separator
 					+ "testHardwood_simple_enWithEmissions.prl";
@@ -433,7 +434,7 @@ public class ProductionLinesTest {
 	 * Tests if the amount in is equal to the amount out
 	 */
 	@Test
-	public void testCumulativeEmissionsWithValueForEachProcess2() {
+	public void test09CumulativeEmissionsWithValueForEachProcess2() {
 		try {
 			String filename = ObjectUtility.getPackagePath(getClass()) + File.separator
 					+ "testHardwood_simple_enWithEmissions2.prl";
@@ -490,7 +491,7 @@ public class ProductionLinesTest {
 
 
 	@Test
-	public void testBroadleavedSorting1() throws IOException {
+	public void test10BroadleavedSorting1() throws IOException {
 		ProductionProcessorManager processorManager = new ProductionProcessorManager();
 		String filename = ObjectUtility.getRelativePackagePath(getClass()) + "testHardwoodRecyclingWithBroadleavedSorting.prl";
 		processorManager.load(filename);
@@ -543,7 +544,7 @@ public class ProductionLinesTest {
 
 	
 	@Test
-	public void testBroadleavedSorting2() throws IOException {
+	public void test11BroadleavedSorting2() throws IOException {
 		ProductionProcessorManager processorManager = new ProductionProcessorManager();
 		String filename = ObjectUtility.getRelativePackagePath(getClass()) + "testHardwoodRecyclingWithBroadleavedSorting.prl";
 		processorManager.load(filename);
@@ -637,7 +638,7 @@ public class ProductionLinesTest {
 	 * if the Processor was initially an intermediate processor and then became a final processor.
 	 */
 	@Test
-	public void testEmissionsFromFunctionalUnit() throws IOException {
+	public void test12EmissionsFromFunctionalUnit() throws IOException {
 		String filename = ObjectUtility.getRelativePackagePath(ProductionProcessorManager.class) + "library" + ObjectUtility.PathSeparator + "hardwood_recycling_en.prl";
 		Collection<CarbonUnit> endProducts = runSimpleSimulationWithThisFile(filename);
 		Assert.assertTrue("Checking collection is not empty", !endProducts.isEmpty());
@@ -664,7 +665,7 @@ public class ProductionLinesTest {
 	 * yield the same carbon units.
 	 */
 	@Test
-	public void testMatterBalanceFromXmlSerializationVsJSONSerialization() throws IOException {
+	public void test13MatterBalanceFromXmlSerializationVsJSONSerialization() throws IOException {
 		String filename = ObjectUtility.getRelativePackagePath(ProductionProcessorManager.class) + "library" + ObjectUtility.PathSeparator + "hardwood_recycling_en.prl";
 		List<CarbonUnit> endProductsXML = runSimpleSimulationWithThisFile(filename);
 		Assert.assertEquals("Testing list size", 2, endProductsXML.size());
@@ -687,4 +688,43 @@ public class ProductionLinesTest {
 		
 	}
 
+	/*
+	 * Test carbon unit aggregation with BACCFIRE flux configuration.
+	 */
+	@Test
+	public void test14CarbonUnitAggregationUsingBACCFIREFluxConfiguration() throws IOException {
+		String filename = ObjectUtility.getPackagePath(getClass()) + "20250717_schema_filiere_Prod_End_2020_groupes_essences_Henri.prl";
+		ProductionProcessorManager processorManager = new ProductionProcessorManager();
+		processorManager.load(filename);
+
+		double volume = 1d;
+		double carbonContent = .5;
+		double basicWoodDensity = .5;
+
+		AmountMap<Element> amountMap = new AmountMap<Element>();
+		amountMap.put(Element.Volume, volume);
+		amountMap.put(Element.Biomass, volume * basicWoodDensity);
+		amountMap.put(Element.C, volume * basicWoodDensity * carbonContent);
+		Map<BiomassType, AmountMap<Element>> amountMaps = new HashMap<BiomassType, AmountMap<Element>>();
+		amountMaps.put(BiomassType.Wood, amountMap);
+		for (Processor p : processorManager.getPrimaryProcessors()) {
+			if (p instanceof LogCategoryProcessor) {
+				Collection<CarbonUnit> cus = processorManager.processAmountMap(p, 
+						0, 
+						"mySamplingID", 
+						amountMaps, 
+						"mySpecies",
+						SpeciesType.BroadleavedSpecies,
+						StatusClass.cut, 
+						null);
+				Assert.assertEquals("Testing carbon unit collection size", 1096, cus.size());
+				CarbonUnitList cuList = new CarbonUnitList();
+				for (CarbonUnit cu : cus) {
+					cuList.add(cu);
+				}
+				Assert.assertEquals("Testing carbon unit list size (after aggregation)", 71, cuList.size());
+				break;
+			}
+		}
+	}
 }

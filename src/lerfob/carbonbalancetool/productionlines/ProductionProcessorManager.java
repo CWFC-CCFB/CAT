@@ -721,7 +721,7 @@ public class ProductionProcessorManager extends SystemManager implements Memoriz
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private Collection<CarbonUnit> processAmountMap(Processor processor, 
+	protected final Collection<CarbonUnit> processAmountMap(Processor processor, 
 			int dateIndex, 
 			String samplingUnitID,
 			Map<BiomassType, AmountMap<Element>> amountMaps, 

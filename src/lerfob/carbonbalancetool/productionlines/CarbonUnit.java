@@ -264,9 +264,9 @@ public class CarbonUnit extends ProcessUnit<Element> implements BiomassTypeProvi
 	 */
 	protected void actualizeCarbon(CATCompartmentManager compartmentManager) {
 		DecayFunction decayFunction = getCarbonUnitFeature().getDecayFunction();
-		CATTimeTable timeScale = compartmentManager.getTimeTable();
-		setTimeTable(timeScale);
-		currentCarbonArray = new double[timeScale.size()];
+		CATTimeTable incomingTimeTable = compartmentManager.getTimeTable();
+		setTimeTable(incomingTimeTable);
+		currentCarbonArray = new double[timeTable.size()];
 
 		double currentCarbon = getInitialCarbon();
 
@@ -274,12 +274,12 @@ public class CarbonUnit extends ProcessUnit<Element> implements BiomassTypeProvi
 		double factor;
 		int date;
 		
-		for (int i = dateIndex; i < timeScale.size(); i++) {
-			date = timeScale.getDateYrAtThisIndex(i);
+		for (int i = dateIndex; i < timeTable.size(); i++) {
+			date = timeTable.getDateYrAtThisIndex(i);
 			if (date > getCreationDate() && currentCarbon > ProductionProcessorManager.VERY_SMALL) {
 				if (decayFunction.getInfiniteIntegral() > 0) {	// calculate the proportion only if lifetime is greater than 0
 					double thisRemains = decayFunction.getValueAtTime(date - getCreationDate(), compartmentManager);
-					double thatRemained = decayFunction.getValueAtTime(timeScale.getDateYrAtThisIndex(i - 1) - getCreationDate(), compartmentManager);
+					double thatRemained = decayFunction.getValueAtTime(timeTable.getDateYrAtThisIndex(i - 1) - getCreationDate(), compartmentManager);
 					factor = thisRemains / thatRemained;	
 				} else { // otherwise all the carbon is gone
 					factor = 0d;

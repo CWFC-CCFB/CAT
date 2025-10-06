@@ -106,6 +106,15 @@ public class EndUseWoodProductCarbonUnit extends CarbonUnit {
 		}
 	}
 	
+	@Override
+	public String toString() {
+		if (this.getCarbonUnitFeature() != null) {
+			return getCarbonUnitFeature().toString() + " - " + super.toString();
+		} else {
+			return super.toString();
+		}
+	}
+	
 	/**
 	 * This method actualizes the EndProduct instance on a basis that is specified through the time scale parameter. Landfill products are retrieved 
 	 * through a static collection in the manager.
