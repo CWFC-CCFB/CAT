@@ -116,7 +116,7 @@ public class CarbonUnit extends ProcessUnit<Element> implements BiomassTypeProvi
 	
 	private CATTimeTable timeTable;
 	
-	private final int dateIndex;
+	protected final int dateIndex;
 	protected final String samplingUnitID;
 	private final List<CarbonUnitStatus> status; 
 	private final CarbonUnitFeature carbonUnitFeature;

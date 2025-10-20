@@ -1,5 +1,5 @@
 /*
- * This file is part of the lerfob-forestools library.
+ * This file is part of the CAT library.
  *
  * Copyright (C) 2010-2013 Mathieu Fortin AgroParisTech/INRA UMR LERFoB
  * Copyright (C) 2020-2025 His Majesty the King in right of Canada
@@ -50,6 +50,9 @@ import repicea.util.REpiceaLogManager;
 
 @SuppressWarnings({ "serial", "deprecation" })
 public class CATTask extends AbstractGenericTask {
+	
+//	public static long[] ElapsedTime = new long[5];
+	
 	
 	/**
 	 * This enum defines the different tasks performed by the InternalSwingWorker class. <p>
@@ -128,6 +131,7 @@ public class CATTask extends AbstractGenericTask {
 	
 	@Override
 	protected void doThisJob() throws Exception {
+//		long initialTime;
 		switch (currentTask) {
 		case RESET_MANAGER:
 			caller.getCarbonCompartmentManager().resetManager();
@@ -153,24 +157,32 @@ public class CATTask extends AbstractGenericTask {
 			retrieveInitialConditions();
 			break;
 		case LOG_AND_BUCK_TREES:
+//			initialTime = System.currentTimeMillis();
 			firePropertyChange("OngoingTask", null, currentTask);
 			logAndBuckTrees();
+//			ElapsedTime[0] += System.currentTimeMillis() - initialTime;
 			break;
 		case GENERATE_WOODPRODUCTS:
+//			initialTime = System.currentTimeMillis();
 			firePropertyChange("OngoingTask", null, currentTask);
 			createEndUseWoodProductsFromWoodPieces();
+//			ElapsedTime[1] += System.currentTimeMillis() - initialTime;
 			break;
 		case ACTUALIZE_CARBON:
+//			initialTime = System.currentTimeMillis();
 			firePropertyChange("OngoingTask", null, currentTask);
 			actualizeCarbon();
+//			ElapsedTime[2] += System.currentTimeMillis() - initialTime;
 			break;
 		case RETRIEVE_SOIL_CARBON_INPUT:
 			firePropertyChange("OngoingTask", null, currentTask);
 			retrieveSoilInputFromLivingTreesAndSimulate();
 			break;
 		case COMPILE_CARBON:
+//			initialTime = System.currentTimeMillis();
 			firePropertyChange("OngoingTask", null, currentTask);
 			calculateCarbonInCompartments();
+//			ElapsedTime[3] += System.currentTimeMillis() - initialTime;
 			break;
 		case SHUT_DOWN:
 			firePropertyChange("Cleaning memory", null, currentTask);

@@ -498,6 +498,7 @@ public class CATGrowthSimulationRecordReader extends REpiceaRecordReader {
 	 * @param belowGroundVolumeM3 the belowground volume (m3), can be null which means it is not provided
 	 * @param belowGroundBiomassMg the belowground biomass (Mg), can be null which means it is not provided
 	 * @param belowGroundCarbonMg the belowground carbon (Mg), can be null which means it is not provided
+	 * @param commercialCarbonMg the carbon (Mg) in the commercial part of the tree, can be null which means it is not provided
 	 * @return a CATGrowthSimulationTree instance
 	 */
 	protected CATGrowthSimulationTree createTree(CATGrowthSimulationPlot plot, 
