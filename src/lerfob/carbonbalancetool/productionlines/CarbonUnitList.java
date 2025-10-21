@@ -22,6 +22,9 @@ import java.lang.reflect.Method;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import lerfob.carbonbalancetool.productionlines.CarbonUnit.Element;
 
@@ -31,30 +34,47 @@ import lerfob.carbonbalancetool.productionlines.CarbonUnit.Element;
  * memory space. The equals() method serves to define if two carbon units can be merged.
  * @author Mathieu Fortin - April  2011
  */
+@SuppressWarnings("serial")
 public class CarbonUnitList extends ArrayList<CarbonUnit> {
+	
+//	private static final long serialVersionUID = 20110413L;
 
-	private static final long serialVersionUID = 20110413L;
+	final Map<String, Map<Integer, List<CarbonUnit>>> speciesMap;
+	
+	public CarbonUnitList() {
+		speciesMap = new HashMap<String, Map<Integer, List<CarbonUnit>>>();
+	}
+	
 	
 	@Override
 	public boolean add(CarbonUnit carbonUnit) {
-		boolean matchFound = false;
-		for (CarbonUnit unit : this) {
-			if (unit.equals(carbonUnit)) {
-				unit.addProcessUnit(carbonUnit);
-				matchFound = true;
-				break;
+		String speciesName = carbonUnit.getSpeciesName();
+		int dateIndex = carbonUnit.dateIndex;
+		if (!speciesMap.containsKey(speciesName)) {
+			List<CarbonUnit> cuList = new ArrayList<CarbonUnit>();
+			cuList.add(carbonUnit);
+			speciesMap.put(speciesName, new HashMap<Integer, List<CarbonUnit>>());
+			speciesMap.get(speciesName).put(dateIndex, cuList);
+			super.add(carbonUnit);
+		} else {
+			Map<Integer, List<CarbonUnit>> innerMap = speciesMap.get(speciesName);
+			if (!innerMap.containsKey(dateIndex)) {
+				innerMap.put(dateIndex, new ArrayList<CarbonUnit>());
+			}
+			List<CarbonUnit> innerList = innerMap.get(dateIndex);
+			int index = innerList.indexOf(carbonUnit);
+			if (index != -1) {
+				innerList.get(index).addProcessUnit(carbonUnit);
+			} else {
+				innerList.add(carbonUnit);
+				super.add(carbonUnit);
 			}
 		}
-		
-		if (!matchFound) {
-			super.add(carbonUnit);
-		}
-		
 		return true;
 	}
-	
-	@SuppressWarnings("rawtypes")
-	public boolean addAll(Collection coll) {
+
+	@Override
+	public boolean addAll(Collection<? extends CarbonUnit> coll) {
 		if (!coll.isEmpty()) {
 			for (Object obj : coll) {
 				add((CarbonUnit) obj);
@@ -95,5 +115,13 @@ public class CarbonUnitList extends ArrayList<CarbonUnit> {
 			throw new InvalidParameterException("Unable to filter the CarbonUnitList instance with this method name : " + methodName);
 		}
 	}
+	
+
+	public void clear() {
+		speciesMap.clear();
+		super.clear();
+	}
+	
+
 	
 }

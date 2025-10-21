@@ -1,13 +1,13 @@
 /*
  * This file is part of the CAT library.
  *
- * Copyright (C) 2022 Her Majesty the Queen in right of Canada
+ * Copyright (C) 2022-25 His Majesty the King in right of Canada
  * Author: Mathieu Fortin, Canadian Wood Fibre Centre
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * version 3 of the License, or (at your option) any later version.
  *
  * This library is distributed with the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied
@@ -36,6 +36,7 @@ import lerfob.carbonbalancetool.CATUtility.ProductionManagerName;
 import lerfob.carbonbalancetool.CarbonAccountingTool.CATMode;
 import lerfob.carbonbalancetool.io.CATGrowthSimulationRecordReader;
 import lerfob.carbonbalancetool.io.CATYieldTableRecordReader;
+import lerfob.carbonbalancetool.productionlines.DecayFunctionTest;
 import lerfob.carbonbalancetool.productionlines.ProductionProcessorManager;
 import lerfob.carbonbalancetool.sensitivityanalysis.CATSensitivityAnalysisSettings;
 import lerfob.carbonbalancetool.sensitivityanalysis.CATSensitivityAnalysisSettings.VariabilitySource;
@@ -736,7 +737,48 @@ public class CarbonAccountingToolTest {
 				hwp.getValueAt(71, 0), 1E-3);
 		System.out.println("Successfully tested full dataset of French national inventory");
 	}
-	
+
+	@Test
+	public void test18WithSimulationResultsWithFranceFullDatasetAndBACCFIREFluxConfiguration() throws Exception {
+		String filename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "Statistiques_IFN_France_exemple.csv";
+		String ifeFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "Statistiques_IFN_France_exemple.ife";
+		String speciesMatchFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "speciesMatchFrance.xml";
+		String fluxConfigurationFilename = ObjectUtility.getPackagePath(DecayFunctionTest.class) + "20250717_schema_filiere_Prod_End_2020_groupes_essences_Henri.prl";
+		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
+		cat.initializeTool(null);
+		CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader(ApplicationScale.FMU, ManagementType.UnevenAged);
+		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
+		recordReader.initInScriptMode(ifm);
+		recordReader.readAllRecords();
+		recordReader.getSelector().load(speciesMatchFilename);
+		cat.setStandList(recordReader.getStandList());
+		cat.getCarbonToolSettings().setCurrentBiomassParametersSelection(BiomassParametersName.customized);
+		cat.getCarbonToolSettings().setCurrentProductionProcessorManagerSelection(ProductionManagerName.customized);
+		cat.getCarbonToolSettings().getCurrentProductionProcessorManager().load(fluxConfigurationFilename);		
+		long initialTime = System.currentTimeMillis();
+		cat.calculateCarbon();
+		long elapsedTime = System.currentTimeMillis() - initialTime;
+		System.out.println("Time to calculate carbon = " + elapsedTime + " ms.");
+		Assert.assertTrue("Did not take too much time", elapsedTime < 10000);
+		CATSingleSimulationResult result = cat.getCarbonCompartmentManager().getSimulationSummary();
+		Map<CompartmentInfo, MonteCarloEstimate> obsMap = result.getEvolutionMap();
+		Matrix meanLivingBiomass = obsMap.get(CompartmentInfo.LivingBiomass).getMean();
+		Assert.assertEquals("Testing initial carbon in living biomass", 
+				84.94894970310914, 
+				meanLivingBiomass.getValueAt(0, 0), 1E-8);
+		Assert.assertEquals("Testing initial carbon in living biomass", 
+				88.39055405531597, 
+				meanLivingBiomass.getValueAt(4, 0), 1E-8);
+		Matrix hwp = obsMap.get(CompartmentInfo.TotalProducts).getMean();
+		Assert.assertEquals("Testing initial carbon in HWPs", 
+				0.7525227980139482, 
+				hwp.getValueAt(0, 0), 1E-4);
+		Assert.assertEquals("Testing initial carbon in living biomass", 
+				2.0553602058612515, 
+				hwp.getValueAt(4, 0), 1E-3);
+		System.out.println("Successfully tested full dataset of French national inventory");
+	}
+
 	public static void main(String[] args) throws Exception {
 		CarbonAccountingToolTest test = new CarbonAccountingToolTest();
 		test.test07MemoryLeakage();
