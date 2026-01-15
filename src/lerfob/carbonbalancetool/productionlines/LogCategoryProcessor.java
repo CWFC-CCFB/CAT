@@ -19,7 +19,10 @@
 package lerfob.carbonbalancetool.productionlines;
 
 import java.awt.Container;
+import java.util.ArrayList;
+import java.util.List;
 
+import repicea.serial.PostUnmarshalling;
 import repicea.simulation.processsystem.ProcessorButton;
 import repicea.simulation.processsystem.SystemPanel;
 import repicea.simulation.treelogger.LogCategory;
@@ -33,7 +36,7 @@ import repicea.util.REpiceaTranslator.TextableEnum;
  * @author Mathieu Fortin - May 2014
  */
 @SuppressWarnings("serial")
-public class LogCategoryProcessor extends LeftHandSideProcessor {
+public class LogCategoryProcessor extends LeftHandSideProcessor implements PostUnmarshalling {
 
 	private enum MessageID implements TextableEnum {
 		ALL_SPECIES("Any species", "Toute esp\u00E8ce");
@@ -73,24 +76,54 @@ public class LogCategoryProcessor extends LeftHandSideProcessor {
 
 	}
 
-	protected final LogCategory logCategory;
+	@Deprecated
+	private LogCategory logCategory;
+	private List<LogCategory> logCategories;
 	
 	/**
 	 * Constructor.
-	 * @param logCategory a LogCategory instance
+	 * @param logCategories an array of LogCategory instance
 	 */
-	protected LogCategoryProcessor(LogCategory logCategory) {
+	protected LogCategoryProcessor(LogCategory... logCategories) {
 		super();
-		this.logCategory = logCategory;
+		this.logCategories = new ArrayList<LogCategory>();
+		for (LogCategory lc : logCategories) {
+			this.logCategories.add(lc);
+		}
+	}
+
+	/*
+	 * To maintain compatibility.
+	 */
+	LogCategory getFirstLogCategory() {
+		return logCategories.get(0);
+	}
+	
+	/**
+	 * Checks if the log category is contained in the processor.
+	 * @param lc a LogCategory instance
+	 * @return a boolean
+	 */
+	public boolean contains(LogCategory lc) {
+		return logCategories.contains(lc);
+	}
+
+	private boolean isAggregated() {
+		return logCategories.size() > 1;
 	}
 	
 	@Override
 	public String getName() {
-		String speciesName = logCategory.getSpecies().toString();
-		if (speciesName.equals(TreeLoggerParameters.ANY_SPECIES)) {
-			speciesName = MessageID.ALL_SPECIES.toString();
+		if (isAggregated()) {
+			return logCategories.get(0).getName();
+		} else {
+			LogCategory logCategory = getFirstLogCategory();
+			String speciesName = logCategory.getSpecies().toString();
+			if (speciesName.equals(TreeLoggerParameters.ANY_SPECIES)) {
+				speciesName = MessageID.ALL_SPECIES.toString();
+			}
+			return speciesName + " - " + logCategory.getName();
 		}
-		return speciesName + " - " + logCategory.getName();
 	}
 	
 	@Override
@@ -105,11 +138,21 @@ public class LogCategoryProcessor extends LeftHandSideProcessor {
 	public boolean equals(Object obj) {
 		if (obj instanceof LogCategoryProcessor) {
 			LogCategoryProcessor processor = (LogCategoryProcessor) obj;
-			if (this.logCategory.equals(processor.logCategory)) {
+			if (this.logCategories.equals(processor.logCategories)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
+	@Override
+	public void postUnmarshallingAction() {
+		if (logCategory != null) { // former implementation
+			logCategories = new ArrayList<LogCategory>();
+			logCategories.add(logCategory);
+			logCategory = null;
+		}
+	}
+
+	
 }

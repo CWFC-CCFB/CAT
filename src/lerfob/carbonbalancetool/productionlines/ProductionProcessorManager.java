@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.Vector;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
@@ -51,6 +52,7 @@ import lerfob.carbonbalancetool.productionlines.affiliere.AffiliereImportReader;
 import lerfob.treelogger.basictreelogger.BasicTreeLogger;
 import lerfob.treelogger.europeanbeech.EuropeanBeechBasicTreeLogger;
 import lerfob.treelogger.maritimepine.MaritimePineBasicTreeLogger;
+import quebecmrnfutility.treelogger.meristreelogger.MerisTreeLogger;
 import repicea.gui.UIControlManager;
 import repicea.gui.permissions.DefaultREpiceaGUIPermission;
 import repicea.io.REpiceaFileFilter;
@@ -259,6 +261,7 @@ public class ProductionProcessorManager extends SystemManager implements Memoriz
 
 	private transient LeftInForestProcessor deadWoodProcessor;
 	
+	boolean enableLogCategoryAggregation;
 	/**
 	 * Constructor.
 	 * @param defaultPermission a DefaultREpiceaGUIPermission instance
@@ -268,6 +271,13 @@ public class ProductionProcessorManager extends SystemManager implements Memoriz
 		logCategoryProcessors = new ArrayList<LeftHandSideProcessor>();
 		availableTreeLoggerParameters = new Vector<TreeLoggerParameters<?>>();
 
+		/**
+		 * IMPORTANT: this is the list of TreeLogger classes that are available 
+		 * if the ProductionProcessorManager is running as a stand-alone application.
+		 * 
+		 * To add TreeLogger class in CAT (in stand-alone mode), go to the 
+		 * CarbonAccountingTool#initializeTool method.
+		 */
 		Vector<TreeLoggerDescription> defaultTreeLoggerDescriptions = new Vector<TreeLoggerDescription>();
 		defaultTreeLoggerDescriptions.add(new TreeLoggerDescription(BasicTreeLogger.class));
 		defaultTreeLoggerDescriptions.add(new TreeLoggerDescription(CATDiameterBasedTreeLogger.class));
@@ -441,12 +451,31 @@ public class ProductionProcessorManager extends SystemManager implements Memoriz
 		formerProcessorList.addAll(logCategoryProcessors);
 		List<LeftHandSideProcessor> newProcessorList = new ArrayList<LeftHandSideProcessor>();
 		newProcessorList.addAll(getDefaultLeftHandSideProcessors());
-		for (Object species : selectedTreeLoggerParameters.getLogCategories().keySet()) {
-			List<LogCategory> innerList = (List) selectedTreeLoggerParameters.getLogCategories().get(species);
-			for (LogCategory logCategory : innerList) {
-				newProcessorList.add(new LogCategoryProcessor(logCategory));
+		
+		if (enableLogCategoryAggregation) {
+			Map<String, List<LogCategory>> aggregationMap = new TreeMap<String, List<LogCategory>>();
+			for (Object species : selectedTreeLoggerParameters.getLogCategories().keySet()) {
+				List<LogCategory> innerList = (List) selectedTreeLoggerParameters.getLogCategories().get(species);
+				for (LogCategory logCategory : innerList) {
+					String name = logCategory.getName();
+					if (!aggregationMap.containsKey(name)) {
+						aggregationMap.put(name, new ArrayList<LogCategory>());
+					}
+					aggregationMap.get(name).add(logCategory);
+				}
+			}
+			for (List<LogCategory> logCategoriesWithSameName : aggregationMap.values()) {
+				newProcessorList.add(new LogCategoryProcessor(logCategoriesWithSameName.toArray(new LogCategory[] {})));
+			}
+		} else {
+			for (Object species : selectedTreeLoggerParameters.getLogCategories().keySet()) {
+				List<LogCategory> innerList = (List) selectedTreeLoggerParameters.getLogCategories().get(species);
+				for (LogCategory logCategory : innerList) {
+					newProcessorList.add(new LogCategoryProcessor(logCategory));
+				}
 			}
 		}
+		
 		formerProcessorList.removeAll(newProcessorList);
 		for (Processor processor : formerProcessorList) {
 			logCategoryProcessors.remove(processor);
@@ -491,6 +520,7 @@ public class ProductionProcessorManager extends SystemManager implements Memoriz
 		MemorizerPackage mp = super.getMemorizerPackage();
 		mp.add(logCategoryProcessors);
 		mp.add(selectedTreeLoggerParameters);
+		mp.add(enableLogCategoryAggregation);
 		return mp;
 	}
 
@@ -502,6 +532,11 @@ public class ProductionProcessorManager extends SystemManager implements Memoriz
 		logCategoryProcessors.clear();
 		logCategoryProcessors.addAll(lcp);
 		TreeLoggerParameters tlp = (TreeLoggerParameters) wasMemorized.remove(0);
+		if (!wasMemorized.isEmpty()) {
+			enableLogCategoryAggregation = (boolean) wasMemorized.remove(0);
+		} else {
+			enableLogCategoryAggregation = false; // former implementation
+		}
 		setSelectedTreeLogger(tlp);
 	}
 
@@ -812,7 +847,7 @@ public class ProductionProcessorManager extends SystemManager implements Memoriz
 		if (!logCategoryProcessorIndices.containsKey(logCategory)) {
 			for (LeftHandSideProcessor processor : logCategoryProcessors) {
 				if (processor instanceof LogCategoryProcessor) {
-					if (((LogCategoryProcessor) processor).logCategory.equals(logCategory)) {
+					if (((LogCategoryProcessor) processor).contains(logCategory)) {
 						logCategoryProcessorIndices.put(logCategory, (LogCategoryProcessor) processor);
 						break;
 					}

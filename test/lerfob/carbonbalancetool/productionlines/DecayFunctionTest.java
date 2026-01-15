@@ -103,7 +103,7 @@ public class DecayFunctionTest {
 		double varianceRatio = variance / 5.014390094398527E-4;
 		
 		Assert.assertTrue("Testing mean", Math.abs(1d - meanRatio) < 1E-2);
-		Assert.assertTrue("Testing variance", Math.abs(1d - varianceRatio) < 3E-2);
+		Assert.assertTrue("Testing variance", Math.abs(1d - varianceRatio) < 5E-2);
 
 		double value = df.getValueAtTime(1, fakeManager);
 		

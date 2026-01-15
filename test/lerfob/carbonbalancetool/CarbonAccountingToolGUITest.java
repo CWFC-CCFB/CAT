@@ -39,7 +39,6 @@ import org.junit.runners.MethodSorters;
 
 import lerfob.carbonbalancetool.CATUtility.ProductionManagerName;
 import lerfob.carbonbalancetool.CarbonAccountingTool.CATMode;
-import lerfob.carbonbalancetool.io.CATGrowthSimulationRecordReader;
 import lerfob.carbonbalancetool.io.CATSpeciesSelectionDialog;
 import lerfob.carbonbalancetool.productionlines.ProductionProcessorManagerDialog;
 import lerfob.carbonbalancetool.productionlines.affiliere.AffiliereImportExportTest;

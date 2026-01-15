@@ -48,6 +48,7 @@ import lerfob.treelogger.douglasfirfcba.DouglasFCBATreeLogger;
 import lerfob.treelogger.europeanbeech.EuropeanBeechBasicTreeLogger;
 import lerfob.treelogger.maritimepine.MaritimePineBasicTreeLogger;
 import lerfob.treelogger.mathilde.MathildeTreeLogger;
+import quebecmrnfutility.treelogger.meristreelogger.MerisTreeLogger;
 import repicea.app.AbstractGenericEngine;
 import repicea.app.GenericTask;
 import repicea.app.SettingMemory;
@@ -82,11 +83,11 @@ public class CarbonAccountingTool extends AbstractGenericEngine implements REpic
 	static {
 		SerializerChangeMonitor.registerClassNameChange("repicea.simulation.covariateproviders.treelevel.SpeciesNameProvider$SpeciesType", "repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider$SpeciesType");
 		
+		// Default tree logger list for finding eligible ones in stand-alone mode.
 		TreeLoggerManager.registerTreeLoggerName(BasicTreeLogger.class.getName());
 		TreeLoggerManager.registerTreeLoggerName(CATDiameterBasedTreeLogger.class.getName());
 		TreeLoggerManager.registerTreeLoggerName(EuropeanBeechBasicTreeLogger.class.getName());
 		TreeLoggerManager.registerTreeLoggerName(MaritimePineBasicTreeLogger.class.getName());
-		
 		TreeLoggerManager.registerTreeLoggerName(MathildeTreeLogger.class.getName());
 		TreeLoggerManager.registerTreeLoggerName(DouglasFCBATreeLogger.class.getName());
 	}
@@ -223,6 +224,7 @@ public class CarbonAccountingTool extends AbstractGenericEngine implements REpic
 		treeLoggerDescriptions.add(new TreeLoggerDescription(MaritimePineBasicTreeLogger.class));
 		treeLoggerDescriptions.add(new TreeLoggerDescription(EuropeanBeechBasicTreeLogger.class));
 		treeLoggerDescriptions.add(new TreeLoggerDescription(DouglasFCBATreeLogger.class));
+		treeLoggerDescriptions.add(new TreeLoggerDescription(MerisTreeLogger.class));
 		getCarbonToolSettings().setTreeLoggerDescriptions(treeLoggerDescriptions);
 	}
 	
