@@ -28,6 +28,7 @@ import lerfob.carbonbalancetool.CATCompatibleStand;
 import lerfob.carbonbalancetool.CATCompatibleTree;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 import repicea.simulation.species.REpiceaSpecies.Species;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 
 /**
  * This class represents the stand in a yield table import in CAT.
@@ -41,17 +42,13 @@ class CATYieldTableCompatibleStand implements CATCompatibleStand {
 	protected final Species species;
 	protected final Map<StatusClass, Collection<CATCompatibleTree>> statusClassMap;
 
-//	CATYieldTableCompatibleStand(String standId, 
-//			int dateYr, 
-//			boolean isInterventionResult, 
-//			String speciesName) {
-//		this(standId, dateYr, isInterventionResult, CATSpecies.getCATSpeciesFromThisString(speciesName));
-//	}
-
+	private SpeciesLocale locale;
+	
 	CATYieldTableCompatibleStand(String standId, 
 			int dateYr, 
 			boolean isInterventionResult, 
-			Species species) {
+			Species species,
+			SpeciesLocale locale) {
 		this.standId = standId;
 		this.dateYr = dateYr;
 		this.isInterventionResult = isInterventionResult;
@@ -60,6 +57,7 @@ class CATYieldTableCompatibleStand implements CATCompatibleStand {
 			statusClassMap.put(statusClass, new ArrayList<CATCompatibleTree>());
 		}
 		this.species = species;
+		this.locale = locale;
 	}
 
 	
@@ -85,7 +83,7 @@ class CATYieldTableCompatibleStand implements CATCompatibleStand {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public CATCompatibleStand getHarvestedStand() {
-		CATYieldTableCompatibleStand harvestedStand = new CATYieldTableCompatibleStand(standId, dateYr, true, species);
+		CATYieldTableCompatibleStand harvestedStand = new CATYieldTableCompatibleStand(standId, dateYr, true, species, locale);
 		for (StatusClass statusClass : StatusClass.values()){
 			StatusClass newStatusClass = statusClass;
 			if (newStatusClass == StatusClass.alive) {
@@ -128,5 +126,9 @@ class CATYieldTableCompatibleStand implements CATCompatibleStand {
 
 	@Override
 	public int getAgeYr() {return getDateYr();}
+
+
+
+	SpeciesLocale getSpeciesLocale() {return locale;}
 	
 }

@@ -26,6 +26,7 @@ import repicea.serial.xml.XmlSerializer;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 import repicea.simulation.processsystem.AmountMap;
 import repicea.simulation.species.REpiceaSpecies.Species;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.simulation.treelogger.TreeLogger;
 import repicea.simulation.treelogger.WoodPiece;
 import repicea.util.ObjectUtility;
@@ -151,7 +152,7 @@ public class PythonAccessDouglasFirTest {
 		DouglasFCBATreeLoggerParameters loggerParams = (DouglasFCBATreeLoggerParameters) treeLogger.getTreeLoggerParameters();
 		for (DouglasFCBALogCategory logCategory : loggerParams.getLogCategoryList()) {
 			manager.resetCarbonUnitMap();
-			manager.processWoodPiece(logCategory, 0, "", amountMaps, new CATCompatibleTreeImpl(Species.Pseudotsuga_menziesii), StatusClass.cut);
+			manager.processWoodPiece(logCategory, 0, "", amountMaps, new CATCompatibleTreeImpl(Species.Pseudotsuga_menziesii, SpeciesLocale.IPCC), StatusClass.cut);
 			double volume = 0;
 			for (CarbonUnitStatus type : CarbonUnitStatus.values()) {
 				CarbonUnitList list = manager.getCarbonUnits(type);

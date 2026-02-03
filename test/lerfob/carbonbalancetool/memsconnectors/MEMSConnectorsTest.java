@@ -48,6 +48,7 @@ import repicea.math.SymmetricMatrix;
 import repicea.simulation.covariateproviders.samplelevel.ApplicationScaleProvider.ApplicationScale;
 import repicea.simulation.covariateproviders.samplelevel.ManagementTypeProvider.ManagementType;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.stats.estimates.Estimate;
 import repicea.stats.estimates.MonteCarloEstimate;
 import repicea.util.ObjectUtility;
@@ -58,7 +59,7 @@ public class MEMSConnectorsTest {
 	static class CATGrowthSimulationRecordReaderHacked extends CATGrowthSimulationRecordReader {
 		
 		public CATGrowthSimulationRecordReaderHacked(ApplicationScale scale, ManagementType management) {
-			super(scale, management);
+			super(scale, management, SpeciesLocale.IPCC);
 		}
 
 		@Override
@@ -152,7 +153,7 @@ public class MEMSConnectorsTest {
 	static class CATGrowthSimulationCompositeStandHacked extends CATGrowthSimulationCompositeStand implements MEMSCompatibleStand {
 
 		CATGrowthSimulationCompositeStandHacked(int dateYr, String standIdentification, CATGrowthSimulationRecordReader reader, boolean isInterventionResult) {
-			super(dateYr, standIdentification, reader, isInterventionResult, null); // Map set to null
+			super(dateYr, standIdentification, reader, isInterventionResult, SpeciesLocale.IPCC, null); // Map set to null
 		}
 
 		@Override

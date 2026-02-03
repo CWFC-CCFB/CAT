@@ -25,6 +25,7 @@ import repicea.serial.xml.XmlDeserializer;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 import repicea.simulation.processsystem.AmountMap;
 import repicea.simulation.species.REpiceaSpecies.Species;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.simulation.treelogger.TreeLogger;
 import repicea.simulation.treelogger.WoodPiece;
 import repicea.util.ObjectUtility;
@@ -130,7 +131,7 @@ public class PythonAccessOakTest {
 		CATDiameterBasedTreeLoggerParameters loggerParams = (CATDiameterBasedTreeLoggerParameters) treeLogger.getTreeLoggerParameters();
 		for (DiameterBasedTreeLogCategory logCategory : loggerParams.getLogCategoryList()) {
 			manager.resetCarbonUnitMap();
-			manager.processWoodPiece(logCategory, 0, "", amountMaps, new CATCompatibleTreeImpl(Species.Quercus_spp), StatusClass.cut);
+			manager.processWoodPiece(logCategory, 0, "", amountMaps, new CATCompatibleTreeImpl(Species.Quercus_spp, SpeciesLocale.IPCC), StatusClass.cut);
 			double volume = 0;
 			for (CarbonUnitStatus type : CarbonUnitStatus.values()) {
 				CarbonUnitList list = manager.getCarbonUnits(type);
@@ -170,7 +171,7 @@ public class PythonAccessOakTest {
 				volume += woodPiece.getWeightedTotalVolumeM3();
 			}
 		}
-		double biomass = volume * Species.Quercus_spp.getBasicWoodDensity() / pap.areaHa;
+		double biomass = volume * Species.Quercus_spp.getBasicWoodDensity(SpeciesLocale.IPCC) / pap.areaHa;
 		Assert.assertEquals("Comparing logged biomasses", 100d, biomass, 1E-8);
 	}		
 

@@ -43,6 +43,7 @@ import repicea.simulation.covariateproviders.treelevel.BarkProportionProvider;
 import repicea.simulation.covariateproviders.treelevel.BasicWoodDensityProvider;
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider;
 import repicea.simulation.species.REpiceaSpecies;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.simulation.treelogger.TreeLogger;
 import repicea.simulation.treelogger.TreeLoggerDescription;
 import repicea.simulation.treelogger.TreeLoggerParameters;
@@ -113,7 +114,7 @@ public final class CATSettings {
 		public String toString() {return REpiceaTranslator.getString(species);}
 
 		@Override
-		public double getBasicWoodDensity() {return species.getBasicWoodDensity();}
+		public double getBasicWoodDensity(SpeciesLocale locale) {return species.getBasicWoodDensity(locale);}
 		
 		@Override
 		public SpeciesType getSpeciesType() {return species.getSpeciesType();}
@@ -129,8 +130,8 @@ public final class CATSettings {
 		}
 
 		@Override
-		public double getBarkProportionOfWoodVolume() {
-			return species.getBarkProportionOfWoodVolume();
+		public double getBarkProportionOfWoodVolume(SpeciesLocale locale) {
+			return species.getBarkProportionOfWoodVolume(locale);
 		}
 		
 	}

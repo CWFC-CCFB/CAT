@@ -17,7 +17,7 @@
  *
  * Please see the license at http://www.gnu.org/copyleft/lesser.html.
  */
-package lerfob.carbonbalancetool;
+package lerfob.carbonbalancetool.io;
 
 import java.awt.BorderLayout;
 import java.awt.Window;
@@ -32,16 +32,18 @@ import repicea.gui.REpiceaDialog;
 import repicea.gui.UIControlManager;
 import repicea.simulation.covariateproviders.samplelevel.ApplicationScaleProvider.ApplicationScale;
 import repicea.simulation.covariateproviders.samplelevel.ManagementTypeProvider.ManagementType;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.util.REpiceaTranslator;
 import repicea.util.REpiceaTranslator.TextableEnum;
 
 @SuppressWarnings("serial")
-class CATScaleManagementSelectorDialog extends REpiceaDialog {
+public class CATScaleManagementSelectorDialog extends REpiceaDialog {
 
 	private static enum MessageID implements TextableEnum {
 
 		ApplicationScaleLabel("Application Scale", "Echelle d'application"),
 		ManagementLabel("Management Type", "Type d'am\u00E9nagement"),
+		LocaleLabel("Region", "R\u00E9gion"),
 ;
 
 		MessageID(String englishText, String frenchText) {
@@ -68,10 +70,11 @@ class CATScaleManagementSelectorDialog extends REpiceaDialog {
 	
 	final JComboBox<ApplicationScale> scaleComboBox;
 	final JComboBox<ManagementType> managementComboBox;
+	final JComboBox<SpeciesLocale> localeComboBox;
 	final REpiceaControlPanel controlPanel;
 	private boolean isCancelled;
 	
-	CATScaleManagementSelectorDialog(Window parent) {
+	public CATScaleManagementSelectorDialog(Window parent) {
 		super(parent);
 		scaleComboBox = new JComboBox<ApplicationScale>(ApplicationScale.values());
 		scaleComboBox.setEditable(false);
@@ -81,6 +84,9 @@ class CATScaleManagementSelectorDialog extends REpiceaDialog {
 		managementComboBox.setEditable(false);
 		managementComboBox.setSelectedItem(ManagementType.UnevenAged);
 		managementComboBox.setName("managementComboBox");
+		localeComboBox = new JComboBox<SpeciesLocale>(SpeciesLocale.values());
+		localeComboBox.setEditable(false);
+		localeComboBox.setSelectedIndex(0);
 		controlPanel = new REpiceaControlPanel(this);
 		this.setTitle(UIControlManager.getTitle(CATScaleManagementSelectorDialog.class));
 		initUI();
@@ -113,6 +119,9 @@ class CATScaleManagementSelectorDialog extends REpiceaDialog {
 		JPanel managementPanel = UIControlManager.createSimpleHorizontalPanel(MessageID.ManagementLabel, managementComboBox, 5, true);
 		mainPanel.add(managementPanel);
 		mainPanel.add(Box.createVerticalStrut(5));
+		JPanel localePanel = UIControlManager.createSimpleHorizontalPanel(MessageID.LocaleLabel, localeComboBox, 5, true);
+		mainPanel.add(localePanel);
+		mainPanel.add(Box.createVerticalStrut(5));
 		getContentPane().add(mainPanel, BorderLayout.NORTH);
 		pack();
 		setMinimumSize(getSize());
@@ -121,8 +130,10 @@ class CATScaleManagementSelectorDialog extends REpiceaDialog {
 	ApplicationScale getApplicationScale() {return (ApplicationScale) scaleComboBox.getSelectedItem();}
 
 	ManagementType getManagementType() {return (ManagementType) this.managementComboBox.getSelectedItem();}
-	
-	boolean isCancelled() {return isCancelled;}
+
+	SpeciesLocale getSpeciesLocale() {return (SpeciesLocale) this.localeComboBox.getSelectedItem();}
+
+	public boolean isCancelled() {return isCancelled;}
 	
 	public static void main(String[] args) {
 		CATScaleManagementSelectorDialog dlg = new CATScaleManagementSelectorDialog(null);
