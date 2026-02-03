@@ -28,6 +28,7 @@ import lerfob.carbonbalancetool.CATCompatibleStand;
 import lerfob.carbonbalancetool.io.CATGrowthSimulationRecordReader.CATGrowthSimulationFieldID;
 import repicea.simulation.covariateproviders.plotlevel.StochasticInformationProvider;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 
 /**
  * This class represents the plots in a growth simulation import in CAT.
@@ -43,8 +44,12 @@ public class CATGrowthSimulationCompositeStand implements CATCompatibleStand, St
 	private final ApplicationScale applicationScale;
 	private final boolean isInterventionResult;
 	private final Map<CATGrowthSimulationFieldID, Boolean> interfaceEnabledMap;
+	private final SpeciesLocale locale;
 	
-	protected CATGrowthSimulationCompositeStand(int dateYr, String standIdentification, CATGrowthSimulationRecordReader reader, boolean isInterventionResult, Map<CATGrowthSimulationFieldID, Boolean> interfaceEnabledMap) {
+	protected CATGrowthSimulationCompositeStand(int dateYr, String standIdentification, CATGrowthSimulationRecordReader reader, 
+			boolean isInterventionResult, 
+			SpeciesLocale locale, 
+			Map<CATGrowthSimulationFieldID, Boolean> interfaceEnabledMap) {
 		this.dateYr = dateYr;
 		this.standIdentification = standIdentification;
 		this.reader = reader;
@@ -54,6 +59,7 @@ public class CATGrowthSimulationCompositeStand implements CATCompatibleStand, St
 		managementType = reader.management;
 		this.isInterventionResult = isInterventionResult;
 		this.interfaceEnabledMap = interfaceEnabledMap;
+		this.locale = locale;
 	}
 	
 	@Override
@@ -124,7 +130,7 @@ public class CATGrowthSimulationCompositeStand implements CATCompatibleStand, St
 	
 	@Override
 	public CATGrowthSimulationCompositeStand getHarvestedStand() {
-		CATGrowthSimulationCompositeStand harvestedStand = new CATGrowthSimulationCompositeStand(dateYr, standIdentification, reader, true, interfaceEnabledMap);
+		CATGrowthSimulationCompositeStand harvestedStand = new CATGrowthSimulationCompositeStand(dateYr, standIdentification, reader, true, locale, interfaceEnabledMap);
 		for (Integer k : realizationMap.keySet()) {
 			CATGrowthSimulationPlotSample currentPlotSample = realizationMap.get(k);
 			CATGrowthSimulationPlotSample harvestedPlotSample = currentPlotSample.getHarvestedStand(harvestedStand);
@@ -140,6 +146,8 @@ public class CATGrowthSimulationCompositeStand implements CATCompatibleStand, St
 	public int getAgeYr() {
 		return getDateYr();
 	}
+
+	SpeciesLocale getSpeciesLocale() {return locale;}
 
 
 }

@@ -21,6 +21,7 @@ package lerfob.carbonbalancetool.memsconnectors;
 
 import lerfob.carbonbalancetool.interfaces.CATSapling;
 import repicea.simulation.species.REpiceaSpecies.Species;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 
 /**
  * A MEMS compatible CATSapling class.
@@ -48,11 +49,12 @@ public final class MEMSCompatibleCATSapling extends CATSapling implements MEMSCo
 			Species species,
 			double expansionFactor,
 			double plotWeight,
+			SpeciesLocale locale,
 			double stemBasalAreaM2,
 			double annualFineRootDetritusCarbonProductionMgYr,
 			double foliarBiomassMg,
 			double annualBranchDetritusCarbonProductionMgYr) {
-		super(aboveGroundBiomassMg, species, expansionFactor, plotWeight);
+		super(aboveGroundBiomassMg, species, expansionFactor, plotWeight, locale);
 		this.stemBasalAreaM2 =  stemBasalAreaM2;
 		this.annualFineRootDetritusCarbonProductionMgYr = annualFineRootDetritusCarbonProductionMgYr;
 		this.foliarBiomassMg = foliarBiomassMg;

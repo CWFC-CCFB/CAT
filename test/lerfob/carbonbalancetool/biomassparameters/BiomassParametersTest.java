@@ -32,6 +32,7 @@ import lerfob.carbonbalancetool.interfaces.CATBelowGroundBiomassProvider;
 import lerfob.carbonbalancetool.interfaces.CATBelowGroundCarbonProvider;
 import lerfob.carbonbalancetool.interfaces.CATBelowGroundVolumeProvider;
 import repicea.simulation.species.REpiceaSpecies.Species;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.util.ObjectUtility;
 
 public class BiomassParametersTest {
@@ -53,6 +54,9 @@ public class BiomassParametersTest {
 		@Override
 		public Species getCATSpecies() {return Species.Abies_spp;}
 		
+		@Override
+		public SpeciesLocale getSpeciesLocale() {return SpeciesLocale.IPCC;}
+		
 	}
 	
 	static class FakeTree2 implements CATCompatibleTree, CATAboveGroundVolumeProvider {
@@ -71,6 +75,9 @@ public class BiomassParametersTest {
 
 		@Override
 		public double getAboveGroundVolumeM3() {return 10d;}
+
+		@Override
+		public SpeciesLocale getSpeciesLocale() {return SpeciesLocale.IPCC;}
 		
 	}
 
@@ -91,6 +98,9 @@ public class BiomassParametersTest {
 		@Override
 		public double getAboveGroundCarbonMg() {return 10d;}
 		
+		@Override
+		public SpeciesLocale getSpeciesLocale() {return SpeciesLocale.IPCC;}
+		
 	}
 
 	static class FakeTree4 implements CATCompatibleTree, CATBelowGroundVolumeProvider {
@@ -109,6 +119,9 @@ public class BiomassParametersTest {
 
 		@Override
 		public double getBelowGroundVolumeM3() {return 10d;}
+
+		@Override
+		public SpeciesLocale getSpeciesLocale() {return SpeciesLocale.IPCC;}
 		
 	}
 
@@ -129,6 +142,9 @@ public class BiomassParametersTest {
 		@Override
 		public double getBelowGroundBiomassMg() {return 10d;}
 		
+		@Override
+		public SpeciesLocale getSpeciesLocale() {return SpeciesLocale.IPCC;}
+		
 	}
 
 	static class FakeTree6 implements CATCompatibleTree, CATBelowGroundCarbonProvider {
@@ -147,6 +163,9 @@ public class BiomassParametersTest {
 
 		@Override
 		public double getBelowGroundCarbonMg() {return 10d;}
+		
+		@Override
+		public SpeciesLocale getSpeciesLocale() {return SpeciesLocale.IPCC;}
 		
 	}
 

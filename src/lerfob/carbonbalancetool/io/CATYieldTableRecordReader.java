@@ -29,6 +29,7 @@ import repicea.io.tools.REpiceaRecordReader;
 import repicea.serial.SerializerChangeMonitor;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 import repicea.simulation.species.REpiceaSpecies.Species;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.util.REpiceaTranslator;
 import repicea.util.REpiceaTranslator.TextableEnum;
 
@@ -82,16 +83,26 @@ public class CATYieldTableRecordReader extends REpiceaRecordReader {
 	private final List<CATCompatibleStand> standList;
 	
 	private final Species catSpecies;
+	private final SpeciesLocale locale;
 	
+	/**
+	 * Constructor in GUI mode
+	 * @param dlg a CATSpeciesSelectionDialog instance 
+	 */
+	public CATYieldTableRecordReader(CATSpeciesSelectionDialog dlg) {
+		this(dlg.getSpecies(), dlg.getSpeciesLocale());
+	}
 	
 	/**
 	 * General constructor.
 	 * @param catSpecies a CATSpecies enum that stands for tree species in this stand
+	 * @param locale a SpeciesLocale enum
 	 */
-	public CATYieldTableRecordReader(Species catSpecies) {
+	public CATYieldTableRecordReader(Species catSpecies, SpeciesLocale locale) {
 		super();
 		setPopUpWindowEnabled(true);
 		this.catSpecies = catSpecies;
+		this.locale = locale;
 		standList = new ArrayList<CATCompatibleStand>();
 	}
 
@@ -139,7 +150,8 @@ public class CATYieldTableRecordReader extends REpiceaRecordReader {
 						getImportFieldManager().getFileSpecifications()[0],
 						dateYr,
 						false,
-						catSpecies);
+						catSpecies,
+						locale);
 				standList.add(stand);
 				stand.addTree(new CATYieldTableCompatibleTree(standingVolumeM3 + harvestedVolumeM3, StatusClass.alive)) ;
 			}
@@ -148,7 +160,8 @@ public class CATYieldTableRecordReader extends REpiceaRecordReader {
 				getImportFieldManager().getFileSpecifications()[0],
 				dateYr,
 				harvestedVolumeM3 > 0,
-				catSpecies);
+				catSpecies,
+				locale);
 		standList.add(stand);
 		CATYieldTableCompatibleTree tree;
 		if (standingVolumeM3 > 0) {

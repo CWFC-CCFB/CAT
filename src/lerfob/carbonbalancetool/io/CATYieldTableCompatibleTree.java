@@ -22,6 +22,7 @@ import lerfob.carbonbalancetool.CATCompatibleTree;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 import repicea.simulation.species.REpiceaSpecies.Species;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 
 /**
  * This class represents the trees in a yield table import in CAT. It is actually a fake class that ensures the 
@@ -71,5 +72,12 @@ class CATYieldTableCompatibleTree implements CATCompatibleTree, TreeStatusProvid
 
 	@Override
 	public Species getCATSpecies() {return stand.species;}
+
+	@Override
+	public SpeciesLocale getSpeciesLocale() {
+		return this.stand.getSpeciesLocale();
+	}
+	
+	
 
 }

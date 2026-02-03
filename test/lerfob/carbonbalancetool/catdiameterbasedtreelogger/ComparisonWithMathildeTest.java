@@ -36,6 +36,7 @@ import lerfob.treelogger.mathilde.MathildeLoggableTree;
 import lerfob.treelogger.mathilde.MathildeTreeLogger;
 import lerfob.treelogger.mathilde.MathildeTreeLoggerParameters;
 import repicea.simulation.species.REpiceaSpecies.Species;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.simulation.treelogger.WoodPiece;
 import repicea.util.ObjectUtility;
 import repicea.util.REpiceaTranslator;
@@ -80,6 +81,10 @@ public class ComparisonWithMathildeTest {
 				return null;
 			}
 		}
+
+		@Override
+		public SpeciesLocale getSpeciesLocale() {return SpeciesLocale.IPCC;}
+		
 	}
 
 	private static Language languageBefore;

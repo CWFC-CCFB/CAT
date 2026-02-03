@@ -23,25 +23,31 @@ import java.awt.FlowLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.List;
 
 import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import repicea.gui.REpiceaDialog;
 import repicea.gui.UIControlManager;
 import repicea.gui.UIControlManager.CommonControlID;
 import repicea.simulation.species.REpiceaSpecies.Species;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.util.REpiceaTranslator;
 import repicea.util.REpiceaTranslator.TextableEnum;
 
 @SuppressWarnings("serial")
-public class CATSpeciesSelectionDialog extends REpiceaDialog implements ActionListener {
+public class CATSpeciesSelectionDialog extends REpiceaDialog implements ActionListener, ItemListener {
 
 	private static enum MessageID implements TextableEnum {
 		SpeciesLabel("Please select the appropriate species", "Veuillez s\u00E9lectionner l'esp\u00E8ce appropri\u00E9e"),
+		SpeciesLocaleLabel("Please select the region", "Veuillez s\u00E9lectionner la r\u00E9gion"),
 		Title("Species selection", "Choix de l'esp\u00E8ce");
 
 		MessageID(String englishText, String frenchText) {
@@ -58,6 +64,7 @@ public class CATSpeciesSelectionDialog extends REpiceaDialog implements ActionLi
 	}
 	
 	private final JComboBox<Species> speciesComboBox;
+	private final JComboBox<SpeciesLocale> speciesLocaleComboBox;
 	private final JButton okButton;
 	private boolean isValidated;
 	
@@ -66,7 +73,15 @@ public class CATSpeciesSelectionDialog extends REpiceaDialog implements ActionLi
 		super(parent);
 		setCancelOnClose(true);
 		speciesComboBox = new JComboBox<Species>(Species.values());
+		speciesComboBox.setEditable(false);
 		speciesComboBox.setSelectedIndex(0);
+
+		speciesLocaleComboBox = new JComboBox<SpeciesLocale>(SpeciesLocale.values());
+		speciesLocaleComboBox.setEditable(false);
+		speciesLocaleComboBox.setSelectedIndex(0);
+		
+		updateSpeciesComboBox();
+
 		okButton = UIControlManager.createCommonButton(CommonControlID.Ok);
 		initUI();
 		pack();
@@ -74,13 +89,30 @@ public class CATSpeciesSelectionDialog extends REpiceaDialog implements ActionLi
 		setVisible(true);
 	}
 	
+	private void updateSpeciesComboBox() {
+		SpeciesLocale currentLocale = (SpeciesLocale) speciesLocaleComboBox.getSelectedItem();
+		Species currentSpecies = (Species) speciesComboBox.getSelectedItem();
+		List<Species> speciesForCurrentLocale = Species.getSpeciesForThisLocale(currentLocale);
+		boolean currentSpeciesIsIn = speciesForCurrentLocale.contains(currentSpecies);
+		
+		DefaultComboBoxModel<Species> model = new DefaultComboBoxModel<Species>(speciesForCurrentLocale.toArray(new Species[] {}));
+		speciesComboBox.setModel(model);
+		if (currentSpeciesIsIn) {
+			speciesComboBox.setSelectedItem(currentSpecies);
+		} else {
+			speciesComboBox.setSelectedIndex(0);
+		}
+	}
+
 	@Override
 	public void listenTo() {
+		speciesLocaleComboBox.addItemListener(this);
 		okButton.addActionListener(this);
 	}
 
 	@Override
 	public void doNotListenToAnymore() {
+		speciesLocaleComboBox.removeItemListener(this);
 		okButton.removeActionListener(this);
 	}
 
@@ -88,15 +120,16 @@ public class CATSpeciesSelectionDialog extends REpiceaDialog implements ActionLi
 	protected void initUI() {
 		setTitle(MessageID.Title.toString());
 		setLayout(new BorderLayout());
-		JLabel label = UIControlManager.getLabel(MessageID.SpeciesLabel);
-		JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		panel.add(Box.createHorizontalStrut(5));
-		panel.add(label);
-		panel.add(Box.createHorizontalStrut(5));
-		panel.add(speciesComboBox);
-		panel.add(Box.createHorizontalStrut(5));
-		add(panel, BorderLayout.NORTH);
-		
+		JPanel centerPanel = new JPanel();
+		centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+		centerPanel.add(Box.createVerticalStrut(10));
+		centerPanel.add(UIControlManager.createSimpleHorizontalPanel(UIControlManager.getLabel(MessageID.SpeciesLabel),
+				speciesComboBox, 5, true));
+		centerPanel.add(Box.createVerticalStrut(10));
+		centerPanel.add(UIControlManager.createSimpleHorizontalPanel(UIControlManager.getLabel(MessageID.SpeciesLocaleLabel),
+				speciesLocaleComboBox, 5, true));
+		centerPanel.add(Box.createVerticalStrut(10));
+		add(centerPanel, BorderLayout.NORTH);
 		JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		controlPanel.add(okButton);
 		add(controlPanel, BorderLayout.SOUTH);
@@ -125,10 +158,22 @@ public class CATSpeciesSelectionDialog extends REpiceaDialog implements ActionLi
 	
 	public boolean isValidated() {return isValidated;}
 	
-	public Species getCATSpecies() {return (Species) speciesComboBox.getSelectedItem();}
+	public Species getSpecies() {return (Species) speciesComboBox.getSelectedItem();}
+	
+	public SpeciesLocale getSpeciesLocale() {return (SpeciesLocale) speciesLocaleComboBox.getSelectedItem();} 
 	
 	public static void main(String[] args) {
 		new CATSpeciesSelectionDialog(null);
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		if (e.getSource().equals(speciesLocaleComboBox)) {
+			if (e.getStateChange() == ItemEvent.SELECTED) {
+				this.updateSpeciesComboBox();
+			}
+		}
+		
 	}
 
 	

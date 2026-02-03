@@ -23,6 +23,7 @@ import java.security.InvalidParameterException;
 
 import lerfob.carbonbalancetool.CATCompatibleTree;
 import repicea.simulation.species.REpiceaSpecies.Species;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 
 /**
  * A specific implementation of CATCompatibleTree for saplings.<p>
@@ -35,7 +36,8 @@ public class CATSapling implements CATAboveGroundBiomassProvider, CATCompatibleT
 	final Species species;
 	final double expansionFactor;
 	final double plotWeight;
-
+	final SpeciesLocale locale;
+	
 	/**
 	 * General constructor.
 	 * @param aboveGroundBiomassMg the aboveground biomass of one sapling (Mg)
@@ -46,7 +48,8 @@ public class CATSapling implements CATAboveGroundBiomassProvider, CATCompatibleT
 	public CATSapling(double aboveGroundBiomassMg,
 			Species species,
 			double expansionFactor,
-			double plotWeight) {
+			double plotWeight,
+			SpeciesLocale locale) {
 		this.aboveGroundBiomassMg = aboveGroundBiomassMg;
 		this.species = species;
 		if (expansionFactor <= 0) {
@@ -57,6 +60,7 @@ public class CATSapling implements CATAboveGroundBiomassProvider, CATCompatibleT
 			throw new InvalidParameterException("The plotWeight argument must be positive!");
 		}
 		this.plotWeight = plotWeight;
+		this.locale = locale;
 	}
 
 	/**
@@ -69,8 +73,9 @@ public class CATSapling implements CATAboveGroundBiomassProvider, CATCompatibleT
 	 */
 	public CATSapling(double aboveGroundBiomassMg,
 			Species species,
-			double expansionFactor) {
-		this(aboveGroundBiomassMg, species, expansionFactor, 1d);
+			double expansionFactor,
+			SpeciesLocale locale) {
+		this(aboveGroundBiomassMg, species, expansionFactor, 1d, locale);
 	}
 
 	/**
@@ -78,8 +83,8 @@ public class CATSapling implements CATAboveGroundBiomassProvider, CATCompatibleT
 	 * @param aboveGroundBiomassMg the aboveground biomass of one sapling (Mg)
 	 * @param species an REpiceaSpecies.Species enum
 	 */
-	public CATSapling(double aboveGroundBiomassMg, Species species) {
-		this(aboveGroundBiomassMg, species, 1d, 1d);
+	public CATSapling(double aboveGroundBiomassMg, Species species, SpeciesLocale locale) {
+		this(aboveGroundBiomassMg, species, 1d, 1d, locale);
 	}
 
 	
@@ -105,5 +110,14 @@ public class CATSapling implements CATAboveGroundBiomassProvider, CATCompatibleT
 	
 	@Override
 	public double getNumber() {return expansionFactor;}
+
+	/**
+	 * Useless since those are sapling
+	 */
+	@Override
+	public double getBarkProportionOfWoodVolume(SpeciesLocale locale) {return 0;}
+
+	@Override
+	public SpeciesLocale getSpeciesLocale() {return locale;}
 
 }
