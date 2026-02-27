@@ -80,8 +80,8 @@ dependencies {
 
   	implementation group: 'io.github.cwfc-ccfb', name: 'repicea', version: '[1.17.2,)'    
     implementation group: 'io.github.cwfc-ccfb', name: 'repicea-mathstats', version: '[1.8.1,)'    
-    implementation group: 'io.github.cwfc-ccfb', name: 'repicea-simulation', version: '[1.4.0,)'    
- 	implementation group: 'io.github.cwfc-ccfb', name: 'lerfobforesttools', version: '[1.4.17,)'    
+    implementation group: 'io.github.cwfc-ccfb', name: 'repicea-simulation', version: '[1.5.0,)'    
+ 	implementation group: 'io.github.cwfc-ccfb', name: 'lerfobforesttools', version: '[1.4.18,)'    
     
     implementation group: 'org.apache.xmlgraphics', name: 'batik-svggen', version: '1.14'
 	implementation group: 'org.apache.xmlgraphics', name: 'batik-dom', version: '1.14'
