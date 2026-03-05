@@ -83,7 +83,7 @@ import repicea.util.REpiceaTranslator.Language;
  * 
  * @author Mathieu Fortin - May 2014
  */
-public class ProductionProcessorManager extends SystemManager implements Memorizable {
+public final class ProductionProcessorManager extends SystemManager implements Memorizable {
 
 	@SuppressWarnings("serial")
 	protected static class TreeLoggerInstanceCompatibilityException extends InvalidParameterException {
@@ -247,7 +247,7 @@ public class ProductionProcessorManager extends SystemManager implements Memoriz
 	private transient final Vector<TreeLoggerParameters<?>> availableTreeLoggerParameters;
 
 	@SuppressWarnings("rawtypes")
-	private TreeLoggerParameters selectedTreeLoggerParameters;
+	TreeLoggerParameters selectedTreeLoggerParameters;
 
 	@SuppressWarnings("rawtypes")
 	private transient TreeLogger treeLogger;
@@ -320,82 +320,6 @@ public class ProductionProcessorManager extends SystemManager implements Memoriz
 			throw new InvalidParameterException("The import format " + iFormat.name() + " is not implemented yet!");
 		}
 	}
-	
-//	/**
-//	 * Export a flux configuration to a particular file under a given format.
-//	 * @param filename the name of the file
-//	 * @param eFormat an ExportFormat enum that defines the expected format
-//	 * @throws IOException if an IO error occurs
-//	 */
-//	public void exportTo(String filename, ExportFormat eFormat) throws IOException {
-//		if (eFormat == null || filename == null) {
-//			throw new InvalidParameterException("The filename and eFormat arguments must be non null!");
-//		}
-//		switch(eFormat) {
-//		case AFFILIERE:
-//			new AffiliereExportWriter(getAffiliereJSONFormatRepresentation(), filename);
-//			break;
-//		default:
-//			throw new InvalidParameterException("The export format " + eFormat.name() + " is not implemented yet!");
-//		}
-//	}
-
-//	private LinkedHashMap<String, Object> getAffiliereJSONFormatRepresentation() {
-//		int idDispenser = 1;
-//		Map<String, LinkedHashMap<String, Object>> nodeMap = new LinkedHashMap<String, LinkedHashMap<String, Object>>();
-//		Map<Processor, String> processorToIdMap = new HashMap<Processor, String>();
-//		for (Processor p : getList()) {
-//			String idNode = "node" + idDispenser++;
-//			LinkedHashMap<String, Object> nodeRep = ((AbstractProcessor) p).getAffiliereJSONFormatNodeRepresentation(idNode);
-//			nodeMap.put(idNode, nodeRep);
-//			processorToIdMap.put(p, idNode);
-//		}
-//		Map<String, Object> linkMap = new LinkedHashMap<String, Object>();
-//		for (Processor source : getList()) {
-//			for (Processor target : source.getSubProcessors()) {
-//				String idLink = "link" + idDispenser++;
-//				linkMap.put(idLink, getAffiliereJSONFormatLinkRepresentation(idLink, false, source, target, processorToIdMap)); // false: a typical production processor (not end of life)
-//			}
-//			if (source instanceof ProductionLineProcessor) {
-//				if (((ProductionLineProcessor) source).getDisposedToProcess() != null) {
-//					String idLink = "link" + idDispenser++;
-//					linkMap.put(idLink, getAffiliereJSONFormatLinkRepresentation(idLink, true, source,
-//							((ProductionLineProcessor) source).getDisposedToProcess(), processorToIdMap)); // end of life
-//																										// processor
-//				}
-//			}
-//		}
-//		LinkedHashMap<String, Object> outputMap = new LinkedHashMap<String, Object>();
-//		outputMap.put(AffiliereJSONFormat.L1_VERSION_PROPERTY, "0.8");
-//		outputMap.put(AffiliereJSONFormat.L1_NODES_PROPERTY, nodeMap);
-//		outputMap.put(AffiliereJSONFormat.L1_LINKS_PROPERTY, linkMap);
-//		return outputMap;
-//	}
-
-//	private static LinkedHashMap<String, Object> getAffiliereJSONFormatLinkRepresentation(String idLink, 
-//			boolean endOfLife, 
-//			Processor source, 
-//			Processor target,
-//			Map<Processor, String> processorToIdMap) {
-//		LinkedHashMap<String, Object> oMap = new LinkedHashMap<String, Object>();
-//		oMap.put(AffiliereJSONFormat.LINK_IDLINK_PROPERTY, idLink);
-//		oMap.put(AffiliereJSONFormat.LINK_IDSOURCE_PROPERTY, processorToIdMap.get(source));
-//		oMap.put(AffiliereJSONFormat.LINK_IDTARGET_PROPERTY, processorToIdMap.get(target));
-//		oMap.put(AffiliereJSONFormat.LINK_LINKTYPE_PROPERTY, endOfLife ? "EndOfLife" : "Production");
-//
-//		LinkedHashMap<String, Object> value = new LinkedHashMap<String, Object>();
-//		oMap.put(AffiliereJSONFormat.LINK_VALUE_PROPERTY, value);
-//		value.put(AffiliereJSONFormat.LINK_VALUE_ISPERCENT_PROPERTY, true);
-//		if (endOfLife) {
-//			value.put(AffiliereJSONFormat.LINK_VALUE_PERCENT_PROPERTY, 100);
-//		} else {
-//			value.put(AffiliereJSONFormat.LINK_VALUE_PERCENT_PROPERTY, source.getSubProcessorIntakes().get(target).doubleValue());
-//		}
-//		
-//		oMap.put(AffiliereJSONFormat.LINK_STYLE_PROPERTY, "default");
-//		return oMap;
-//	}
-
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public TreeLogger getSelectedTreeLogger() {

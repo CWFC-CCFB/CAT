@@ -18,6 +18,7 @@ import lerfob.carbonbalancetool.productionlines.CarbonUnit.CarbonUnitStatus;
 import lerfob.carbonbalancetool.productionlines.CarbonUnit.Element;
 import lerfob.carbonbalancetool.productionlines.EndUseWoodProductCarbonUnitFeature.UseClass;
 import lerfob.carbonbalancetool.productionlines.WoodyDebrisProcessor.WoodyDebrisProcessorID;
+import quebecmrnfutility.treelogger.meristreelogger.MerisTreeLogger;
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider.SpeciesType;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 import repicea.simulation.processsystem.AmountMap;
@@ -733,4 +734,22 @@ public class ProductionLinesTest {
 			}
 		}
 	}
+
+	/*
+	 * Test left-hand side processor aggregation.
+	 */
+	@Test
+	public void test15MerisTreeLoggerAggregationLeftHandSideProcessors() throws IOException {
+		ProductionProcessorManager processorManager = new ProductionProcessorManager();
+		MerisTreeLogger treeLogger = new MerisTreeLogger();
+		processorManager.selectedTreeLoggerParameters = treeLogger.createDefaultTreeLoggerParameters();
+		processorManager.actualizeTreeLoggerParameters();
+		int nbLeftHandSideProcessorsBeforeAggregation = processorManager.logCategoryProcessors.size();
+		Assert.assertTrue("Testing that the number of left-hand side processors is greater than 100", nbLeftHandSideProcessorsBeforeAggregation > 100);
+		processorManager.enableLogCategoryAggregation = true;
+		processorManager.actualizeTreeLoggerParameters();
+		int nbLeftHandSideProcessorsAfterAggregation = processorManager.logCategoryProcessors.size();
+		Assert.assertTrue("Testing that the number of left-hand side processors is smaller than 25", nbLeftHandSideProcessorsAfterAggregation < 25);
+	}
+
 }
