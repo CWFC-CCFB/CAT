@@ -35,6 +35,7 @@ import repicea.io.tools.REpiceaRecordReader;
 import repicea.simulation.covariateproviders.samplelevel.ApplicationScaleProvider.ApplicationScale;
 import repicea.simulation.covariateproviders.samplelevel.ManagementTypeProvider.ManagementType;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.util.REpiceaTranslator;
 import repicea.util.REpiceaTranslator.TextableEnum;
 
@@ -148,20 +149,37 @@ public class CATGrowthSimulationRecordReader extends REpiceaRecordReader {
 	private final List<String> speciesList;
 	protected final ApplicationScale scale;
 	protected final ManagementType management;
+	protected final SpeciesLocale locale;
+
+	/**
+	 * Constructor in GUI mode.
+	 * @param dlg a CATScaleManagementSelectorDialog instance
+	 */
+	public CATGrowthSimulationRecordReader(CATScaleManagementSelectorDialog dlg) {
+		this(dlg.getApplicationScale(), dlg.getManagementType(), dlg.getSpeciesLocale());
+	}
 	
 	/**
 	 * General constructor.
 	 * @param scale an ApplicationScale enum
 	 * @param management a ManagementType enum
+	 * @param locale a SpeciesLocale enum
 	 */
-	public CATGrowthSimulationRecordReader(ApplicationScale scale, ManagementType management) {
+	public CATGrowthSimulationRecordReader(ApplicationScale scale, ManagementType management, SpeciesLocale locale) {
 		super();
 //		this.scale = TestUnevenAgedInfiniteSequence ? ApplicationScale.Stand : ApplicationScale.FMU;
-		if (scale == null || management == null) {
-			throw new InvalidParameterException("The scale and management arguments must be non null!");
+		if (scale == null) {
+			throw new InvalidParameterException("The scale argument must be non null!");
+		}
+		if (management == null) {
+			throw new InvalidParameterException("The management argument must be non null!");
+		}
+		if (locale == null) {
+			throw new InvalidParameterException("The locale argument must be non null!");
 		}
 		this.scale = scale;
 		this.management = management;
+		this.locale = locale;
 		setPopUpWindowEnabled(true);
 		standMap = new TreeMap<Integer, Map<Boolean, CATGrowthSimulationCompositeStand>>();
 		speciesList = new ArrayList<String>();
@@ -399,7 +417,7 @@ public class CATGrowthSimulationRecordReader extends REpiceaRecordReader {
 	}
 		
 	protected CATGrowthSimulationCompositeStand createCompositeStand(String standIdentification, int dateYr, boolean scaleDependentInterventionResult, Map<CATGrowthSimulationFieldID, Boolean> interfaceEnablingMap) {
-		return new CATGrowthSimulationCompositeStand(dateYr, standIdentification, this, scaleDependentInterventionResult, interfaceEnablingMap);
+		return new CATGrowthSimulationCompositeStand(dateYr, standIdentification, this, scaleDependentInterventionResult, locale, interfaceEnablingMap);
 	}
 
 	private Map<CATGrowthSimulationFieldID, Boolean> createInterfaceEnablingMap(Double aboveGroundVolume,

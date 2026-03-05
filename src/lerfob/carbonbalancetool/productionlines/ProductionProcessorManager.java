@@ -457,11 +457,11 @@ public class ProductionProcessorManager extends SystemManager implements Memoriz
 			for (Object species : selectedTreeLoggerParameters.getLogCategories().keySet()) {
 				List<LogCategory> innerList = (List) selectedTreeLoggerParameters.getLogCategories().get(species);
 				for (LogCategory logCategory : innerList) {
-					String name = logCategory.getName();
-					if (!aggregationMap.containsKey(name)) {
-						aggregationMap.put(name, new ArrayList<LogCategory>());
+					String groupMame = logCategory.getGroupName();
+					if (!aggregationMap.containsKey(groupMame)) {
+						aggregationMap.put(groupMame, new ArrayList<LogCategory>());
 					}
-					aggregationMap.get(name).add(logCategory);
+					aggregationMap.get(groupMame).add(logCategory);
 				}
 			}
 			for (List<LogCategory> logCategoriesWithSameName : aggregationMap.values()) {

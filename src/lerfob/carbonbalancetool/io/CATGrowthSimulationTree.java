@@ -29,6 +29,7 @@ import lerfob.carbonbalancetool.interfaces.CATCommercialBiomassProvider;
 import lerfob.carbonbalancetool.io.CATGrowthSimulationRecordReader.CATGrowthSimulationFieldID;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider;
 import repicea.simulation.species.REpiceaSpecies.Species;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 
 /**
  * This class represents the trees in a growth simulation import in CAT.
@@ -181,6 +182,11 @@ class CATGrowthSimulationTree implements CATCompatibleTree,
 				belowGroundBiomassMg,
 				belowGroundCarbonMg,
 				commercialBiomassMg);
+	}
+
+	@Override
+	public SpeciesLocale getSpeciesLocale() {
+		return plot.plotSample.compositeStand.getSpeciesLocale();
 	}
 	
 }

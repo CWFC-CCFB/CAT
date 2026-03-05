@@ -24,6 +24,7 @@ import lerfob.carbonbalancetool.CATCompatibleStand;
 import repicea.simulation.covariateproviders.samplelevel.ApplicationScaleProvider.ApplicationScale;
 import repicea.simulation.covariateproviders.samplelevel.ManagementTypeProvider.ManagementType;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 
 /**
  * The CATGrowthSimulationImportFromOtherApp class makes it possible to import 
@@ -38,8 +39,8 @@ public class CATGrowthSimulationImportFromOtherApp {
 	private final CATGrowthSimulationRecordReader recordReader;
 	
 	
-	public CATGrowthSimulationImportFromOtherApp(ApplicationScale scale, ManagementType management) {
-		recordReader = new CATGrowthSimulationRecordReader(scale, management);
+	public CATGrowthSimulationImportFromOtherApp(ApplicationScale scale, ManagementType management, SpeciesLocale locale) {
+		recordReader = new CATGrowthSimulationRecordReader(scale, management, locale);
 	}
 	
 

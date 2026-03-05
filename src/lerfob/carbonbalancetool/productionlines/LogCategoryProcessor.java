@@ -115,7 +115,7 @@ public class LogCategoryProcessor extends LeftHandSideProcessor implements PostU
 	@Override
 	public String getName() {
 		if (isAggregated()) {
-			return logCategories.get(0).getName();
+			return logCategories.get(0).getGroupName();
 		} else {
 			LogCategory logCategory = getFirstLogCategory();
 			String speciesName = logCategory.getSpecies().toString();

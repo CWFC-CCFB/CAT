@@ -50,6 +50,7 @@ import repicea.simulation.covariateproviders.samplelevel.ApplicationScaleProvide
 import repicea.simulation.covariateproviders.samplelevel.ManagementTypeProvider.ManagementType;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 import repicea.simulation.species.REpiceaSpecies.Species;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.stats.Distribution.Type;
 import repicea.stats.estimates.Estimate;
 import repicea.stats.estimates.MonteCarloEstimate;
@@ -102,7 +103,7 @@ public class CarbonAccountingToolTest {
 			stand = new CarbonToolCompatibleStandImpl("beech", standID, areaHa, dateYr, ageYr);
 			stands.add(stand);
 			for (int j = 1; j <= 10; j++) {
-				tree = new CarbonToolCompatibleTreeImpl(stand.getDateYr() * .01, Species.Fagus_sylvatica);
+				tree = new CarbonToolCompatibleTreeImpl(stand.getDateYr() * .01, Species.Fagus_sylvatica, SpeciesLocale.IPCC);
 				((CarbonToolCompatibleStandImpl) stand).addTree(tree, StatusClass.alive);
 			}
 		}
@@ -137,7 +138,7 @@ public class CarbonAccountingToolTest {
 			stand = new CarbonToolCompatibleStandImpl("beech", standID, areaHa, dateYr, ageYr);
 			stands.add(stand);
 			for (int j = 1; j <= 10; j++) {
-				tree = new CarbonToolCompatibleTreeImpl(stand.getDateYr() * .01, Species.Fagus_sylvatica);
+				tree = new CarbonToolCompatibleTreeImpl(stand.getDateYr() * .01, Species.Fagus_sylvatica, SpeciesLocale.IPCC);
 				((CarbonToolCompatibleStandImpl) stand).addTree(tree, StatusClass.alive);
 			}
 		}
@@ -193,9 +194,9 @@ public class CarbonAccountingToolTest {
 			standsWithDifferentDates.add(stand0);
 			standsWithSameDates.add(stand1);
 			for (int j = 1; j <= 10; j++) {
-				tree0 = new CarbonToolCompatibleTreeImpl(ageYr * .01, Species.Fagus_sylvatica);
+				tree0 = new CarbonToolCompatibleTreeImpl(ageYr * .01, Species.Fagus_sylvatica, SpeciesLocale.IPCC);
 				((CarbonToolCompatibleStandImpl) stand0).addTree(tree0, StatusClass.alive);
-				tree1 = new CarbonToolCompatibleTreeImpl(ageYr * .01, Species.Fagus_sylvatica);
+				tree1 = new CarbonToolCompatibleTreeImpl(ageYr * .01, Species.Fagus_sylvatica, SpeciesLocale.IPCC);
 				((CarbonToolCompatibleStandImpl) stand1).addTree(tree1, StatusClass.alive);
 			}
 		}
@@ -242,7 +243,7 @@ public class CarbonAccountingToolTest {
 		String refFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "ExampleYieldTableReference.xml";
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
-		CATYieldTableRecordReader recordReader = new CATYieldTableRecordReader(Species.Abies_spp);
+		CATYieldTableRecordReader recordReader = new CATYieldTableRecordReader(Species.Abies_spp, SpeciesLocale.IPCC);
 		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
@@ -278,7 +279,7 @@ public class CarbonAccountingToolTest {
 		String refFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "MathildeTreeExportReference.xml";
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
-		CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader(ApplicationScale.FMU, ManagementType.UnevenAged);
+		CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader(ApplicationScale.FMU, ManagementType.UnevenAged, SpeciesLocale.IPCC);
 		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
@@ -322,7 +323,7 @@ public class CarbonAccountingToolTest {
 		for (int i = 0; i < nbSimulations; i++) {
 			CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 			cat.initializeTool(null);
-			CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader(ApplicationScale.FMU, ManagementType.UnevenAged);
+			CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader(ApplicationScale.FMU, ManagementType.UnevenAged, SpeciesLocale.IPCC);
 			recordReader.getSelector().load(speciesMatchFilename);
 			ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 			recordReader.initInScriptMode(ifm);
@@ -361,7 +362,7 @@ public class CarbonAccountingToolTest {
 		String halflifeFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "SingleProcessorWithHalflife.prl";
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
-		CATYieldTableRecordReader recordReader = new CATYieldTableRecordReader(Species.Abies_spp);
+		CATYieldTableRecordReader recordReader = new CATYieldTableRecordReader(Species.Abies_spp, SpeciesLocale.IPCC);
 		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
@@ -400,7 +401,7 @@ public class CarbonAccountingToolTest {
 		String prlFilename = ObjectUtility.getRelativePackagePath(ProductionProcessorManager.class) + "library" + ObjectUtility.PathSeparator + "ipcc2014_en.prl";
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
-		CATYieldTableRecordReader recordReader = new CATYieldTableRecordReader(Species.Abies_spp);
+		CATYieldTableRecordReader recordReader = new CATYieldTableRecordReader(Species.Abies_spp, SpeciesLocale.IPCC);
 		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
@@ -435,7 +436,7 @@ public class CarbonAccountingToolTest {
 		String prlFilename = ObjectUtility.getRelativePackagePath(ProductionProcessorManager.class) + "library" + ObjectUtility.PathSeparator + "ipcc2014_en.prl";
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
-		CATYieldTableRecordReader recordReader = new CATYieldTableRecordReader(Species.Abies_spp);
+		CATYieldTableRecordReader recordReader = new CATYieldTableRecordReader(Species.Abies_spp, SpeciesLocale.IPCC);
 		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
@@ -482,7 +483,7 @@ public class CarbonAccountingToolTest {
 		String prlFilename = ObjectUtility.getRelativePackagePath(ProductionProcessorManager.class) + "library" + ObjectUtility.PathSeparator + "ipcc2014_en.prl";
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
-		CATYieldTableRecordReader recordReader = new CATYieldTableRecordReader(Species.Abies_spp);
+		CATYieldTableRecordReader recordReader = new CATYieldTableRecordReader(Species.Abies_spp, SpeciesLocale.IPCC);
 		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
@@ -601,7 +602,7 @@ public class CarbonAccountingToolTest {
 //		String refFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "MathildeTreeExportReference.xml";
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
-		CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader(ApplicationScale.FMU, ManagementType.UnevenAged);
+		CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader(ApplicationScale.FMU, ManagementType.UnevenAged, SpeciesLocale.IPCC);
 		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
@@ -621,10 +622,10 @@ public class CarbonAccountingToolTest {
 		Matrix DOM = obsMap.get(CompartmentInfo.DeadBiom).getMean();
 		Assert.assertEquals("Testing initial carbon in DOM", 
 				0.08344651687881643, 
-				DOM.getValueAt(0, 0), 1E-4);
+				DOM.getValueAt(0, 0), 1E-8);
 		Assert.assertEquals("Testing initial carbon in living biomass", 
 				0.3824199677541014, 
-				DOM.getValueAt(4, 0), 1E-3);
+				DOM.getValueAt(4, 0), 1E-8);
 		System.out.println("Successfully tested this subset of French national inventory");
 	}
 
@@ -637,7 +638,7 @@ public class CarbonAccountingToolTest {
 //		String refFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "MathildeTreeExportReference.xml";
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
-		CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader(ApplicationScale.FMU, ManagementType.UnevenAged);
+		CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader(ApplicationScale.FMU, ManagementType.UnevenAged, SpeciesLocale.France);
 		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
@@ -657,10 +658,10 @@ public class CarbonAccountingToolTest {
 		Matrix hwp = obsMap.get(CompartmentInfo.TotalProducts).getMean();
 		Assert.assertEquals("Testing initial carbon in HWPs", 
 				0.7631023392497845, 
-				hwp.getValueAt(0, 0), 1E-4);
+				hwp.getValueAt(0, 0), 1E-8);
 		Assert.assertEquals("Testing initial carbon in living biomass", 
 				2.1948745904359757, 
-				hwp.getValueAt(4, 0), 1E-3);
+				hwp.getValueAt(4, 0), 1E-8);
 		System.out.println("Successfully tested full dataset of French national inventory");
 	}
 
@@ -672,7 +673,7 @@ public class CarbonAccountingToolTest {
 //		String refFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "MathildeTreeExportReference.xml";
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
-		CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader(ApplicationScale.FMU, ManagementType.UnevenAged);
+		CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader(ApplicationScale.FMU, ManagementType.UnevenAged, SpeciesLocale.France);
 		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
@@ -692,10 +693,10 @@ public class CarbonAccountingToolTest {
 		Matrix hwp = obsMap.get(CompartmentInfo.TotalProducts).getMean();
 		Assert.assertEquals("Testing initial carbon in HWPs", 
 				0.7635270177619304, 
-				hwp.getValueAt(0, 0), 1E-4);
+				hwp.getValueAt(0, 0), 1E-8);
 		Assert.assertEquals("Testing initial carbon in living biomass", 
 				2.1938576398799468, 
-				hwp.getValueAt(4, 0), 1E-3);
+				hwp.getValueAt(4, 0), 1E-8);
 		System.out.println("Successfully tested full dataset of French national inventory");
 	}
 
@@ -708,7 +709,7 @@ public class CarbonAccountingToolTest {
 //		String refFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "MathildeTreeExportReference.xml";
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
-		CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader(ApplicationScale.Stand, ManagementType.EvenAged);
+		CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader(ApplicationScale.Stand, ManagementType.EvenAged, SpeciesLocale.France);
 		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
@@ -731,10 +732,10 @@ public class CarbonAccountingToolTest {
 		Matrix hwp = obsMap.get(CompartmentInfo.TotalProducts).getMean();
 		Assert.assertEquals("Testing initial carbon in HWPs", 
 				14.405169976068478, 
-				hwp.getValueAt(1, 0), 1E-4);
+				hwp.getValueAt(1, 0), 1E-8);
 		Assert.assertEquals("Testing initial carbon in living biomass", 
 				107.63027847073738, 
-				hwp.getValueAt(71, 0), 1E-3);
+				hwp.getValueAt(71, 0), 1E-8);
 		System.out.println("Successfully tested full dataset of French national inventory");
 	}
 
@@ -746,7 +747,7 @@ public class CarbonAccountingToolTest {
 		String fluxConfigurationFilename = ObjectUtility.getPackagePath(DecayFunctionTest.class) + "20250717_schema_filiere_Prod_End_2020_groupes_essences_Henri.prl";
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
-		CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader(ApplicationScale.FMU, ManagementType.UnevenAged);
+		CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader(ApplicationScale.FMU, ManagementType.UnevenAged, SpeciesLocale.France);
 		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
 		recordReader.initInScriptMode(ifm);
 		recordReader.readAllRecords();
@@ -772,10 +773,10 @@ public class CarbonAccountingToolTest {
 		Matrix hwp = obsMap.get(CompartmentInfo.TotalProducts).getMean();
 		Assert.assertEquals("Testing initial carbon in HWPs", 
 				0.7525227980139482, 
-				hwp.getValueAt(0, 0), 1E-4);
+				hwp.getValueAt(0, 0), 1E-8);
 		Assert.assertEquals("Testing initial carbon in living biomass", 
 				2.0553602058612515, 
-				hwp.getValueAt(4, 0), 1E-3);
+				hwp.getValueAt(4, 0), 1E-8);
 		System.out.println("Successfully tested full dataset of French national inventory");
 	}
 

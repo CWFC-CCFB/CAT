@@ -85,11 +85,16 @@ public class CarbonUnitList extends ArrayList<CarbonUnit> {
 	
 	@Override
 	public String toString() {
-		double volume = 0;
+		double volume = 0d;
+		double biomass = 0d;
+		double carbon = 0d;
+		
 		for (CarbonUnit unit : this) {
 			volume += unit.getAmountMap().get(Element.Volume);
+			biomass += unit.getAmountMap().get(Element.Biomass);
+			carbon += unit.getAmountMap().get(Element.C);
 		}
-		return "Volume = " + volume;
+		return "Volume (m3) = " + volume + "; Biomass (Mg) = " +  biomass + "; Carbon (Mg) = " + carbon;
 	}
 	
 

@@ -517,7 +517,7 @@ public class BiomassParameters implements REpiceaShowableUIWithParent, IOUserInt
 			value = t.getBasicWoodDensity();
 			isStochastic = t.isBasicWoodDensityPredictorStochastic();
 		} else {
-			value = tree.getCATSpecies().getBasicWoodDensity();
+			value = tree.getCATSpecies().getBasicWoodDensity(tree.getSpeciesLocale());
 		}
 		if (subject != null && !isStochastic) {	// isStochastic = false if the provider is not stochastic or if the tree does not implement the provider
 			return value * CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BasicDensity, subject, getGroupId(VariabilitySource.BasicDensity, tree));
@@ -800,7 +800,7 @@ public class BiomassParameters implements REpiceaShowableUIWithParent, IOUserInt
 	private double getOverbarkCommercialVolumeM3(CATCompatibleTree tree) {
 		double commVolume = tree.getCommercialVolumeM3();
 		if (!tree.isCommercialVolumeOverbark()) {
-			commVolume += tree.getBarkProportionOfWoodVolume() * commVolume;
+			commVolume += tree.getBarkProportionOfWoodVolume(tree.getSpeciesLocale()) * commVolume;
 		}
 		return commVolume;
 	}

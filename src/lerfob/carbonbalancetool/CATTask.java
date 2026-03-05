@@ -531,7 +531,7 @@ public class CATTask extends AbstractGenericTask {
 			double brokenDownBiomassMg = biomassMg * annualBreakdownRatio;
 			double brokenDownVolumeM3 = volumeM3 * annualBreakdownRatio;
 			
-			double propWood = 1d / (1d + tree.getBarkProportionOfWoodVolume());	// assumes that density of the bark is approximately equal to that of the wood MF2021-09-20
+			double propWood = 1d / (1d + tree.getBarkProportionOfWoodVolume(tree.getSpeciesLocale()));	// assumes that density of the bark is approximately equal to that of the wood MF2021-09-20
 
 			double woodCarbonMg = brokenDownCarbonMg * propWood;
 			double woodBiomassMg = brokenDownBiomassMg * propWood; 

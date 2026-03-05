@@ -20,6 +20,7 @@ package lerfob.carbonbalancetool;
 
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider;
 import repicea.simulation.species.REpiceaSpecies.Species;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
 import repicea.simulation.treelogger.LoggableTree;
 
 /**
@@ -40,8 +41,8 @@ public interface CATCompatibleTree extends LoggableTree, SpeciesTypeProvider {
 	public Species getCATSpecies();
 	
 	@Override
-	public default double getBarkProportionOfWoodVolume() {
-		return getCATSpecies().getBarkProportionOfWoodVolume();
+	public default double getBarkProportionOfWoodVolume(SpeciesLocale locale) {
+		return getCATSpecies().getBarkProportionOfWoodVolume(locale);
 	}
 	
 	@Override

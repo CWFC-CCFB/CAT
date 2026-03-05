@@ -68,6 +68,7 @@ import lerfob.carbonbalancetool.CATTask.Task;
 import lerfob.carbonbalancetool.CATUtility.BiomassParametersWrapper;
 import lerfob.carbonbalancetool.CATUtility.ProductionProcessorManagerWrapper;
 import lerfob.carbonbalancetool.io.CATGrowthSimulationRecordReader;
+import lerfob.carbonbalancetool.io.CATScaleManagementSelectorDialog;
 import lerfob.carbonbalancetool.io.CATSpeciesSelectionDialog;
 import lerfob.carbonbalancetool.io.CATYieldTableRecordReader;
 import lerfob.carbonbalancetool.productionlines.ProductionProcessorManagerException;
@@ -504,7 +505,7 @@ public class CATFrame extends REpiceaFrame implements PropertyChangeListener,
 				return;
 			}
 			yieldTableFilename = fileChooserOutput.getFilename();
-			CATYieldTableRecordReader catRecordReader = new CATYieldTableRecordReader(dlg.getCATSpecies());
+			CATYieldTableRecordReader catRecordReader = new CATYieldTableRecordReader(dlg);
 			catRecordReader.initGUIMode(this, UseMode.GUI_MODE, yieldTableFilename);
 			catRecordReader.readAllRecords();
 			caller.setStandList(catRecordReader.getStandList());
@@ -546,7 +547,7 @@ public class CATFrame extends REpiceaFrame implements PropertyChangeListener,
 				return;
 			}
 			
-			CATGrowthSimulationRecordReader catRecordReader = new CATGrowthSimulationRecordReader(scaleManagDlg.getApplicationScale(), scaleManagDlg.getManagementType());
+			CATGrowthSimulationRecordReader catRecordReader = new CATGrowthSimulationRecordReader(scaleManagDlg);
 			catRecordReader.initGUIMode(this, UseMode.GUI_MODE, growthSimulationFilename);
 			
 			catRecordReader.readAllRecords();
