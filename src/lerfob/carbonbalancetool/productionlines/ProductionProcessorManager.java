@@ -52,7 +52,6 @@ import lerfob.carbonbalancetool.productionlines.affiliere.AffiliereImportReader;
 import lerfob.treelogger.basictreelogger.BasicTreeLogger;
 import lerfob.treelogger.europeanbeech.EuropeanBeechBasicTreeLogger;
 import lerfob.treelogger.maritimepine.MaritimePineBasicTreeLogger;
-import quebecmrnfutility.treelogger.meristreelogger.MerisTreeLogger;
 import repicea.gui.UIControlManager;
 import repicea.gui.permissions.DefaultREpiceaGUIPermission;
 import repicea.io.REpiceaFileFilter;
@@ -685,8 +684,8 @@ public class ProductionProcessorManager extends SystemManager implements Memoriz
 	 * @param dateIndex the date index
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void createDeadWood(CATDeadWoodProvider deadWoodPovider, int dateIndex) {
-		double averageLifeTimeYr = 0d;
+	public void createDeadWood(CATDeadWoodProvider deadWoodProvider, int dateIndex) {
+		double averageLifeTimeYr = -1d;
 		if (deadWoodProcessor == null) {
 			for (Processor p : getList()) {
 				if (p instanceof LeftInForestProcessor) {
@@ -704,7 +703,7 @@ public class ProductionProcessorManager extends SystemManager implements Memoriz
 
 		
 		AmountMap<Element> woodAmountMap = new AmountMap<Element>();
-		Map<String, Double> biomasses = deadWoodPovider.getDeadWoodBiomassMgForTheseSamplingUnits();
+		Map<String, Double> biomasses = deadWoodProvider.getDeadWoodBiomassMgForTheseSamplingUnits();
 		for (String samplingUnitID : biomasses.keySet()) {
 			double biomassMg = biomasses.get(samplingUnitID);
 			woodAmountMap.put(Element.Volume, biomassMg / 0.45); // 0.45 an arbitrary factor to get some volume
