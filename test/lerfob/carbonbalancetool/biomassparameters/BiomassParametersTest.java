@@ -37,6 +37,10 @@ import repicea.util.ObjectUtility;
 
 public class BiomassParametersTest {
 
+	static {
+		System.out.println("RUNNING " + BiomassParametersTest.class.getName());
+	}
+	
 	static class FakeTree implements CATCompatibleTree, CATAboveGroundBiomassProvider {
 
 		@Override

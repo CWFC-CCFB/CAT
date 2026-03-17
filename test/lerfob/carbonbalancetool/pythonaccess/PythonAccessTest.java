@@ -14,6 +14,11 @@ import repicea.util.ObjectUtility;
 
 public class PythonAccessTest {
 
+	static {
+		System.out.println("RUNNING " + PythonAccessTest.class.getName());
+	}
+
+	
 	static Map<?,?> InputMap;
 	
 	

@@ -59,6 +59,10 @@ import repicea.util.REpiceaLogManager;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CarbonAccountingToolGUITest {
 	
+	static {
+		System.out.println("RUNNING " + CarbonAccountingToolGUITest.class.getName());
+	}
+
 	static CarbonAccountingTool CAT;
 	static REpiceaGUITestRobot ROBOT;
 	

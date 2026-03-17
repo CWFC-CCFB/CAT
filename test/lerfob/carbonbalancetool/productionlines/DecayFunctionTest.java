@@ -38,6 +38,11 @@ import repicea.stats.estimates.MonteCarloEstimate;
  */
 public class DecayFunctionTest {
 
+	static {
+		System.out.println("RUNNING " + DecayFunctionTest.class.getName());
+	}
+
+	
 	@Test
 	public void test01ExponentialFunction() {
 		DecayFunction df = new DecayFunction(null, LifetimeMode.AVERAGE, DecayFunctionType.Exponential, 10d);

@@ -61,6 +61,11 @@ import repicea.util.ObjectUtility;
 public class CarbonAccountingToolTest {
 
 	static {
+		System.out.println("RUNNING " + CarbonAccountingToolTest.class.getName());
+	}
+
+	
+	static {
 		SerializerChangeMonitor.registerClassNameChange("repicea.stats.distributions.NonparametricDistribution", "repicea.stats.distributions.EmpiricalDistribution");
 	}
 	

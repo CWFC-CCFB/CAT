@@ -284,6 +284,14 @@ public class CATTask extends AbstractGenericTask {
 			if (caller.guiInterface != null) {
 				logger.removeTreeLoggerListener(caller.getUI()); 
 			}			
+			if (!logger.isCorrectlyTerminated()) {
+				Exception e = logger.getFailureReason();
+				if (e == null) {
+					throw new UnsupportedOperationException("An unknown error occurred! Please contact the developer!");
+				} else {
+					throw new UnsupportedOperationException(e.getMessage());
+				}
+			}
 			setProgress((int) (100 * (double) 1 / Task.getNumberOfLongTasks()));
 		} else {
 			logger.getWoodPieces().clear();

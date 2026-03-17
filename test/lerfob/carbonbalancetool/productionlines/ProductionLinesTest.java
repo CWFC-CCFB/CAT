@@ -31,6 +31,11 @@ import repicea.util.ObjectUtility;
 @SuppressWarnings("deprecation")
 public class ProductionLinesTest {
 
+	
+	static {
+		System.out.println("RUNNING " + ProductionLinesTest.class.getName());
+	}
+
 	public static class CATCompatibleTreeImpl implements CATCompatibleTree {
 
 		final Species species;
