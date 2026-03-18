@@ -88,8 +88,6 @@ public class CATTimeTable {
 		this.currentStands = new ArrayList<CATCompatibleStand>();
 		CATCompatibleStand lastStand = stands.get(stands.size() - 1);
 		this.lastStandDate = lastStand.getDateYr();
-//		int startDateYr = stands.get(0).getDateYr();
-//		int lastDateYr = lastStandDate + nbExtraYears;
 		int currentDateYr = -1;
 		for (int i = 0; i < stands.size(); i++) {
 			CATCompatibleStand stand = stands.get(i);

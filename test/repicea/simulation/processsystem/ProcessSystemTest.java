@@ -42,7 +42,9 @@ import repicea.util.ObjectUtility;
 
 public class ProcessSystemTest {
 
-//	private final static int WAIT_TIME = 500;
+	static {
+		System.out.println("RUNNING " + ProcessSystemTest.class.getName());
+	}
 
 	private static enum FakeEnum {class1, class2}
 	

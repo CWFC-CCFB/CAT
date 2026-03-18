@@ -44,6 +44,10 @@ import repicea.util.REpiceaTranslator.Language;
 
 public class ComparisonWithMathildeTest {
 
+	static {
+		System.out.println("RUNNING " + ComparisonWithMathildeTest.class.getName());
+	}
+
 	class MathildeLoggableTreeImpl implements MathildeLoggableTree, CATCompatibleTree {
 		
 		final MathildeTreeSpecies species;

@@ -34,6 +34,10 @@ import repicea.util.ObjectUtility;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class PythonAccessDouglasFirTest {
 
+	static {
+		System.out.println("RUNNING " + PythonAccessDouglasFirTest.class.getName());
+	}
+
 	static double ResiduesLeftInForest;
 	
 	@SuppressWarnings("rawtypes")

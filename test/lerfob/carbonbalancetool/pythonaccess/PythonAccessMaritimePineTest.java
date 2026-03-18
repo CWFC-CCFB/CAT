@@ -32,7 +32,10 @@ import repicea.util.ObjectUtility;
 @SuppressWarnings("deprecation")
 public class PythonAccessMaritimePineTest {
 
-	
+	static {
+		System.out.println("RUNNING " + PythonAccessMaritimePineTest.class.getName());
+	}
+
 	@SuppressWarnings("rawtypes")
 	private synchronized static Map getInputMap() throws Exception {
 		if (PythonAccessTest.InputMap == null) {

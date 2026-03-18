@@ -32,10 +32,12 @@ import java.util.Vector;
 import java.util.logging.Level;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JSeparator;
 
 import lerfob.carbonbalancetool.CATAWTProperty;
 import lerfob.carbonbalancetool.CATFrame;
@@ -117,7 +119,8 @@ public class ProductionProcessorManagerDialog extends SystemManagerDialog implem
 		ImportFromAFFiliere("From AFFiliere (.json)", "A partir d'AFFili\u00E8ere (.json)"),
 		ErrorImportFromAffiliere("An error occurred while importing data from AFFiliere", "Une erreur est survenue lors de l'importation des donn\u00E9es depuis AFFili\u00E8re"),
 		ErrorExportFromAffiliere("An error occurred while exporting data to AFFiliere", "Une erreur est survenue lors de l'exportation des donn\u00E9es vers AFFili\u00E8re"),
-		ExportToAFFiliere("To AFFiliere (.xlsx)", "Vers AFFili\u00E8ere (.xlsx)");
+		ExportToAFFiliere("To AFFiliere (.xlsx)", "Vers AFFili\u00E8ere (.xlsx)"),
+		AggregateLogCategories("Aggregate log categories", "Agr\u00E9ger les types de billon");
 		
 		MessageID(String englishText, String frenchText) {
 			setText(englishText, frenchText);
@@ -168,6 +171,8 @@ public class ProductionProcessorManagerDialog extends SystemManagerDialog implem
 	protected JMenuItem downloadExamplesMenuItem;
 	protected JMenu importFromOtherSourcesMenu;
 	protected JMenuItem importFromAFFiliere;
+	protected JCheckBoxMenuItem aggregateLogCategories;
+	
 //	protected JMenuItem exportToAFFiliere;
 	
 	
@@ -195,6 +200,8 @@ public class ProductionProcessorManagerDialog extends SystemManagerDialog implem
 		importFromOtherSourcesMenu = UIControlManager.createCommonMenu(MessageID.ImportFromOtherSources);
 		importFromAFFiliere = UIControlManager.createCommonMenuItem(MessageID.ImportFromAFFiliere);
 //		exportToAFFiliere = UIControlManager.createCommonMenuItem(MessageID.ExportToAFFiliere);
+		aggregateLogCategories = new JCheckBoxMenuItem(MessageID.AggregateLogCategories.toString());
+		aggregateLogCategories.setEnabled(getCaller().getGUIPermission().isEnablingGranted());
 	}
 
 	@Override
@@ -242,7 +249,15 @@ public class ProductionProcessorManagerDialog extends SystemManagerDialog implem
 		about.add(downloadExamplesMenuItem);
 		return about;
 	}
-		
+
+	@Override
+	protected JMenu createViewMenu() {
+		JMenu view = super.createViewMenu();
+		view.add(new JSeparator());
+		view.add(aggregateLogCategories);
+		return view;
+	}
+	
 	@Override
 	protected ProductionProcessorManager getCaller() {
 		return (ProductionProcessorManager) super.getCaller();
@@ -271,6 +286,7 @@ public class ProductionProcessorManagerDialog extends SystemManagerDialog implem
 		comboBoxPanel.addComboBoxEntryPropertyListener(this);
 		downloadExamplesMenuItem.addActionListener(this);
 		importFromAFFiliere.addActionListener(this);
+		aggregateLogCategories.addItemListener(this);
 //		exportToAFFiliere.addActionListener(this);
 	}
 	
@@ -281,6 +297,7 @@ public class ProductionProcessorManagerDialog extends SystemManagerDialog implem
 		comboBoxPanel.removeComboBoxEntryPropertyListener(this);
 		downloadExamplesMenuItem.removeActionListener(this);
 		importFromAFFiliere.removeActionListener(this);
+		aggregateLogCategories.removeItemListener(this);
 //		exportToAFFiliere.removeActionListener(this);
 	}
 
@@ -288,6 +305,11 @@ public class ProductionProcessorManagerDialog extends SystemManagerDialog implem
 	public void itemStateChanged(ItemEvent arg0) {
 		if (arg0.getSource().equals(treeLoggerComboBox) && arg0.getStateChange () == ItemEvent.SELECTED) {
 			getCaller().setSelectedTreeLogger((TreeLoggerParameters<?>) treeLoggerComboBox.getSelectedItem());
+			firePropertyChange(REpiceaAWTProperty.SynchronizeWithOwner, null, this);
+			firePropertyChange(REpiceaAWTProperty.ActionPerformed, null, this);
+		} if (arg0.getSource().equals(aggregateLogCategories) && arg0.getID() == ItemEvent.ITEM_STATE_CHANGED) {
+			getCaller().enableLogCategoryAggregation = aggregateLogCategories.isSelected();
+			getCaller().actualizeTreeLoggerParameters();
 			firePropertyChange(REpiceaAWTProperty.SynchronizeWithOwner, null, this);
 			firePropertyChange(REpiceaAWTProperty.ActionPerformed, null, this);
 		} else {
@@ -372,6 +394,7 @@ public class ProductionProcessorManagerDialog extends SystemManagerDialog implem
 		}
 		initTreeLoggerComboBox();
 		treeLoggerComboBox.setSelectedItem(getCaller().getSelectedTreeLoggerParameters());
+		aggregateLogCategories.setSelected(getCaller().enableLogCategoryAggregation);
 		if (isVisible()) {
 			listenTo();
 		}

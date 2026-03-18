@@ -55,6 +55,10 @@ import repicea.util.ObjectUtility;
 
 public class MEMSConnectorsTest {
 
+	static {
+		System.out.println("RUNNING " + MEMSConnectorsTest.class.getName());
+	}
+
 	@SuppressWarnings("serial")
 	static class CATGrowthSimulationRecordReaderHacked extends CATGrowthSimulationRecordReader {
 		
