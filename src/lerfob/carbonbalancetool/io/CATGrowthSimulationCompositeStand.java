@@ -148,6 +148,11 @@ public class CATGrowthSimulationCompositeStand implements CATCompatibleStand, St
 	}
 
 	SpeciesLocale getSpeciesLocale() {return locale;}
+	
+	@Override
+	public String toString() {
+		return "Composite stand " + this.getDateYr() + (this.isInterventionResult() ? "*" : ""); 
+	}
 
 
 }
