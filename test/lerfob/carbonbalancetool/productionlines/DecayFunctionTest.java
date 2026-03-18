@@ -112,14 +112,15 @@ public class DecayFunctionTest {
 
 		double value = df.getValueAtTime(1, fakeManager);
 		
-		Assert.assertEquals("Testing if values for the same iteration do not change", 
-				est.getRealizations().get(est.getRealizations().size() -1).getValueAt(0, 0),
-				value, 
-				1E-8);
 		CATSensitivityAnalysisSettings.getInstance().setVariabilitySource(VariabilitySource.Lifetime,
 				Distribution.Type.GAUSSIAN,
 				false,
 				0.4);
+		
+		Assert.assertEquals("Testing if values for the same iteration do not change", 
+				est.getRealizations().get(est.getRealizations().size() -1).getValueAt(0, 0),
+				value, 
+				1E-8);
 	}
 
 	@Test
