@@ -38,6 +38,11 @@ import repicea.stats.estimates.MonteCarloEstimate;
  */
 public class DecayFunctionTest {
 
+	static {
+		System.out.println("RUNNING " + DecayFunctionTest.class.getName());
+	}
+
+	
 	@Test
 	public void test01ExponentialFunction() {
 		DecayFunction df = new DecayFunction(null, LifetimeMode.AVERAGE, DecayFunctionType.Exponential, 10d);
@@ -101,20 +106,22 @@ public class DecayFunctionTest {
 
 		double meanRatio = mean / 0.9007840398059188; 
 		double varianceRatio = variance / 5.014390094398527E-4;
-		
-		Assert.assertTrue("Testing mean", Math.abs(1d - meanRatio) < 1E-2);
-		Assert.assertTrue("Testing variance", Math.abs(1d - varianceRatio) < 3E-2);
 
 		double value = df.getValueAtTime(1, fakeManager);
-		
-		Assert.assertEquals("Testing if values for the same iteration do not change", 
-				est.getRealizations().get(est.getRealizations().size() -1).getValueAt(0, 0),
-				value, 
-				1E-8);
+		double expected = est.getRealizations().get(est.getRealizations().size() -1).getValueAt(0, 0);
+
 		CATSensitivityAnalysisSettings.getInstance().setVariabilitySource(VariabilitySource.Lifetime,
 				Distribution.Type.GAUSSIAN,
 				false,
 				0.4);
+		
+		Assert.assertTrue("Testing mean", Math.abs(1d - meanRatio) < 1E-2);
+		Assert.assertTrue("Testing variance", Math.abs(1d - varianceRatio) < 5E-2);
+
+		Assert.assertEquals("Testing if values for the same iteration do not change", 
+				expected,
+				value, 
+				1E-8);
 	}
 
 	@Test

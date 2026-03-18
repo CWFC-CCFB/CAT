@@ -30,12 +30,17 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import lerfob.carbonbalancetool.CarbonAccountingToolTest;
 import repicea.serial.UnmarshallingException;
 import repicea.serial.xml.XmlDeserializer;
 import repicea.stats.data.DataSet;
 import repicea.util.ObjectUtility;
 
 public class SoilCarbonPredictorTest {
+
+	static {
+		System.out.println("RUNNING " + SoilCarbonPredictorTest.class.getName());
+	}
 
     String GetDataPath() {
         return ObjectUtility.getPackagePath(getClass()) + "data" + ObjectUtility.PathSeparator;

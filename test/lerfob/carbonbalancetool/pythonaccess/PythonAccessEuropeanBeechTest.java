@@ -32,6 +32,10 @@ import repicea.util.ObjectUtility;
 @SuppressWarnings("deprecation")
 public class PythonAccessEuropeanBeechTest {
 
+	static {
+		System.out.println("RUNNING " + PythonAccessEuropeanBeechTest.class.getName());
+	}
+
 	@SuppressWarnings("rawtypes")
 	private synchronized static Map getInputMap() throws Exception {
 		if (PythonAccessTest.InputMap == null) {

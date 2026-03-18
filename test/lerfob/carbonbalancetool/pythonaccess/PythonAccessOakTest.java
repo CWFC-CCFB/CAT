@@ -32,6 +32,10 @@ import repicea.util.ObjectUtility;
 
 public class PythonAccessOakTest {
 
+	static {
+		System.out.println("RUNNING " + PythonAccessOakTest.class.getName());
+	}
+
 	@SuppressWarnings("rawtypes")
 	private synchronized static Map getInputMap() throws Exception {
 		if (PythonAccessTest.InputMap == null) {

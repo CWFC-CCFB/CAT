@@ -39,7 +39,6 @@ import org.junit.runners.MethodSorters;
 
 import lerfob.carbonbalancetool.CATUtility.ProductionManagerName;
 import lerfob.carbonbalancetool.CarbonAccountingTool.CATMode;
-import lerfob.carbonbalancetool.io.CATGrowthSimulationRecordReader;
 import lerfob.carbonbalancetool.io.CATScaleManagementSelectorDialog;
 import lerfob.carbonbalancetool.io.CATSpeciesSelectionDialog;
 import lerfob.carbonbalancetool.productionlines.ProductionProcessorManagerDialog;
@@ -60,6 +59,10 @@ import repicea.util.REpiceaLogManager;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CarbonAccountingToolGUITest {
 	
+	static {
+		System.out.println("RUNNING " + CarbonAccountingToolGUITest.class.getName());
+	}
+
 	static CarbonAccountingTool CAT;
 	static REpiceaGUITestRobot ROBOT;
 	

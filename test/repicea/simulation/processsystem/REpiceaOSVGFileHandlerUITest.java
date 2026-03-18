@@ -33,6 +33,10 @@ import repicea.gui.icons.IconFactory;
 
 public class REpiceaOSVGFileHandlerUITest {
 
+	static {
+		System.out.println("RUNNING " + REpiceaOSVGFileHandlerUITest.class.getName());
+	}
+
 	@Test
 	public void testSVGExportOfPngImage() throws Exception {
 		String filename = System.getProperty("java.io.tmpdir") + "testButton.svg";
