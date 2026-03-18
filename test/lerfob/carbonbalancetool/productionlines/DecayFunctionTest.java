@@ -106,16 +106,16 @@ public class DecayFunctionTest {
 
 		double meanRatio = mean / 0.9007840398059188; 
 		double varianceRatio = variance / 5.014390094398527E-4;
+
+		CATSensitivityAnalysisSettings.getInstance().setVariabilitySource(VariabilitySource.Lifetime,
+				Distribution.Type.GAUSSIAN,
+				false,
+				0.4);
 		
 		Assert.assertTrue("Testing mean", Math.abs(1d - meanRatio) < 1E-2);
 		Assert.assertTrue("Testing variance", Math.abs(1d - varianceRatio) < 5E-2);
 
 		double value = df.getValueAtTime(1, fakeManager);
-		
-		CATSensitivityAnalysisSettings.getInstance().setVariabilitySource(VariabilitySource.Lifetime,
-				Distribution.Type.GAUSSIAN,
-				false,
-				0.4);
 		
 		Assert.assertEquals("Testing if values for the same iteration do not change", 
 				est.getRealizations().get(est.getRealizations().size() -1).getValueAt(0, 0),
