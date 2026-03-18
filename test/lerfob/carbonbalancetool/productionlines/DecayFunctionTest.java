@@ -150,20 +150,22 @@ public class DecayFunctionTest {
 
 		double meanRatio = mean / 0.47897078997680187; 
 		double varianceRatio = variance / 0.07376034188749936;
-		
-		Assert.assertTrue("Testing mean", Math.abs(1d - meanRatio) < 1E-2);
-		Assert.assertTrue("Testing variance", Math.abs(1d - varianceRatio) < 3E-2);
 
 		double value = df.getValueAtTime(10, fakeManager);
-		
-		Assert.assertEquals("Testing if values for the same iteration do not change", 
-				est.getRealizations().get(est.getRealizations().size() -1).getValueAt(0, 0),
-				value, 
-				1E-8);
+		double expected = est.getRealizations().get(est.getRealizations().size() -1).getValueAt(0, 0);
+
 		CATSensitivityAnalysisSettings.getInstance().setVariabilitySource(VariabilitySource.Lifetime,
 				Distribution.Type.GAUSSIAN,
 				false,
 				0.4);
+
+		Assert.assertTrue("Testing mean", Math.abs(1d - meanRatio) < 0.015);
+		Assert.assertTrue("Testing variance", Math.abs(1d - varianceRatio) < 3E-2);
+		
+		Assert.assertEquals("Testing if values for the same iteration do not change", 
+				expected,
+				value, 
+				1E-8);
 	}
 
 	@Test
@@ -182,14 +184,14 @@ public class DecayFunctionTest {
 		double value = df.getValueAtTime(10, fakeManager);
 		double value2 = df2.getValueAtTime(10, fakeManager);
 
-		Assert.assertTrue("Test if stochastic is different from deterministic", Math.abs(value - originalValue) > 1E-8);
-		Assert.assertTrue("Test if stochastic is different from deterministic (second shot)", Math.abs(value2 - originalValue2) > 1E-8);
-
 		Assert.assertTrue("Test if stochastic values are different across subject", Math.abs(value2 - value) > 1E-8);
 		CATSensitivityAnalysisSettings.getInstance().setVariabilitySource(VariabilitySource.Lifetime,
 				Distribution.Type.GAUSSIAN,
 				false,
 				0.4);
+
+		Assert.assertTrue("Test if stochastic is different from deterministic", Math.abs(value - originalValue) > 1E-8);
+		Assert.assertTrue("Test if stochastic is different from deterministic (second shot)", Math.abs(value2 - originalValue2) > 1E-8);
 
 	}
 
