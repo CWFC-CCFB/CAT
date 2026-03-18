@@ -142,7 +142,9 @@ public class CATGrowthSimulationRecordReader extends REpiceaRecordReader {
 		public CATGrowthSimulationFieldLevel getFieldLevel() {return level;}
 	}
 
-	
+	/**
+	 * The first key is the date and the second one is harvested or not
+	 */
 	private final Map<Integer, Map<Boolean, CATGrowthSimulationCompositeStand>> standMap;
 	
 	private CATGrowthSimulationSpeciesSelector selector;
@@ -595,18 +597,13 @@ public class CATGrowthSimulationRecordReader extends REpiceaRecordReader {
 	public List<CATCompatibleStand> getStandList() {
 		List<CATCompatibleStand> standList = new ArrayList<CATCompatibleStand>();
 		for (Map<Boolean, CATGrowthSimulationCompositeStand> oMap : standMap.values()) {
-			standList.add(oMap.get(false));
+			if (oMap.containsKey(false)) {
+				standList.add(oMap.get(false));	// we always add the false stand if 
+			}
 			if (oMap.containsKey(true)) {
 				standList.add(oMap.get(true));
 			}
 		}
-		
-//		if (TestUnevenAgedInfiniteSequence) {
-//			for (CATCompatibleStand s : standList) {
-//				((CATGrowthSimulationCompositeStand) s).setApplicationScale(ApplicationScale.Stand);
-//				((CATGrowthSimulationCompositeStand) s).setManagementType(ManagementType.UnevenAged);
-//			}
-//		}
 		
 		return standList;
 	}

@@ -785,6 +785,43 @@ public class CarbonAccountingToolTest {
 		System.out.println("Successfully tested full dataset of French national inventory");
 	}
 
+	@Test
+	public void test19WithSaMARESimulationResultsAtStandLevel() throws Exception {
+		String filename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "SimulSamareForm.csv";
+		String ifeFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "AssociationSaMARE.ife";
+		String speciesMatchFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "Association especes.xml";
+//		String refFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "MathildeTreeExportReference.xml";
+		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
+		cat.initializeTool(null);
+		CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader(ApplicationScale.Stand, ManagementType.UnevenAged, SpeciesLocale.Quebec);
+		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
+		recordReader.initInScriptMode(ifm);
+		recordReader.readAllRecords();
+		recordReader.getSelector().load(speciesMatchFilename);
+		cat.setStandList(recordReader.getStandList());
+		cat.calculateCarbon();
+		CATSingleSimulationResult result = cat.getCarbonCompartmentManager().getSimulationSummary();
+		Map<CompartmentInfo, MonteCarloEstimate> obsMap = result.getEvolutionMap();
+		Matrix meanLivingBiomass = obsMap.get(CompartmentInfo.LivingBiomass).getMean();
+		Assert.assertEquals("Testing initial carbon in living biomass", 
+				96.63099889669157, 
+				meanLivingBiomass.getValueAt(0, 0), 1E-8);
+		Assert.assertEquals("Testing final carbon in living biomass", 
+				128.9798287197443, 
+				meanLivingBiomass.getValueAt(40, 0), 1E-8);
+		Matrix DOM = obsMap.get(CompartmentInfo.DeadBiom).getMean();
+		Assert.assertEquals("Testing initial carbon in DOM", 
+				0d, 
+				DOM.getValueAt(0, 0), 1E-8);
+		Assert.assertEquals("Testing carbon at time 5 in DOM", 
+				2.8130016088871543, 
+				DOM.getValueAt(5, 0), 1E-8);
+		Assert.assertEquals("Testing final carbon in living biomass", 
+				22.19705263587464, 
+				DOM.getValueAt(40, 0), 1E-8);
+		System.out.println("Successfully tested SaMARE simulation at stand level!");
+	}
+
 	public static void main(String[] args) throws Exception {
 		CarbonAccountingToolTest test = new CarbonAccountingToolTest();
 		test.test07MemoryLeakage();
