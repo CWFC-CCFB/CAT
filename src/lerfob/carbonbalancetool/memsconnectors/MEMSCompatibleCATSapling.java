@@ -40,6 +40,7 @@ public final class MEMSCompatibleCATSapling extends CATSapling implements MEMSCo
 	 * @param species a CATSpecies enum
 	 * @param expansionFactor the number of saplings represented by this instance.
 	 * @param plotWeight the sampling weight of the plot
+	 * @param locale a SpeciesLocale enum
 	 * @param stemBasalAreaM2 the sapling basal area (m2)
 	 * @param annualFineRootDetritusCarbonProductionMgYr the annual fine root detritus (Mg/Yr of C)
 	 * @param foliarBiomassMg the foliar biomass (Mg)

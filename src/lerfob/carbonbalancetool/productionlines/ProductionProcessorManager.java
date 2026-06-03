@@ -604,7 +604,7 @@ public final class ProductionProcessorManager extends SystemManager implements M
 
 	/**
 	 * Create dead wood for the first stand if it is available
-	 * @param deadWoodPovider a CATDeadWoodProvide instance
+	 * @param deadWoodProvider a CATDeadWoodProvide instance
 	 * @param dateIndex the date index
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })

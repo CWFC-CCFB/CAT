@@ -46,6 +46,7 @@ public class CATSapling implements CATAboveGroundBiomassProvider, CATCompatibleT
 	 * @param species a CATSpecies enum
 	 * @param expansionFactor the number of saplings represented by this instance.
 	 * @param plotWeight the sampling weight of the plot
+	 * @param locale a SpeciesLocale enum
 	 */
 	public CATSapling(double aboveGroundBiomassMg,
 			Species species,
@@ -72,6 +73,7 @@ public class CATSapling implements CATAboveGroundBiomassProvider, CATCompatibleT
 	 * @param aboveGroundBiomassMg the aboveground biomass of one sapling (Mg)
 	 * @param species an REpiceaSpecies.Species
 	 * @param expansionFactor the number of saplings represented by this instance.
+	 * @param locale a SpeciesLocale enum
 	 */
 	public CATSapling(double aboveGroundBiomassMg,
 			Species species,
@@ -84,6 +86,7 @@ public class CATSapling implements CATAboveGroundBiomassProvider, CATCompatibleT
 	 * Constructor for tree instance  
 	 * @param aboveGroundBiomassMg the aboveground biomass of one sapling (Mg)
 	 * @param species an REpiceaSpecies.Species enum
+	 * @param locale a SpeciesLocale enum
 	 */
 	public CATSapling(double aboveGroundBiomassMg, Species species, SpeciesLocale locale) {
 		this(aboveGroundBiomassMg, species, 1d, 1d, locale);
