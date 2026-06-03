@@ -19,6 +19,7 @@
 package lerfob.carbonbalancetool.io;
 
 import lerfob.carbonbalancetool.CATCompatibleTree;
+import lerfob.carbonbalancetool.CarbonAccountingTool;
 import lerfob.carbonbalancetool.interfaces.CATAboveGroundBiomassProvider;
 import lerfob.carbonbalancetool.interfaces.CATAboveGroundCarbonProvider;
 import lerfob.carbonbalancetool.interfaces.CATAboveGroundVolumeProvider;
@@ -30,6 +31,7 @@ import lerfob.carbonbalancetool.io.CATGrowthSimulationRecordReader.CATGrowthSimu
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
+import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 
 /**
  * This class represents the trees in a growth simulation import in CAT.
@@ -89,13 +91,18 @@ class CATGrowthSimulationTree implements CATCompatibleTree,
 	public double getCommercialVolumeM3() {return commercialVolumeM3;}
 
 	@Override
-	public String getSpeciesName() {return getCATSpecies().toString();}
-
-//	@Override
-//	public SpeciesType getSpeciesType() {return getCATSpecies().getSpeciesType();}
+	public String getSpeciesName() {return getSpecies(CarbonAccountingTool.CAT).toString();}
 
 	@Override
-	public Species getCATSpecies() {return (Species) plot.plotSample.compositeStand.reader.getSelector().getMatch(originalSpeciesName);}
+	public Species getSpecies(REpiceaSpeciesCompliantObject caller) {
+		return (Species) plot.plotSample.compositeStand.reader.getSelector().getMatch(originalSpeciesName);
+	}
+	
+//	@Override
+//	public Species getSpecies(Object caller) {
+//		return (Species) plot.plotSample.compositeStand.reader.getSelector().getMatch(originalSpeciesName);
+//	}
+	
 	
 	@Override
 	public double getNumber() {return numberOfTrees;}

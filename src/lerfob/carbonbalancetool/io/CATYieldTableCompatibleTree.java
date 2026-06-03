@@ -20,9 +20,9 @@ package lerfob.carbonbalancetool.io;
 
 import lerfob.carbonbalancetool.CATCompatibleTree;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider;
-import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
+import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 
 /**
  * This class represents the trees in a yield table import in CAT. It is actually a fake class that ensures the 
@@ -55,11 +55,6 @@ class CATYieldTableCompatibleTree implements CATCompatibleTree, TreeStatusProvid
 	@Override
 	public StatusClass getStatusClass() {return statusClass;}
 
-//	@Override
-//	public SpeciesType getSpeciesType() {
-//		return stand.speciesType;
-//	}
-
 	public CATYieldTableCompatibleTree getClone() {
 		return new CATYieldTableCompatibleTree(volumeM3, statusClass);
 	}
@@ -71,13 +66,14 @@ class CATYieldTableCompatibleTree implements CATCompatibleTree, TreeStatusProvid
 	}
 
 	@Override
-	public Species getCATSpecies() {return stand.species;}
+	public Species getSpecies(REpiceaSpeciesCompliantObject caller) {return stand.species;}
 
+	
+//	@Override
+//	public Species getSpecies(Object caller) {return stand.species;}
+
+	
 	@Override
-	public SpeciesLocale getSpeciesLocale() {
-		return this.stand.getSpeciesLocale();
-	}
-	
-	
+	public SpeciesLocale getSpeciesLocale() {return this.stand.getSpeciesLocale();}
 
 }

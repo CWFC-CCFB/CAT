@@ -33,6 +33,7 @@ import lerfob.carbonbalancetool.interfaces.CATBelowGroundCarbonProvider;
 import lerfob.carbonbalancetool.interfaces.CATBelowGroundVolumeProvider;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
+import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 import repicea.util.ObjectUtility;
 
 public class BiomassParametersTest {
@@ -56,7 +57,7 @@ public class BiomassParametersTest {
 		public double getAboveGroundBiomassMg() {return 10;}
 
 		@Override
-		public Species getCATSpecies() {return Species.Abies_spp;}
+		public Species getSpecies(REpiceaSpeciesCompliantObject caller) {return Species.Abies_spp;}
 		
 		@Override
 		public SpeciesLocale getSpeciesLocale() {return SpeciesLocale.IPCC;}
@@ -75,7 +76,7 @@ public class BiomassParametersTest {
 		public String getSpeciesName() {return "Abies balsamea";}
 
 		@Override
-		public Species getCATSpecies() {return Species.Abies_spp;}
+		public Species getSpecies(REpiceaSpeciesCompliantObject caller) {return Species.Abies_spp;}
 
 		@Override
 		public double getAboveGroundVolumeM3() {return 10d;}
@@ -97,7 +98,7 @@ public class BiomassParametersTest {
 		public String getSpeciesName() {return "Abies balsamea";}
 
 		@Override
-		public Species getCATSpecies() {return Species.Abies_spp;}
+		public Species getSpecies(REpiceaSpeciesCompliantObject caller) {return Species.Abies_spp;}
 
 		@Override
 		public double getAboveGroundCarbonMg() {return 10d;}
@@ -119,7 +120,7 @@ public class BiomassParametersTest {
 		public String getSpeciesName() {return "Abies balsamea";}
 
 		@Override
-		public Species getCATSpecies() {return Species.Abies_spp;}
+		public Species getSpecies(REpiceaSpeciesCompliantObject caller) {return Species.Abies_spp;}
 
 		@Override
 		public double getBelowGroundVolumeM3() {return 10d;}
@@ -141,7 +142,7 @@ public class BiomassParametersTest {
 		public String getSpeciesName() {return "Abies balsamea";}
 
 		@Override
-		public Species getCATSpecies() {return Species.Abies_spp;}
+		public Species getSpecies(REpiceaSpeciesCompliantObject caller) {return Species.Abies_spp;}
 
 		@Override
 		public double getBelowGroundBiomassMg() {return 10d;}
@@ -163,7 +164,7 @@ public class BiomassParametersTest {
 		public String getSpeciesName() {return "Abies balsamea";}
 
 		@Override
-		public Species getCATSpecies() {return Species.Abies_spp;}
+		public Species getSpecies(REpiceaSpeciesCompliantObject caller) {return Species.Abies_spp;}
 
 		@Override
 		public double getBelowGroundCarbonMg() {return 10d;}

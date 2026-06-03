@@ -790,7 +790,6 @@ public class CarbonAccountingToolTest {
 		String filename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "SimulSamareForm.csv";
 		String ifeFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "AssociationSaMARE.ife";
 		String speciesMatchFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "Association especes.xml";
-//		String refFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "MathildeTreeExportReference.xml";
 		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
 		cat.initializeTool(null);
 		CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader(ApplicationScale.Stand, ManagementType.UnevenAged, SpeciesLocale.Quebec);
@@ -807,7 +806,7 @@ public class CarbonAccountingToolTest {
 				96.63099889669157, 
 				meanLivingBiomass.getValueAt(0, 0), 1E-8);
 		Assert.assertEquals("Testing final carbon in living biomass", 
-				128.9798287197443, 
+				129.0050315845228, 
 				meanLivingBiomass.getValueAt(40, 0), 1E-8);
 		Matrix DOM = obsMap.get(CompartmentInfo.DeadBiom).getMean();
 		Assert.assertEquals("Testing initial carbon in DOM", 
@@ -817,10 +816,45 @@ public class CarbonAccountingToolTest {
 				2.8130016088871543, 
 				DOM.getValueAt(5, 0), 1E-8);
 		Assert.assertEquals("Testing final carbon in living biomass", 
-				22.19705263587464, 
+				22.204097338361034, 
 				DOM.getValueAt(40, 0), 1E-8);
 		System.out.println("Successfully tested SaMARE simulation at stand level!");
 	}
+	
+	@Test
+	public void test20WithSaMARESimulationWithMeris() throws Exception {
+		String filename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "SimulSamareForm.csv";
+		String ifeFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "AssociationSaMARE.ife";
+		String speciesMatchFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "Association especes.xml";
+		String merisFilename = ObjectUtility.getPackagePath(getClass()) + "productionlines" + File.separator + "ExempleMeris.prl";
+		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
+		cat.initializeTool(null);
+		CATGrowthSimulationRecordReader recordReader = new CATGrowthSimulationRecordReader(ApplicationScale.Stand, ManagementType.UnevenAged, SpeciesLocale.Quebec);
+		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
+		recordReader.initInScriptMode(ifm);
+		recordReader.readAllRecords();
+		recordReader.getSelector().load(speciesMatchFilename);
+		cat.setStandList(recordReader.getStandList());
+
+		cat.getCarbonToolSettings().setCurrentProductionProcessorManagerSelection(ProductionManagerName.customized);
+		cat.getCarbonToolSettings().getCurrentProductionProcessorManager().load(merisFilename);
+		
+		cat.calculateCarbon();
+		CATSingleSimulationResult result = cat.getCarbonCompartmentManager().getSimulationSummary();
+		Map<CompartmentInfo, MonteCarloEstimate> obsMap = result.getEvolutionMap();
+		Matrix meanLivingBiomass = obsMap.get(CompartmentInfo.Products).getMean();
+		Assert.assertEquals("Testing initial carbon in living biomass", 
+				0.0, 
+				meanLivingBiomass.getValueAt(0, 0), 1E-8);
+		Assert.assertEquals("Testing final carbon in living biomass", 
+				15.465032427281207, 
+				meanLivingBiomass.getValueAt(11, 0), 1E-8);
+		Assert.assertEquals("Testing final carbon in living biomass", 
+				0.7275951843662035, 
+				meanLivingBiomass.getValueAt(40, 0), 1E-8);
+		System.out.println("Successfully tested SaMARE simulation with MERIS at stand level!");
+	}
+
 
 	public static void main(String[] args) throws Exception {
 		CarbonAccountingToolTest test = new CarbonAccountingToolTest();

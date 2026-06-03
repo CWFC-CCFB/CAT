@@ -59,6 +59,9 @@ import repicea.gui.genericwindows.REpiceaSplashWindow;
 import repicea.lang.REpiceaSystem;
 import repicea.serial.SerializerChangeMonitor;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
+import repicea.simulation.species.REpiceaSpecies.Species;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
+import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 import repicea.simulation.treelogger.TreeLoggerCompatibilityCheck;
 import repicea.simulation.treelogger.TreeLoggerDescription;
 import repicea.simulation.treelogger.TreeLoggerManager;
@@ -90,8 +93,25 @@ public class CarbonAccountingTool extends AbstractGenericEngine implements REpic
 		TreeLoggerManager.registerTreeLoggerName(MaritimePineBasicTreeLogger.class.getName());
 		TreeLoggerManager.registerTreeLoggerName(MathildeTreeLogger.class.getName());
 		TreeLoggerManager.registerTreeLoggerName(DouglasFCBATreeLogger.class.getName());
+		TreeLoggerManager.registerTreeLoggerName(MerisTreeLogger.class.getName());
 	}
 
+	public static final class CATProxyForSpeciesProvider implements REpiceaSpeciesCompliantObject {
+		
+		private static List<Species> EligibleSpecies = Collections.unmodifiableList(Arrays.asList(Species.values()));
+
+		private CATProxyForSpeciesProvider() {};
+		
+		@Override
+		public List<Species> getEligibleSpecies() {return EligibleSpecies;}
+
+		@Override
+		public SpeciesLocale getScope() {return SpeciesLocale.IPCC;}
+		
+	}
+	
+	public static final CATProxyForSpeciesProvider CAT = new CATProxyForSpeciesProvider();
+	
 	private static class StandComparator implements Comparator<CATCompatibleStand> {
 
 		@Override
@@ -327,6 +347,9 @@ public class CarbonAccountingTool extends AbstractGenericEngine implements REpic
 					break outerloop;	// once we have found at least one instance, we get out of the loop
 				}
 			}
+		}
+		if (treeInstance == null) {
+			REpiceaLogManager.logMessage(LOGGER_NAME, Level.WARNING, null, "There are no trees in the simulation. That seems very unlikely.");
 		}
 		TreeLoggerCompatibilityCheck c = new TreeLoggerCompatibilityCheck(treeInstance);
 		return c;

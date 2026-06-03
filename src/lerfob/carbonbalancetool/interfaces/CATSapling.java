@@ -22,8 +22,10 @@ package lerfob.carbonbalancetool.interfaces;
 import java.security.InvalidParameterException;
 
 import lerfob.carbonbalancetool.CATCompatibleTree;
+import lerfob.carbonbalancetool.CarbonAccountingTool;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
+import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 
 /**
  * A specific implementation of CATCompatibleTree for saplings.<p>
@@ -100,10 +102,7 @@ public class CATSapling implements CATAboveGroundBiomassProvider, CATCompatibleT
 	public boolean isCommercialVolumeOverbark() {return false;}
 
 	@Override
-	public String getSpeciesName() {return getCATSpecies().toString();}
-
-	@Override
-	public Species getCATSpecies() {return species;}
+	public String getSpeciesName() {return getSpecies(CarbonAccountingTool.CAT).toString();}
 
 	@Override
 	public double getPlotWeight() {return plotWeight;}
@@ -119,5 +118,8 @@ public class CATSapling implements CATAboveGroundBiomassProvider, CATCompatibleT
 
 	@Override
 	public SpeciesLocale getSpeciesLocale() {return locale;}
+
+	@Override
+	public Species getSpecies(REpiceaSpeciesCompliantObject caller) {return species;}
 
 }
