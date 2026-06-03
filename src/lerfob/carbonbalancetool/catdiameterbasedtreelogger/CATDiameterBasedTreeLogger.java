@@ -18,14 +18,19 @@
  */
 package lerfob.carbonbalancetool.catdiameterbasedtreelogger;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import lerfob.carbonbalancetool.CATCompatibleTree;
+import lerfob.carbonbalancetool.CarbonAccountingTool;
 import lerfob.treelogger.diameterbasedtreelogger.DiameterBasedTreeLogCategory;
 import lerfob.treelogger.diameterbasedtreelogger.DiameterBasedTreeLogger;
 import lerfob.treelogger.diameterbasedtreelogger.DiameterBasedWoodPiece;
 import repicea.simulation.covariateproviders.treelevel.DbhCmProvider;
 import repicea.simulation.species.REpiceaSpecies.Species;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
+import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 import repicea.simulation.treelogger.LoggableTree;
 import repicea.simulation.treelogger.TreeLoggerCompatibilityCheck;
 
@@ -38,6 +43,9 @@ import repicea.simulation.treelogger.TreeLoggerCompatibilityCheck;
 public class CATDiameterBasedTreeLogger extends DiameterBasedTreeLogger {
 
 
+	static List<Species> EligibleSpecies = Collections.unmodifiableList(Arrays.asList(Species.values()));
+	
+	
 	@Override
 	public CATDiameterBasedTreeLoggerParameters createDefaultTreeLoggerParameters() {
 		return new CATDiameterBasedTreeLoggerParameters();
@@ -71,7 +79,7 @@ public class CATDiameterBasedTreeLogger extends DiameterBasedTreeLogger {
 	
 	@Override
 	protected void logThisTree(LoggableTree tree) {
-		Species species = ((CATCompatibleTree) tree).getCATSpecies();
+		Species species = ((CATCompatibleTree) tree).getSpecies(CarbonAccountingTool.CAT);
 		List<DiameterBasedTreeLogCategory> logCategories = getTreeLoggerParameters().getSpeciesLogCategories(species);
 		List<DiameterBasedWoodPiece> pieces;
 		for (DiameterBasedTreeLogCategory logCategory : logCategories) {
@@ -86,6 +94,5 @@ public class CATDiameterBasedTreeLogger extends DiameterBasedTreeLogger {
 			} 
 		}
 	}
-
 
 }

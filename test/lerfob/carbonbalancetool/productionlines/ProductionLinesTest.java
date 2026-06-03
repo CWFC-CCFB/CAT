@@ -26,6 +26,7 @@ import repicea.simulation.processsystem.ProcessUnit;
 import repicea.simulation.processsystem.Processor;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
+import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 import repicea.util.ObjectUtility;
 
 @SuppressWarnings("deprecation")
@@ -62,7 +63,7 @@ public class ProductionLinesTest {
 		}
 
 		@Override
-		public Species getCATSpecies() {return species;}
+		public Species getSpecies(REpiceaSpeciesCompliantObject caller) {return species;}
 
 		@Override
 		public SpeciesLocale getSpeciesLocale() {return locale;}

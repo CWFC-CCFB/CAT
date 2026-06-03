@@ -2,6 +2,7 @@ package lerfob.carbonbalancetool;
 
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
+import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 
 class CarbonToolCompatibleTreeImpl implements CATCompatibleTree, Cloneable {
 
@@ -39,7 +40,7 @@ class CarbonToolCompatibleTreeImpl implements CATCompatibleTree, Cloneable {
 	}
 
 	@Override
-	public Species getCATSpecies() {return species;}
+	public Species getSpecies(REpiceaSpeciesCompliantObject caller) {return species;}
 
 	@Override
 	public boolean isCommercialVolumeOverbark() {

@@ -1,12 +1,14 @@
 /*
  * This file is part of the lerfob-foresttools library.
  *
- * Copyright (C) 2010-2014 Mathieu Fortin for LERFOB AgroParisTech/INRA, 
- *
+ * Copyright (C) 2010-2019 Mathieu Fortin for LERFOB AgroParisTech/INRA, 
+ * Copyright (C) 2019-2026 His Majesty the King in right of Canada
+ * Author: Mathieu Fortin, Canadian Forest Service
+ * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * version 3 of the License, or (at your option) any later version.
  *
  * This library is distributed with the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied
@@ -59,6 +61,9 @@ import repicea.gui.genericwindows.REpiceaSplashWindow;
 import repicea.lang.REpiceaSystem;
 import repicea.serial.SerializerChangeMonitor;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider.StatusClass;
+import repicea.simulation.species.REpiceaSpecies.Species;
+import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
+import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 import repicea.simulation.treelogger.TreeLoggerCompatibilityCheck;
 import repicea.simulation.treelogger.TreeLoggerDescription;
 import repicea.simulation.treelogger.TreeLoggerManager;
@@ -90,8 +95,25 @@ public class CarbonAccountingTool extends AbstractGenericEngine implements REpic
 		TreeLoggerManager.registerTreeLoggerName(MaritimePineBasicTreeLogger.class.getName());
 		TreeLoggerManager.registerTreeLoggerName(MathildeTreeLogger.class.getName());
 		TreeLoggerManager.registerTreeLoggerName(DouglasFCBATreeLogger.class.getName());
+		TreeLoggerManager.registerTreeLoggerName(MerisTreeLogger.class.getName());
 	}
 
+	public static final class CATProxyForSpeciesProvider implements REpiceaSpeciesCompliantObject {
+		
+		private static List<Species> EligibleSpecies = Collections.unmodifiableList(Arrays.asList(Species.values()));
+
+		private CATProxyForSpeciesProvider() {};
+		
+		@Override
+		public List<Species> getEligibleSpecies() {return EligibleSpecies;}
+
+		@Override
+		public SpeciesLocale getScope() {return SpeciesLocale.IPCC;}
+		
+	}
+	
+	public static final CATProxyForSpeciesProvider CAT = new CATProxyForSpeciesProvider();
+	
 	private static class StandComparator implements Comparator<CATCompatibleStand> {
 
 		@Override
@@ -327,6 +349,9 @@ public class CarbonAccountingTool extends AbstractGenericEngine implements REpic
 					break outerloop;	// once we have found at least one instance, we get out of the loop
 				}
 			}
+		}
+		if (treeInstance == null) {
+			REpiceaLogManager.logMessage(LOGGER_NAME, Level.WARNING, null, "There are no trees in the simulation. That seems very unlikely.");
 		}
 		TreeLoggerCompatibilityCheck c = new TreeLoggerCompatibilityCheck(treeInstance);
 		return c;
