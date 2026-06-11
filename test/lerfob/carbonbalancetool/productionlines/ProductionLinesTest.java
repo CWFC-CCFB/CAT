@@ -62,7 +62,7 @@ public class ProductionLinesTest {
 		}
 
 		@Override
-		public Species getSpecies() {return species;}
+		public Species getREpiceaSpecies() {return species;}
 
 		@Override
 		public SpeciesLocale getSpeciesLocale() {return locale;}

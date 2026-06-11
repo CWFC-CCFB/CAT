@@ -80,10 +80,10 @@ abstract class PythonCarbonToolCompatibleTree implements 	CATCompatibleTree,
 	public StatusClass getStatusClass() {return statusClass;}
 
 	@Override
-	public double getBasicWoodDensity() {return getSpecies().getBasicWoodDensity(getSpeciesLocale());}
+	public double getBasicWoodDensity() {return getREpiceaSpecies().getBasicWoodDensity(getSpeciesLocale());}
 
 	@Override
-	public Species getSpecies() {return species;}
+	public Species getREpiceaSpecies() {return species;}
 	
 	@Override
 	public double getAboveGroundVolumeM3() {return branchesVolume + trunkVolume;}

@@ -76,7 +76,7 @@ public class CATDiameterBasedTreeLogger extends DiameterBasedTreeLogger {
 	
 	@Override
 	protected void logThisTree(LoggableTree tree) {
-		Species species = ((CATCompatibleTree) tree).getSpecies();
+		Species species = ((CATCompatibleTree) tree).getREpiceaSpecies();
 		List<DiameterBasedTreeLogCategory> logCategories = getTreeLoggerParameters().getSpeciesLogCategories(species);
 		List<DiameterBasedWoodPiece> pieces;
 		for (DiameterBasedTreeLogCategory logCategory : logCategories) {

@@ -18,7 +18,7 @@
  */
 package lerfob.carbonbalancetool;
 
-import repicea.simulation.covariateproviders.treelevel.SpeciesProvider;
+import repicea.simulation.covariateproviders.treelevel.REpiceaSpeciesProvider;
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
@@ -29,32 +29,20 @@ import repicea.simulation.treelogger.LoggableTree;
  * the carbon assessment tool.
  * @author Mathieu Fortin - January 2013
  */
-public interface CATCompatibleTree extends LoggableTree, SpeciesTypeProvider, SpeciesProvider {
+public interface CATCompatibleTree extends LoggableTree, SpeciesTypeProvider, REpiceaSpeciesProvider {
 
-	
-	/**
-	 * Provide the Species enum associated to the tree instance.<p>
-	 * 
-	 * A CATSpecies enum is required to select the proper basic wood density 
-	 * following an IPCC Tier 1 approach and the proper proportion.
-	 * @return a REpiceaSpecies.Species enum
-	 */
-//	@Deprecated
-//	public default Species getCATSpecies() {
-//		return getSpecies(null);  // TODO FP MF20260602 Change this 
-//	}
 
 	@Override
-	public Species getSpecies();
+	public Species getREpiceaSpecies();
 	
 	@Override
 	public default double getBarkProportionOfWoodVolume(SpeciesLocale locale) {
-		return getSpecies().getBarkProportionOfWoodVolume(locale);
+		return getREpiceaSpecies().getBarkProportionOfWoodVolume(locale);
 	}
 	
 	@Override
 	public default SpeciesType getSpeciesType() {
-		return getSpecies().getSpeciesType();
+		return getREpiceaSpecies().getSpeciesType();
 	}
 	
 

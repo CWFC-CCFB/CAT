@@ -520,7 +520,7 @@ public class BiomassParameters implements REpiceaShowableUIWithParent,
 			value = t.getBasicWoodDensity();
 			isStochastic = t.isBasicWoodDensityPredictorStochastic();
 		} else {
-			value = tree.getSpecies().getBasicWoodDensity(tree.getSpeciesLocale());
+			value = tree.getREpiceaSpecies().getBasicWoodDensity(tree.getSpeciesLocale());
 		}
 		if (subject != null && !isStochastic) {	// isStochastic = false if the provider is not stochastic or if the tree does not implement the provider
 			return value * CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BasicDensity, subject, getGroupId(VariabilitySource.BasicDensity, tree));
@@ -544,7 +544,7 @@ public class BiomassParameters implements REpiceaShowableUIWithParent,
 			value = t.getCarbonContentRatio();
 			isStochastic = t.isCarbonContentRatioPredictorStochastic();
 		} else {
-			value = carbonContentFactors.get(tree.getSpecies().getSpeciesType());
+			value = carbonContentFactors.get(tree.getREpiceaSpecies().getSpeciesType());
 		}
 		if (subject != null && !isStochastic) {	// isStochastic = false if the provider is not stochastic or if the tree does not implement the provider
 			return value * CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.CarbonContent, subject, getGroupId(VariabilitySource.CarbonContent, tree));
@@ -600,7 +600,7 @@ public class BiomassParameters implements REpiceaShowableUIWithParent,
 					value *= biomassModifier * woodDensityModifier;
 				}
 			} else {
-				value = getAboveGroundBiomassMg(tree, subject) * (rootExpansionFactors.get(tree.getSpecies().getSpeciesType()) - 1);		// minus 1 is required because we want to get only the belowground part;
+				value = getAboveGroundBiomassMg(tree, subject) * (rootExpansionFactors.get(tree.getREpiceaSpecies().getSpeciesType()) - 1);		// minus 1 is required because we want to get only the belowground part;
 				value *= CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BiomassExpansionFactor, subject, getGroupId(VariabilitySource.BiomassExpansionFactor, tree));
 			}
 			getBelowGroundBiomassMgCache().put(tree, value);
@@ -641,7 +641,7 @@ public class BiomassParameters implements REpiceaShowableUIWithParent,
 				value = t.getBelowGroundVolumeM3() * getExpansionFactor(tree);
 				isStochastic = t.isBelowGroundVolumePredictorStochastic();
 			} else {
-				value = getAboveGroundVolumeM3(tree, subject) * (rootExpansionFactors.get(tree.getSpecies().getSpeciesType()) - 1);		// minus 1 is required because we want to get only the belowground part
+				value = getAboveGroundVolumeM3(tree, subject) * (rootExpansionFactors.get(tree.getREpiceaSpecies().getSpeciesType()) - 1);		// minus 1 is required because we want to get only the belowground part
 			}
 			
 			if (subject != null && !isStochastic) {	// isStochastic = false if the provider is not stochastic or if the tree does not implement the provider
@@ -701,7 +701,7 @@ public class BiomassParameters implements REpiceaShowableUIWithParent,
 					value *= biomassModifier * woodDensityModifier;
 				}
 			} else if (tree instanceof CATCommercialBiomassProvider) {		
-				value = getCommercialBiomassMg(tree, subject) * branchExpansionFactors.get(tree.getSpecies().getSpeciesType());
+				value = getCommercialBiomassMg(tree, subject) * branchExpansionFactors.get(tree.getREpiceaSpecies().getSpeciesType());
 				if (subject != null) {	
 					String subjectId = getGroupId(VariabilitySource.BiomassExpansionFactor, tree);
 					value *= CATSensitivityAnalysisSettings.getInstance().getModifier(VariabilitySource.BiomassExpansionFactor, subject, subjectId);
@@ -732,7 +732,7 @@ public class BiomassParameters implements REpiceaShowableUIWithParent,
 				value = t.getAboveGroundVolumeM3() * getExpansionFactor(tree);
 				isStochastic = t.isAboveGroundVolumePredictorStochastic();
 			} else {
-				value = getCommercialVolumeM3(tree) * branchExpansionFactors.get(tree.getSpecies().getSpeciesType());
+				value = getCommercialVolumeM3(tree) * branchExpansionFactors.get(tree.getREpiceaSpecies().getSpeciesType());
 			}
 			
 			if (subject != null && !isStochastic) {	// isStochastic = false if the provider is not stochastic or if the tree does not implement the provider
@@ -758,19 +758,19 @@ public class BiomassParameters implements REpiceaShowableUIWithParent,
 			if (branchExpansionFactorFromModel || rootExpansionFactorFromModel) {
 				return tree.getSpeciesName();
 			} else {
-				return tree.getSpecies().getSpeciesType().name();
+				return tree.getREpiceaSpecies().getSpeciesType().name();
 			}
 		case BasicDensity:
 			if (basicWoodDensityFromModel) {
 				return tree.getSpeciesName();
 			} else {
-				return tree.getSpecies().getSpeciesType().name();
+				return tree.getREpiceaSpecies().getSpeciesType().name();
 			}
 		case CarbonContent:
 			if (carbonContentFromModel) {
 				return tree.getSpeciesName();
 			} else {
-				return tree.getSpecies().getSpeciesType().name();
+				return tree.getREpiceaSpecies().getSpeciesType().name();
 			}
 		default:
 			return null;

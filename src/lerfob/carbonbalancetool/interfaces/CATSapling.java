@@ -103,7 +103,7 @@ public class CATSapling implements CATAboveGroundBiomassProvider, CATCompatibleT
 	public boolean isCommercialVolumeOverbark() {return false;}
 
 	@Override
-	public String getSpeciesName() {return getSpecies().toString();}
+	public String getSpeciesName() {return getREpiceaSpecies().toString();}
 
 	@Override
 	public double getPlotWeight() {return plotWeight;}
@@ -121,6 +121,6 @@ public class CATSapling implements CATAboveGroundBiomassProvider, CATCompatibleT
 	public SpeciesLocale getSpeciesLocale() {return locale;}
 
 	@Override
-	public Species getSpecies() {return species;}
+	public Species getREpiceaSpecies() {return species;}
 
 }

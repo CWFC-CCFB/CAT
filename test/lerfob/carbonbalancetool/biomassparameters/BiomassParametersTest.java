@@ -56,7 +56,7 @@ public class BiomassParametersTest {
 		public double getAboveGroundBiomassMg() {return 10;}
 
 		@Override
-		public Species getSpecies() {return Species.Abies_spp;}
+		public Species getREpiceaSpecies() {return Species.Abies_spp;}
 		
 		@Override
 		public SpeciesLocale getSpeciesLocale() {return SpeciesLocale.IPCC;}
@@ -75,7 +75,7 @@ public class BiomassParametersTest {
 		public String getSpeciesName() {return "Abies balsamea";}
 
 		@Override
-		public Species getSpecies() {return Species.Abies_spp;}
+		public Species getREpiceaSpecies() {return Species.Abies_spp;}
 
 		@Override
 		public double getAboveGroundVolumeM3() {return 10d;}
@@ -97,7 +97,7 @@ public class BiomassParametersTest {
 		public String getSpeciesName() {return "Abies balsamea";}
 
 		@Override
-		public Species getSpecies() {return Species.Abies_spp;}
+		public Species getREpiceaSpecies() {return Species.Abies_spp;}
 
 		@Override
 		public double getAboveGroundCarbonMg() {return 10d;}
@@ -119,7 +119,7 @@ public class BiomassParametersTest {
 		public String getSpeciesName() {return "Abies balsamea";}
 
 		@Override
-		public Species getSpecies() {return Species.Abies_spp;}
+		public Species getREpiceaSpecies() {return Species.Abies_spp;}
 
 		@Override
 		public double getBelowGroundVolumeM3() {return 10d;}
@@ -141,7 +141,7 @@ public class BiomassParametersTest {
 		public String getSpeciesName() {return "Abies balsamea";}
 
 		@Override
-		public Species getSpecies() {return Species.Abies_spp;}
+		public Species getREpiceaSpecies() {return Species.Abies_spp;}
 
 		@Override
 		public double getBelowGroundBiomassMg() {return 10d;}
@@ -163,7 +163,7 @@ public class BiomassParametersTest {
 		public String getSpeciesName() {return "Abies balsamea";}
 
 		@Override
-		public Species getSpecies() {return Species.Abies_spp;}
+		public Species getREpiceaSpecies() {return Species.Abies_spp;}
 
 		@Override
 		public double getBelowGroundCarbonMg() {return 10d;}

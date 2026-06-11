@@ -71,7 +71,7 @@ public class ComparisonWithMathildeTest {
 		public double getDbhCm() {return dbhCm;}
 
 		@Override
-		public Species getSpecies() {
+		public Species getREpiceaSpecies() {
 			switch(species) {
 			case CARPINUS:
 				return Species.Carpinus_betulus;

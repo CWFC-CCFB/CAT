@@ -39,7 +39,7 @@ class CarbonToolCompatibleTreeImpl implements CATCompatibleTree, Cloneable {
 	}
 
 	@Override
-	public Species getSpecies() {return species;}
+	public Species getREpiceaSpecies() {return species;}
 
 	@Override
 	public boolean isCommercialVolumeOverbark() {

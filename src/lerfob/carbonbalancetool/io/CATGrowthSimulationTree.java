@@ -89,10 +89,10 @@ class CATGrowthSimulationTree implements CATCompatibleTree,
 	public double getCommercialVolumeM3() {return commercialVolumeM3;}
 
 	@Override
-	public String getSpeciesName() {return getSpecies().toString();}
+	public String getSpeciesName() {return getREpiceaSpecies().toString();}
 
 	@Override
-	public Species getSpecies() {
+	public Species getREpiceaSpecies() {
 		return (Species) plot.plotSample.compositeStand.reader.getSelector().getMatch(originalSpeciesName);
 	}
 	

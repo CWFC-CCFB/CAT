@@ -65,7 +65,7 @@ class CATYieldTableCompatibleTree implements CATCompatibleTree, TreeStatusProvid
 	}
 
 	@Override
-	public Species getSpecies() {return stand.species;}
+	public Species getREpiceaSpecies() {return stand.species;}
 
 	
 //	@Override
