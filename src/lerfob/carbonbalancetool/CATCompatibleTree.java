@@ -22,7 +22,6 @@ import repicea.simulation.covariateproviders.treelevel.SpeciesProvider;
 import repicea.simulation.covariateproviders.treelevel.SpeciesTypeProvider;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
-import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 import repicea.simulation.treelogger.LoggableTree;
 
 /**
@@ -46,16 +45,16 @@ public interface CATCompatibleTree extends LoggableTree, SpeciesTypeProvider, Sp
 //	}
 
 	@Override
-	public Species getSpecies(REpiceaSpeciesCompliantObject caller);
+	public Species getSpecies();
 	
 	@Override
 	public default double getBarkProportionOfWoodVolume(SpeciesLocale locale) {
-		return getSpecies(CarbonAccountingTool.CAT).getBarkProportionOfWoodVolume(locale);
+		return getSpecies().getBarkProportionOfWoodVolume(locale);
 	}
 	
 	@Override
 	public default SpeciesType getSpeciesType() {
-		return getSpecies(CarbonAccountingTool.CAT).getSpeciesType();
+		return getSpecies().getSpeciesType();
 	}
 	
 

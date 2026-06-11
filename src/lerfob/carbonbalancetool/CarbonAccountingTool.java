@@ -98,21 +98,21 @@ public class CarbonAccountingTool extends AbstractGenericEngine implements REpic
 		TreeLoggerManager.registerTreeLoggerName(MerisTreeLogger.class.getName());
 	}
 
-	public static final class CATProxyForSpeciesProvider implements REpiceaSpeciesCompliantObject {
-		
-		private static List<Species> EligibleSpecies = Collections.unmodifiableList(Arrays.asList(Species.values()));
-
-		private CATProxyForSpeciesProvider() {};
-		
-		@Override
-		public List<Species> getEligibleSpecies() {return EligibleSpecies;}
-
-		@Override
-		public SpeciesLocale getScope() {return SpeciesLocale.IPCC;}
-		
-	}
-	
-	public static final CATProxyForSpeciesProvider CAT = new CATProxyForSpeciesProvider();
+//	public static final class CATProxyForSpeciesProvider implements REpiceaSpeciesCompliantObject {
+//		
+//		private static List<Species> EligibleSpecies = Collections.unmodifiableList(Arrays.asList(Species.values()));
+//
+//		private CATProxyForSpeciesProvider() {};
+//		
+//		@Override
+//		public List<Species> getEligibleSpecies() {return EligibleSpecies;}
+//
+//		@Override
+//		public SpeciesLocale getScope() {return SpeciesLocale.IPCC;}
+//		
+//	}
+//	
+//	public static final CATProxyForSpeciesProvider CAT = new CATProxyForSpeciesProvider();
 	
 	private static class StandComparator implements Comparator<CATCompatibleStand> {
 

@@ -37,7 +37,6 @@ import lerfob.treelogger.mathilde.MathildeTreeLogger;
 import lerfob.treelogger.mathilde.MathildeTreeLoggerParameters;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
-import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 import repicea.simulation.treelogger.WoodPiece;
 import repicea.util.ObjectUtility;
 import repicea.util.REpiceaTranslator;
@@ -72,7 +71,7 @@ public class ComparisonWithMathildeTest {
 		public double getDbhCm() {return dbhCm;}
 
 		@Override
-		public Species getSpecies(REpiceaSpeciesCompliantObject caller) {
+		public Species getSpecies() {
 			switch(species) {
 			case CARPINUS:
 				return Species.Carpinus_betulus;

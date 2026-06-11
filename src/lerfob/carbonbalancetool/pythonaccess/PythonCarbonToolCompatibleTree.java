@@ -19,14 +19,12 @@
 package lerfob.carbonbalancetool.pythonaccess;
 
 import lerfob.carbonbalancetool.CATCompatibleTree;
-import lerfob.carbonbalancetool.CarbonAccountingTool;
 import lerfob.carbonbalancetool.interfaces.CATAboveGroundVolumeProvider;
 import lerfob.carbonbalancetool.interfaces.CATBasicWoodDensityProvider;
 import lerfob.carbonbalancetool.interfaces.CATBelowGroundVolumeProvider;
 import repicea.simulation.covariateproviders.treelevel.TreeStatusProvider;
 import repicea.simulation.species.REpiceaSpecies.Species;
 import repicea.simulation.species.REpiceaSpecies.SpeciesLocale;
-import repicea.simulation.species.REpiceaSpeciesCompliantObject;
 
 /**
  * This internal class is actually a wrapper for the trees that are sent to the PythonAccessPoint class.
@@ -82,10 +80,10 @@ abstract class PythonCarbonToolCompatibleTree implements 	CATCompatibleTree,
 	public StatusClass getStatusClass() {return statusClass;}
 
 	@Override
-	public double getBasicWoodDensity() {return getSpecies(CarbonAccountingTool.CAT).getBasicWoodDensity(getSpeciesLocale());}
+	public double getBasicWoodDensity() {return getSpecies().getBasicWoodDensity(getSpeciesLocale());}
 
 	@Override
-	public Species getSpecies(REpiceaSpeciesCompliantObject caller) {return species;}
+	public Species getSpecies() {return species;}
 	
 	@Override
 	public double getAboveGroundVolumeM3() {return branchesVolume + trunkVolume;}
