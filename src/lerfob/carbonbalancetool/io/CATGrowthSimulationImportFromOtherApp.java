@@ -62,9 +62,9 @@ public class CATGrowthSimulationImportFromOtherApp {
 	
 	/**
 	 * This method returns the selector for the species in CAT.
-	 * @return a REpiceaMatchSelector instance
+	 * @return a CATGrowthSimulationSpeciesSelectorV2 instance
 	 */
-	public CATGrowthSimulationSpeciesSelector getSelector() {
+	public CATGrowthSimulationSpeciesSelectorV2 getSelector() {
 		return recordReader.getSelector();
 	}
 

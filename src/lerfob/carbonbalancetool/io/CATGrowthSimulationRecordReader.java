@@ -147,7 +147,7 @@ public class CATGrowthSimulationRecordReader extends REpiceaRecordReader {
 	 */
 	private final Map<Integer, Map<Boolean, CATGrowthSimulationCompositeStand>> standMap;
 	
-	private CATGrowthSimulationSpeciesSelector selector;
+	private CATGrowthSimulationSpeciesSelectorV2 selector;
 	private final List<String> speciesList;
 	protected final ApplicationScale scale;
 	protected final ManagementType management;
@@ -192,9 +192,9 @@ public class CATGrowthSimulationRecordReader extends REpiceaRecordReader {
 	 * This method returns the selector for the species in CAT.
 	 * @return a REpiceaMatchSelector instance
 	 */
-	public CATGrowthSimulationSpeciesSelector getSelector() {
+	public CATGrowthSimulationSpeciesSelectorV2 getSelector() {
 		if (selector == null) {
-			selector = new CATGrowthSimulationSpeciesSelector(speciesList.toArray());
+			selector = new CATGrowthSimulationSpeciesSelectorV2(speciesList);
 		}
 		return selector;
 	}

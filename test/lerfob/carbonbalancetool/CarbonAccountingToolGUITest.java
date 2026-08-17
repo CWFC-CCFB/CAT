@@ -48,7 +48,7 @@ import repicea.gui.REpiceaGUITestRobot;
 import repicea.gui.UIControlManager;
 import repicea.gui.UIControlManager.CommonControlID;
 import repicea.gui.UIControlManager.CommonMenuTitle;
-import repicea.gui.components.REpiceaMatchSelectorDialog;
+import repicea.gui.components.REpiceaMatchWithEnumSelectorDialog;
 import repicea.gui.genericwindows.REpiceaLicenseWindow;
 import repicea.io.tools.ImportFieldManagerDialog;
 import repicea.simulation.covariateproviders.samplelevel.ApplicationScaleProvider.ApplicationScale;
@@ -218,7 +218,7 @@ public class CarbonAccountingToolGUITest {
 		ROBOT.fillThisTextField("Filename", fileToLoad);
 		ROBOT.clickThisButton("Open", CATScaleManagementSelectorDialog.class);	
 		ROBOT.clickThisButton("Ok", ImportFieldManagerDialog.class);		
-		ROBOT.clickThisButton("Ok", REpiceaMatchSelectorDialog.class);
+		ROBOT.clickThisButton("Ok", REpiceaMatchWithEnumSelectorDialog.class);
 		ROBOT.clickThisButton("File");
 
 		toRun = new Runnable() {
@@ -283,7 +283,7 @@ public class CarbonAccountingToolGUITest {
 		JComboBox scaleCb = (JComboBox) ROBOT.findComponentWithThisName("scaleComboBox");
 		scaleCb.setSelectedItem(ApplicationScale.Stand);
 		ROBOT.clickThisButton("Ok", ImportFieldManagerDialog.class);		
-		ROBOT.clickThisButton("Ok", REpiceaMatchSelectorDialog.class);
+		ROBOT.clickThisButton("Ok", REpiceaMatchWithEnumSelectorDialog.class);
 		ROBOT.clickThisButton("File");
 
 		toRun = new Runnable() {
