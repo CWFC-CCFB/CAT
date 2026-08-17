@@ -93,7 +93,7 @@ class CATGrowthSimulationTree implements CATCompatibleTree,
 
 	@Override
 	public Species getREpiceaSpecies() {
-		return (Species) plot.plotSample.compositeStand.reader.getSelector().getMatch(originalSpeciesName);
+		return plot.plotSample.compositeStand.reader.getSelector().getMatch(originalSpeciesName).getValue();
 	}
 	
 //	@Override
