@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lerfob.carbonbalancetool.CATCompatibleStand;
+import lerfob.carbonbalancetool.io.CATGrowthSimulationRecordReader.CATGrowthSimulationFieldID;
 import repicea.io.tools.ImportFieldElement;
 import repicea.io.tools.ImportFieldElement.FieldType;
 import repicea.io.tools.LevelProviderEnum;
@@ -44,10 +45,14 @@ public class CATYieldTableRecordReader extends REpiceaRecordReader {
 	protected static enum MessageID implements TextableEnum {
 		DateDescription("Stand age (years)","Age du peuplement (ann\u00E9es)"),
 		DateHelp("This field must contains the age of the stand. It is an integer.", "Ce champ doit contenir l'\u00E2ge du peuplement. Il s'agit d'un entier."),
-		StandingVolumeDescription("Standing overbark volume (m3/ha)", "Volume sur pied sur \u00E9corce (m3/ha)"),
+		StandingVolumeDescription("Standing volume (m3/ha)", "Volume sur pied (m3/ha)"),
 		StandingVolumeHelp("This field contains the standing commercial volume (m3/ha). It is a double.", "Ce champ contient le volume commercial sur pied (m3/ha). Il s'agit d'un double."),
-		HarvestedVolumeDescription("Harvested overbark volume (m3/ha)", "Volume r\u00E9colt\u00E9 (m3/ha) sur \u00E9corce"),
-		HarvestedVolumeHelp("This field contains the harvested commercial volume (m3/ha). It is a double.", "Ce champ contient le volume commercial r\u00E9colt\u00E9 (m3/ha). Il s'agit d'un double.");
+		HarvestedVolumeDescription("Harvested overbark volume (m3/ha)", "Volume r\u00E9colt\u00E9 (m3/ha)"),
+		HarvestedVolumeHelp("This field contains the harvested commercial volume (m3/ha). It is a double.", "Ce champ contient le volume commercial r\u00E9colt\u00E9 (m3/ha). Il s'agit d'un double."),
+		MeasureTypeDescription("Measured overbark (integer)", "Mesur\u00E9 sur \u00E9corce"),
+		MeasureTypeHelp("This field contains an integer (1 = true, 0 = false). It is optional. If not specified, the measurements are assumed to be overbark.",
+				"Ce champ contient un entier (1 = vrai, 0 = faux). Il est facultatif. S'il n'est pas sp\u00E9cifi\u00E9, les mesures sont consid\u00E9r\u00E9es comme \u00E9tant prises sur \u00E9corce."),
+		;
 		
 		MessageID(String englishText, String frenchText) {
 			setText(englishText, frenchText);
@@ -69,7 +74,8 @@ public class CATYieldTableRecordReader extends REpiceaRecordReader {
 	protected static enum CATYieldTableFieldID implements LevelProviderEnum {
 		Date,
 		StandingVolume,
-		HarvestedVolume;
+		HarvestedVolume,
+		MeasureType;
 		
 		CATYieldTableFieldID() {}
 
@@ -132,6 +138,13 @@ public class CATYieldTableRecordReader extends REpiceaRecordReader {
 				MessageID.HarvestedVolumeHelp.toString(),
 				FieldType.Double);
 		ifeList.add(ife);
+		ife = new ImportFieldElement(CATYieldTableFieldID.MeasureType,
+				MessageID.MeasureTypeDescription.toString(), 
+				getClass().getSimpleName() + ".measureTypeDescription", 
+				true, 
+				MessageID.MeasureTypeHelp.toString(),
+				FieldType.Integer);
+		ifeList.add(ife);
 		return ifeList;
 	}
 
@@ -140,9 +153,23 @@ public class CATYieldTableRecordReader extends REpiceaRecordReader {
 
 	@Override
 	protected void readLineRecord(Object[] oArray, int lineCounter) throws VariableValueException, Exception {
-		int dateYr = Integer.parseInt(oArray[0].toString());
-		double standingVolumeM3 = Double.parseDouble(oArray[1].toString());
-		double harvestedVolumeM3 = Double.parseDouble(oArray[2].toString());
+		int index = getImportFieldManager().getIndexOfThisField(CATYieldTableFieldID.Date);
+		int dateYr = Integer.parseInt(oArray[index].toString());
+		
+		index = getImportFieldManager().getIndexOfThisField(CATYieldTableFieldID.StandingVolume);
+		double standingVolumeM3 = Double.parseDouble(oArray[index].toString());
+		
+		index = getImportFieldManager().getIndexOfThisField(CATYieldTableFieldID.HarvestedVolume);
+		double harvestedVolumeM3 = Double.parseDouble(oArray[index].toString());
+
+		index = getImportFieldManager().getIndexOfThisField(CATYieldTableFieldID.MeasureType);
+		boolean overBark;
+		if (index != -1 && oArray[index] != null) { 	// means that the MeasureType field has been populated
+			overBark = ((Number) oArray[index]).intValue() != 0;
+		} else {
+			overBark = true;
+		}
+
 		CATYieldTableCompatibleStand stand;
 		if (harvestedVolumeM3 > 0d) {
 			if (standList.size() == 0 || standList.get(standList.size() - 1).getDateYr() != dateYr) { // means that there is no before harvest entry. Need to create one.
@@ -153,7 +180,7 @@ public class CATYieldTableRecordReader extends REpiceaRecordReader {
 						catSpecies,
 						locale);
 				standList.add(stand);
-				stand.addTree(new CATYieldTableCompatibleTree(standingVolumeM3 + harvestedVolumeM3, StatusClass.alive)) ;
+				stand.addTree(new CATYieldTableCompatibleTree(standingVolumeM3 + harvestedVolumeM3, StatusClass.alive, overBark)) ;
 			}
 		}
 		stand = new CATYieldTableCompatibleStand(
@@ -165,11 +192,11 @@ public class CATYieldTableRecordReader extends REpiceaRecordReader {
 		standList.add(stand);
 		CATYieldTableCompatibleTree tree;
 		if (standingVolumeM3 > 0) {
-			tree = new CATYieldTableCompatibleTree(standingVolumeM3, StatusClass.alive);
+			tree = new CATYieldTableCompatibleTree(standingVolumeM3, StatusClass.alive, overBark);
 			stand.addTree(tree);
 		}
 		if (harvestedVolumeM3 > 0) {
-			tree = new CATYieldTableCompatibleTree(harvestedVolumeM3, StatusClass.cut);
+			tree = new CATYieldTableCompatibleTree(harvestedVolumeM3, StatusClass.cut, overBark);
 			stand.addTree(tree);
 		}
 	}
