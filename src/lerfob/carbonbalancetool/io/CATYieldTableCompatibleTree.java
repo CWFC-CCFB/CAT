@@ -33,11 +33,13 @@ class CATYieldTableCompatibleTree implements CATCompatibleTree, TreeStatusProvid
 	private final double volumeM3;
 	private StatusClass statusClass;
 	CATYieldTableCompatibleStand stand;
+	final boolean overBark;
 	
 	
-	CATYieldTableCompatibleTree(double underbarkVolumeM3, StatusClass statusClass) {
+	CATYieldTableCompatibleTree(double underbarkVolumeM3, StatusClass statusClass, boolean overBark) {
 		this.volumeM3 = underbarkVolumeM3;
 		setStatusClass(statusClass);
+		this.overBark = overBark;
 	}
 		
 	@Override
@@ -55,22 +57,14 @@ class CATYieldTableCompatibleTree implements CATCompatibleTree, TreeStatusProvid
 	public StatusClass getStatusClass() {return statusClass;}
 
 	public CATYieldTableCompatibleTree getClone() {
-		return new CATYieldTableCompatibleTree(volumeM3, statusClass);
+		return new CATYieldTableCompatibleTree(volumeM3, statusClass, overBark);
 	}
-
 
 	@Override
-	public boolean isCommercialVolumeOverbark() {
-		return true;
-	}
+	public boolean isCommercialVolumeOverbark() {return overBark;}
 
 	@Override
 	public Species getREpiceaSpecies() {return stand.species;}
-
-	
-//	@Override
-//	public Species getSpecies(Object caller) {return stand.species;}
-
 	
 	@Override
 	public SpeciesLocale getSpeciesLocale() {return this.stand.getSpeciesLocale();}

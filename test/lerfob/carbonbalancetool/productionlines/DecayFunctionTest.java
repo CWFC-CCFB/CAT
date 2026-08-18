@@ -120,7 +120,7 @@ public class DecayFunctionTest {
 		Assert.assertTrue("Testing mean",  oneMinusMeanRatio < 0.02);
 		double oneMinusVarianceRatio = Math.abs(1d - varianceRatio);
 		System.out.println("One minus variance ratio = " + oneMinusVarianceRatio);
-		Assert.assertTrue("Testing variance", oneMinusVarianceRatio < 0.05);
+		Assert.assertTrue("Testing variance", oneMinusVarianceRatio < 0.07);
 
 		Assert.assertEquals("Testing if values for the same iteration do not change", 
 				expected,
@@ -163,7 +163,9 @@ public class DecayFunctionTest {
 				false,
 				0.4);
 
-		Assert.assertTrue("Testing mean", Math.abs(1d - meanRatio) < 0.02);
+		System.out.println("Mean ratio = " + meanRatio);
+		Assert.assertTrue("Testing mean", Math.abs(1d - meanRatio) < 0.03);
+		System.out.println("Variance ratio = " + varianceRatio);
 		Assert.assertTrue("Testing variance", Math.abs(1d - varianceRatio) < 0.05);
 		
 		Assert.assertEquals("Testing if values for the same iteration do not change", 

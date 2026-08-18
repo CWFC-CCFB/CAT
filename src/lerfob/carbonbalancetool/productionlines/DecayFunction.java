@@ -190,6 +190,9 @@ class DecayFunction implements Serializable, REpiceaUIObject, NumberFieldListene
 						subject, 
 						feature.getClass().getCanonicalName() + feature.hashCode()) :
 					averageLifetimeYr;
+		if (avgLifetimeYr < 0d) {
+			avgLifetimeYr = 0.01; // protection against negative values
+		}
 		switch(functionType) {
 		case Exponential:
 			return Math.exp(- timeYr / avgLifetimeYr);

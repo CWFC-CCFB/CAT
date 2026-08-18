@@ -854,8 +854,42 @@ public class CarbonAccountingToolTest {
 				meanLivingBiomass.getValueAt(40, 0), 1E-8);
 		System.out.println("Successfully tested SaMARE simulation with MERIS at stand level!");
 	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Test
+	public void test21WithYieldTableUnderBark() throws Exception {
+		String filename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "ExampleYieldTable.csv";
+		String ifeFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "ExampleYieldTableWithMeasType.ife";
+		String refFilename = ObjectUtility.getPackagePath(getClass()) + "io" + File.separator + "ExampleYieldTableWithMeasTypeReference.xml";
+		CarbonAccountingTool cat = new CarbonAccountingTool(CATMode.SCRIPT);
+		cat.initializeTool(null);
+		CATYieldTableRecordReader recordReader = new CATYieldTableRecordReader(Species.Abies_spp, SpeciesLocale.IPCC);
+		ImportFieldManager ifm = ImportFieldManager.createImportFieldManager(recordReader, ifeFilename, filename);
+		recordReader.initInScriptMode(ifm);
+		recordReader.readAllRecords();
+		cat.setStandList(recordReader.getStandList());
+		cat.calculateCarbon();
+		CATSingleSimulationResult result = cat.getCarbonCompartmentManager().getSimulationSummary();
+		Map<CompartmentInfo, Estimate<Matrix, SymmetricMatrix, ?>> obsMap = result.getBudgetMap();
+		
+//		XmlSerializer serializer = new XmlSerializer(refFilename);
+//		serializer.writeObject(obsMap);
 
+		XmlDeserializer deserializer = new XmlDeserializer(refFilename);
+		Map<CompartmentInfo, Estimate<Matrix, SymmetricMatrix, ?>> refMap = (Map) deserializer.readObject();
+		int nbCompartmentChecked = 0;
+//		Assert.assertTrue("Testing the size of the map", refMap.size() == obsMap.size());  // TODO re-enable this line once the test result has been updated MF2024-04-03
+		for (CompartmentInfo key : refMap.keySet()) {
+			double expected = refMap.get(key).getMean().getValueAt(0, 0);
+			double observed = obsMap.get(key).getMean().getValueAt(0, 0);
+			Assert.assertEquals("Testing compartment " + key.name(), expected, observed, 1E-8);
+			nbCompartmentChecked++;
+		}
+		System.out.println("Successfully tested this number of compartments " + nbCompartmentChecked);
+		cat.requestShutdown();
+	}
 
+	
 	public static void main(String[] args) throws Exception {
 		CarbonAccountingToolTest test = new CarbonAccountingToolTest();
 		test.test07MemoryLeakage();
